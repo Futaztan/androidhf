@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -33,6 +37,7 @@ fun MoneyIncomeScreen(navController: NavController) {
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        SimpleDropdown()
         Text("Add meg az összeget:")
         TextField(
             value = input,
@@ -64,3 +69,40 @@ fun MoneyIncomeScreen(navController: NavController) {
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SimpleDropdown() {
+    val options = listOf("Forint", "Euró", "Dollár", "Bitcoin") //TODO: KATEGÓRIAK
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf(options[0]) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        TextField(
+            value = selectedOption,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Válassz pénznemet") },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(
+                    text = { Text(selectionOption) },
+                    onClick = {
+                        selectedOption = selectionOption
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
