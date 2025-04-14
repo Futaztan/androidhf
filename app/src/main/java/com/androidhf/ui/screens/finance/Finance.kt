@@ -21,7 +21,7 @@ import com.androidhf.data.Datas
 fun FinanceScreen(navHostController: NavHostController) {
     val money = Datas.osszpenz
 
-    var isMinus by remember { mutableStateOf(false) }
+
     Column ( modifier = Modifier.fillMaxSize())
     {
         Text("Pénzügy Screen")
@@ -37,13 +37,7 @@ fun FinanceScreen(navHostController: NavHostController) {
 }
 
 
-
-
 fun changeMoney(osszeg: Double) {
 
     Datas.osszpenz+= osszeg
-}
-fun moneyRemove(osszeg: Double) {
-
-    Datas.osszpenz-= osszeg
 }
