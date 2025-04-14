@@ -6,24 +6,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.androidhf.ui.screen.AIScreen
-import com.androidhf.ui.screen.HomeScreen
-import com.androidhf.ui.screen.PenzugyScreen
+import com.androidhf.ui.screens.ai.AIScreen
+import com.androidhf.ui.screens.finance.FinanceScreen
+import com.androidhf.ui.screens.finance.MoneyExpenseScreen
+import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 
-import com.androidhf.ui.screen.StockScreen
+import com.androidhf.ui.screens.home.HomeScreen
+import com.androidhf.ui.screens.stock.StockScreen
+
 import com.androidhf.ui.theme.AndroidhfTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,9 +51,11 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("home") { HomeScreen() }
-                        composable("penzugy") { PenzugyScreen() }
+                        composable("penzugy") { FinanceScreen(navController) }
                         composable("stock") { StockScreen() }
                         composable("ai") { AIScreen() }
+                        composable("money_income") { MoneyIncomeScreen(navController) }
+                        composable("money_expense") { MoneyExpenseScreen(navController) }
                     }
                 }
             }
