@@ -1,17 +1,35 @@
 package com.androidhf
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,17 +38,11 @@ import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
-
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.stock.StockScreen
-
 import com.androidhf.ui.theme.AndroidhfTheme
 
 class MainActivity : ComponentActivity() {
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,6 +55,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         BottomNavBar(navController)
+                    },
+                    topBar =
+                    {
+                        CustomTopAppBar()
                     }
                 ) { innerPadding ->
                     NavHost(
@@ -65,32 +81,57 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
-    NavigationBar {
+    NavigationBar(
+        modifier = Modifier
+            .background(Color.Transparent),
+        containerColor = Color.White.copy(alpha = 0.2f)
+    ) {
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("home") },
-            icon = { Text("Home") },
+            icon = {
+                Icon(painter = painterResource(id = R.drawable.ic_home), contentDescription = "Home icon")
+            },
             label = { Text("Home") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("penzugy") },
-            icon = { Text("Pénzügy") },
+            icon = { Icon(painter = painterResource(id = R.drawable.ic_finance), contentDescription = "Finance icon") },
             label = { Text("Pénzügy") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("stock") },
-            icon = { Text("Stock") },
+            icon = { Icon(painter = painterResource(id = R.drawable.ic_stocks), contentDescription = "Stocks icon") },
             label = { Text("Stock") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("ai") },
-            icon = { Text("AI") },
+            icon = { Icon(painter = painterResource(id = R.drawable.ic_ai2), contentDescription = "AI icon") },
             label = { Text("AI") }
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomTopAppBar() {
+    TopAppBar(
+        title = { Text("Itt lesz a cím") },
+        actions = {
+            IconButton(onClick = { /* TODO */ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_account),
+                    contentDescription = "Account icon"
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0x80FFFFFF) // például világoskék háttér
+        )
+    )
 }
 
 
