@@ -23,7 +23,7 @@ fun HomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally)
 
     {
-        Text("Szia Ujjazó!")
+        Text("Szia Teszt!")
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Datas.osszpenz}") }
         Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
             FirstXItemsList(Datas.incomesList,10,Color.Green,Modifier.weight(1f))
