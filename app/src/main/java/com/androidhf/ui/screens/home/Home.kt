@@ -2,7 +2,7 @@ package com.androidhf.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -18,8 +18,11 @@ import com.androidhf.data.Datas
 @Composable
 fun HomeScreen() {
     listafeltoles()
-    Column( modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally)
+
+    {
         Text("Szia Ujjazó!")
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Datas.osszpenz}") }
         Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
@@ -47,7 +50,7 @@ fun listafeltoles()
 
 @Composable
 fun FirstXItemsList(items: ArrayList<Double>, count: Int, _color : Color, _modifier : Modifier) {
-    val firstItems = items.take(count) // Az első 'count' elem kivétele
+    val firstItems = items.take(count)
 
     Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         firstItems.forEach { item ->
