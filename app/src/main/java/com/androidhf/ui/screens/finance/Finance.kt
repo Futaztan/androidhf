@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -54,6 +55,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                 Spacer(modifier = Modifier.width(8.dp))
                 BorderBox(modifier = Modifier.weight(1f)) {Finance_ui_kiadas(navHostController)}
             }
+
         }
         Button(onClick = {navHostController.navigate("money_income")},
             modifier = Modifier.align(Alignment.BottomStart)

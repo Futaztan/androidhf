@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 
+
+//Főcímeknek van kiemeléssel
 @Composable
 fun HeaderText(bemenet: String)
 {
