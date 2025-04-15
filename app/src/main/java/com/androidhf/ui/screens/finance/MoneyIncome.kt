@@ -23,7 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.androidhf.data.Category
 import com.androidhf.data.Data
+import com.androidhf.data.Transaction
+import java.time.LocalDate
 
 @Composable
 fun MoneyIncomeScreen(navController: NavController) {
@@ -52,8 +55,10 @@ fun MoneyIncomeScreen(navController: NavController) {
         Button(onClick = {
             val amount = input.toDoubleOrNull()
             if (amount != null) {
-                changeMoney(amount)
-                Data.incomesList.add(amount)
+
+                val transaction = Transaction(amount,"TODO", LocalDate.now(),Category.FIZETES)
+                Data.incomesList.add(transaction)
+                Data.addOsszpenz(amount)
                 navController.popBackStack() // visszalép az előző képernyőre
             }
         }) {

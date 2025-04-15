@@ -23,7 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.androidhf.data.Category
 import com.androidhf.data.Data
+import com.androidhf.data.Transaction
+import java.time.LocalDate
 
 @Composable
 fun MoneyExpenseScreen(navController: NavController) {
@@ -52,8 +55,10 @@ fun MoneyExpenseScreen(navController: NavController) {
         Button(onClick = {
             val amount = input.toDoubleOrNull()
             if (amount != null) {
-                changeMoney(-amount)
-                Data.expensesList.add(amount)
+
+                val transaction = Transaction(amount,"TODO", LocalDate.now(),Category.ELOFIZETES)
+                Data.expensesList.add(transaction)
+                Data.addOsszpenz(-amount)
                 navController.popBackStack() // visszalép az előző képernyőre
             }
         }) {

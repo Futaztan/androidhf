@@ -2,12 +2,18 @@ package com.androidhf.data
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 
 object Data {
-    var incomesList = ArrayList<Transaction>()
-    var expensesList = ArrayList<Transaction>()
+    var incomesList = mutableStateListOf<Transaction>()
+    var expensesList = mutableStateListOf<Transaction>()
     var osszpenz by mutableDoubleStateOf(0.0)
+
+    fun addOsszpenz(amount : Double)
+    {
+        osszpenz+=amount
+    }
 
 
 

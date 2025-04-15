@@ -111,7 +111,3 @@ fun Finance_ui_kiadas(navHostController: NavHostController)
     }
 }
 
-fun changeMoney(osszeg: Double) {
-
-    Data.osszpenz+= osszeg
-}

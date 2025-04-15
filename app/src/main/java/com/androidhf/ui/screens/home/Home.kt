@@ -13,8 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.androidhf.data.Category
 import com.androidhf.data.Data
+import com.androidhf.data.Transaction
 import com.androidhf.ui.reuseable.HeaderText
+import java.time.LocalDate
 
 @Preview
 @Composable
@@ -45,18 +48,20 @@ fun listafeltoles()
 {
     for (i in 1..20)
     {
-        Data.incomesList.add((i*50).toDouble())
-        Data.expensesList.add((i*50).toDouble())
+        val transactionplus = Transaction(i*50.0,"TESZT$i", LocalDate.now(),Category.FIZETES)
+        val transactionminus = Transaction(i*50.0,"TESZT$i", LocalDate.now(),Category.ELOFIZETES)
+        Data.incomesList.add(transactionplus)
+        Data.expensesList.add(transactionminus)
     }
 }
 
 @Composable
-fun FirstXItemsList(items: SnapshotStateList<Double>, count: Int, _color : Color, _modifier : Modifier) {
+fun FirstXItemsList(items: SnapshotStateList<Transaction>, count: Int, _color : Color, _modifier : Modifier) {
     val firstItems = items.take(count)
 
     Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         firstItems.forEach { item ->
-            Text(text = "$item", modifier = Modifier.padding(8.dp), color = _color)
+            Text(text = "${item.amount} ${item.category} ${item.reason} ${item.date}", modifier = Modifier.padding(8.dp), color = _color)
         }
     }
 }
