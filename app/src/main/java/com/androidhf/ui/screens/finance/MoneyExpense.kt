@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.androidhf.data.Datas
+import com.androidhf.data.Data
 
 @Composable
 fun MoneyExpenseScreen(navController: NavController) {
@@ -53,7 +53,7 @@ fun MoneyExpenseScreen(navController: NavController) {
             val amount = input.toDoubleOrNull()
             if (amount != null) {
                 changeMoney(-amount)
-                Datas.expensesList.add(amount)
+                Data.expensesList.add(amount)
                 navController.popBackStack() // visszalép az előző képernyőre
             }
         }) {

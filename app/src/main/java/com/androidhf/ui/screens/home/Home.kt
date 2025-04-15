@@ -2,7 +2,6 @@ package com.androidhf.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.androidhf.data.Datas
+import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.HeaderText
 
 @Preview
@@ -27,10 +26,10 @@ fun HomeScreen() {
 
     {
         HeaderText("Szia Teszt!")
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Datas.osszpenz}") }
+        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }
         Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
-            FirstXItemsList(Datas.incomesList,10,Color.Green,Modifier.weight(1f))
-            FirstXItemsList(Datas.expensesList,10,Color.Red,Modifier.weight(1f))
+            FirstXItemsList(Data.incomesList,10,Color.Green,Modifier.weight(1f))
+            FirstXItemsList(Data.expensesList,10,Color.Red,Modifier.weight(1f))
         }
 
 
@@ -46,8 +45,8 @@ fun listafeltoles()
 {
     for (i in 1..20)
     {
-        Datas.incomesList.add((i*50).toDouble())
-        Datas.expensesList.add((i*50).toDouble())
+        Data.incomesList.add((i*50).toDouble())
+        Data.expensesList.add((i*50).toDouble())
     }
 }
 
