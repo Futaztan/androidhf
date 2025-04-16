@@ -16,4 +16,5 @@ object UIVariables
     val BoxBackgroundColor: Color = Color.DarkGray
     val HeaderText: TextUnit = 24.sp
     val AccentColor: Color = Color.Yellow
+    val BackgroundColor: Color = Color(255f, 255f, 255f, 1f)
 }

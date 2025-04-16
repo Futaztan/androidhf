@@ -2,8 +2,12 @@ package com.androidhf.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Transaction
+import com.androidhf.ui.reuseable.FirstXItemsList
 import com.androidhf.ui.reuseable.HeaderText
+import com.androidhf.ui.reuseable.Panel
+import com.androidhf.ui.reuseable.UIVariables
 import java.time.LocalDate
 
 @Preview
@@ -24,14 +31,19 @@ import java.time.LocalDate
 fun HomeScreen() {
     listafeltoles()
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+                            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally)
 
     {
-        HeaderText("Szia Teszt!")
+        Panel{
+            HeaderText("Szia Teszt!")
+        }
+
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }
         Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
             FirstXItemsList(Data.incomesList,10,Color.Green,Modifier.weight(1f))
+            Spacer(modifier = Modifier.width(UIVariables.Padding))
             FirstXItemsList(Data.expensesList,10,Color.Red,Modifier.weight(1f))
         }
 
@@ -52,17 +64,6 @@ fun listafeltoles()
         val transactionminus = Transaction(i*50.0,"TESZT$i", LocalDate.now(),Category.ELOFIZETES)
         Data.incomesList.add(transactionplus)
         Data.expensesList.add(transactionminus)
-    }
-}
-
-@Composable
-fun FirstXItemsList(items: SnapshotStateList<Transaction>, count: Int, _color : Color, _modifier : Modifier) {
-    val firstItems = items.take(count)
-
-    Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        firstItems.forEach { item ->
-            Text(text = "${item.amount} ${item.category} ${item.reason} ${item.date}", modifier = Modifier.padding(8.dp), color = _color)
-        }
     }
 }
 
