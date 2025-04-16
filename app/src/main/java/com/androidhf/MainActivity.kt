@@ -1,9 +1,11 @@
 package com.androidhf
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
@@ -12,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,7 +25,9 @@ import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 
 import com.androidhf.ui.screens.home.HomeScreen
+import com.androidhf.ui.screens.stock.detail.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
+import com.androidhf.ui.screens.stock.StockViewModel
 
 import com.androidhf.ui.theme.AndroidhfTheme
 
@@ -31,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,6 +45,7 @@ class MainActivity : ComponentActivity() {
 
 
                 val navController = rememberNavController()
+                val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -52,7 +59,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("home") { HomeScreen() }
                         composable("penzugy") { FinanceScreen(navController) }
-                        composable("stock") { StockScreen() }
+                        composable("stock") { StockScreen(navController, stockViewModel) }
+                        composable("stock_detail") { StockChartScreen(stockViewModel) }
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController) }
                         composable("money_expense") { MoneyExpenseScreen(navController) }

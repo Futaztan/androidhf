@@ -1,6 +1,5 @@
-package com.androidhf.ui.screens.stock
+package com.androidhf.ui.screens.stock.detail
 
-import android.util.Log
 import io.polygon.kotlin.sdk.rest.*
 import io.polygon.kotlin.sdk.rest.reference.*
 import io.polygon.kotlin.sdk.rest.stocks.GainersOrLosersDirection
@@ -10,10 +9,10 @@ import io.polygon.kotlin.sdk.rest.stocks.PreviousCloseDTO
 
 // Stocks Aggregates Bars
 // https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to
-fun stocksAggregatesBars(polygonClient: PolygonRestClient, from : String, to : String) :AggregatesDTO {
-    println("APPL Aggs")
+fun stocksAggregatesBars(polygonClient: PolygonRestClient, company : String, from : String, to : String) :AggregatesDTO {
+
     val params = AggregatesParameters(
-        ticker = "AAPL",
+        ticker =  company,
         timespan = "day",
         fromDate = from,
         toDate = to,
