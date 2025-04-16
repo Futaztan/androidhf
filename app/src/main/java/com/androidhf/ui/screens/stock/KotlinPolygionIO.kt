@@ -10,13 +10,13 @@ import io.polygon.kotlin.sdk.rest.stocks.PreviousCloseDTO
 
 // Stocks Aggregates Bars
 // https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to
-fun stocksAggregatesBars(polygonClient: PolygonRestClient) :AggregatesDTO {
+fun stocksAggregatesBars(polygonClient: PolygonRestClient, from : String, to : String) :AggregatesDTO {
     println("APPL Aggs")
     val params = AggregatesParameters(
         ticker = "AAPL",
         timespan = "day",
-        fromDate = "2025-01-01",
-        toDate = "2025-01-05",
+        fromDate = from,
+        toDate = to,
         sort = "asc",
         limit = 10_000,
     )
