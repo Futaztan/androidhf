@@ -54,7 +54,7 @@ fun MoneyExpenseScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            val amount = input.toDoubleOrNull()
+            val amount = input.toIntOrNull()
             if (amount != null) {
 
                 val transaction = Transaction(amount,"TODO", LocalDate.now(), LocalTime.now(),Category.ELOFIZETES)

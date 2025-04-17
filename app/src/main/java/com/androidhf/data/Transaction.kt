@@ -12,7 +12,7 @@ import java.time.LocalTime
 
 
 class Transaction(
-   _amount : Double,
+   _amount : Int,
    _reason : String,
    _date : LocalDate,
    _time: LocalTime,

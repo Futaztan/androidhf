@@ -32,6 +32,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.androidhf.data.Category
+import com.androidhf.data.Data
+import com.androidhf.data.Data.Osszpenz
+import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
@@ -43,21 +47,19 @@ import com.androidhf.ui.screens.stock.StockScreen
 import com.androidhf.ui.screens.stock.StockViewModel
 
 import com.androidhf.ui.theme.AndroidhfTheme
+import java.time.LocalDate
+import java.time.LocalTime
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
-
-
-
-
     @RequiresApi(Build.VERSION_CODES.O)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             AndroidhfTheme {
 
-
+                listafeltoles()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
@@ -137,11 +139,21 @@ fun CustomTopAppBar() {
                     contentDescription = "Account icon"
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0x80FFFFFF) // például világoskék háttér
-        )
+        }
     )
+}
+
+fun listafeltoles()
+{
+    for (i in 1..20)
+    {
+        var random = Random.Default
+        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now(), LocalTime.now(), Category.FIZETES)
+        val transactionminus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now(), LocalTime.now(), Category.ELOFIZETES)
+        Data.incomesList.add(transactionplus)
+        Data.expensesList.add(transactionminus)
+    }
+    Osszpenz()
 }
 
 

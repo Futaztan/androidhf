@@ -17,16 +17,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.ui.wavechart.WaveChart
+import co.yml.charts.ui.wavechart.model.Wave
+import co.yml.charts.ui.wavechart.model.WaveChartData
+import co.yml.charts.ui.wavechart.model.WaveFillColor
+import co.yml.charts.ui.wavechart.model.WavePlotData
 import com.androidhf.data.Data
+import com.androidhf.data.Data.calculateBalanceChangesSimple
 import com.androidhf.ui.reuseable.BorderBox
-import com.androidhf.ui.reuseable.FirstXItemsList
 import com.androidhf.ui.reuseable.HeaderText
-import com.androidhf.ui.reuseable.LastXItemsList
+import com.androidhf.ui.reuseable.LastXItemsTransactions
 import com.androidhf.ui.reuseable.UIVariables
+import kotlin.math.max
+import kotlin.math.min
 
 
 @Composable
@@ -42,14 +54,29 @@ fun FinanceScreen(navHostController: NavHostController) {
         ) {
             BorderBox() {Finance_ui_egyenleg(navHostController)}
             Spacer(modifier = Modifier.height(UIVariables.Padding))
+            Grafikon_init()
+            Spacer(modifier = Modifier.height(UIVariables.Padding))
             Row(modifier = Modifier.fillMaxWidth()) {
-                BorderBox(modifier = Modifier.weight(1f)) { LastXItemsList(Data.incomesList, 6, Color.Green)}
+                BorderBox(modifier = Modifier.weight(1f)) {
+                    Column {
+                        HeaderText("Bevétel")
+                        LastXItemsTransactions(Data.incomesList, 6, Color.Green)
+                    }
+                }
                 Spacer(modifier = Modifier.width(UIVariables.Padding))
-                BorderBox(modifier = Modifier.weight(1f)) { LastXItemsList(Data.expensesList, 6, Color.Red)}
+                BorderBox(modifier = Modifier.weight(1f)) {
+                    Column {
+                        HeaderText("Kiadás")
+                        LastXItemsTransactions(Data.expensesList, 6, Color.Red)
+                    }
+                }
                 //BorderBox(modifier = Modifier.weight(1f)) {Finance_ui_kiadas(navHostController)}
             }
-
+            val balance = calculateBalanceChangesSimple()
         }
+
+
+
         Button(onClick = {navHostController.navigate("money_income")},
             modifier = Modifier.align(Alignment.BottomStart)
         ) { Text("bevetel") }
@@ -58,7 +85,6 @@ fun FinanceScreen(navHostController: NavHostController) {
             modifier = Modifier.align(Alignment.BottomEnd)
         ) { Text("kiadas") }
     }
-
 }
 
 @Composable
@@ -114,5 +140,61 @@ fun Finance_ui_kiadas(navHostController: NavHostController)
         }
 
     }
+}
+
+@Composable
+fun Grafikon_init()
+{
+    val balance = Data.calculateBalanceChangesSimple()
+    val pointsData = balance.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
+
+
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(20.dp)
+        .steps(balance.size-1)
+        .bottomPadding(40.dp)
+        .labelData { index -> index.toString() }
+        .build()
+
+    val yStepSize = 8
+    val rawMin = balance.minOrNull() ?: 0
+    val rawMax = balance.maxOrNull() ?: 0
+    val minRange = min(0, rawMin)
+    val maxRange = max(0, rawMax)
+
+    val range = maxRange - minRange
+    val step = range / yStepSize
+
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelData { index ->
+            String.format("%d", minRange + (index * step))
+        }
+        .build()
+
+    val waveChartData = WaveChartData(
+        wavePlotData = WavePlotData(
+            lines = listOf(
+                Wave(
+                    dataPoints = pointsData,
+                    waveStyle = LineStyle(color = Color.Black),
+                    selectionHighlightPoint = SelectionHighlightPoint(),
+                    shadowUnderLine = ShadowUnderLine(),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(),
+                    waveFillColor = WaveFillColor(topColor = Color.Green, bottomColor = Color.Red),
+                )
+            )
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+
+    WaveChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        waveChartData = waveChartData
+    )
 }
 
