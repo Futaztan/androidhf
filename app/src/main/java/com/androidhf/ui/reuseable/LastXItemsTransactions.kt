@@ -19,7 +19,7 @@ import com.androidhf.data.Transaction
 //Az összeget bold-al írja a többi adatot pedig simán
 //Jelenleg kiírja a megadott tranzakció típusok között a countban megadott legújabbat egy panelen belül
 @Composable
-fun LastXItemsList(
+fun LastXItemsTransactions(
     items: SnapshotStateList<Transaction>, //melyik adatokat listázza
     count: Int, //Mennyit adjon vissza
     _color : Color, //listázás színe

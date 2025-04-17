@@ -19,7 +19,7 @@ import com.androidhf.data.Transaction
 //Az összeget bold-al írja a többi adatot pedig simán
 //Jelenleg kiírja a megadott tranzakció típusok között a countban megadott legrégebbit egy panelen belül
 @Composable
-fun FirstXItemsList(
+fun FirstXItemsTransactions(
     items: SnapshotStateList<Transaction>, //melyik adatokat listázza
     count: Int, //Mennyit adjon vissza
     _color : Color, //listázás színe
