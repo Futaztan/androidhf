@@ -38,7 +38,7 @@ fun FirstXItemsList(
                         {
                             append("${item.amount} Ft ")
                         }
-                        append("${item.category} ${item.reason} ${item.date}")
+                        append("${item.category} ${item.reason} ${item.date} ${item.time}")
                     },
                     modifier = Modifier.padding(8.dp),
                     color = _color

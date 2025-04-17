@@ -1,4 +1,4 @@
-package com.androidhf.ui.screens.stock.detail
+package com.androidhf.ui.screens.stock.query
 
 import io.polygon.kotlin.sdk.rest.*
 import io.polygon.kotlin.sdk.rest.reference.*

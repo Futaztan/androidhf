@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,20 +20,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.ui.Modifier
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.Shader
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -45,7 +37,7 @@ import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.home.HomeScreen
-import com.androidhf.ui.screens.stock.detail.StockChartScreen
+import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
 
 import com.androidhf.ui.screens.stock.StockViewModel

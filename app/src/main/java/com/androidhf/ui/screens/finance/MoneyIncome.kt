@@ -1,5 +1,7 @@
 package com.androidhf.ui.screens.finance
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +29,9 @@ import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Transaction
 import java.time.LocalDate
+import java.time.LocalTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MoneyIncomeScreen(navController: NavController) {
     var input by remember { mutableStateOf("") }
@@ -56,7 +60,7 @@ fun MoneyIncomeScreen(navController: NavController) {
             val amount = input.toDoubleOrNull()
             if (amount != null) {
 
-                val transaction = Transaction(amount,"TODO", LocalDate.now(),Category.FIZETES)
+                val transaction = Transaction(amount,"TODO", LocalDate.now(), LocalTime.now(),Category.FIZETES)
                 Data.incomesList.add(transaction)
                 Data.addOsszpenz(amount)
                 navController.popBackStack() // visszalép az előző képernyőre

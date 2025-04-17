@@ -25,6 +25,7 @@ import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVariables
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Preview
 @Composable
@@ -60,8 +61,8 @@ fun listafeltoles()
 {
     for (i in 1..20)
     {
-        val transactionplus = Transaction(i*50.0,"TESZT$i", LocalDate.now(),Category.FIZETES)
-        val transactionminus = Transaction(i*50.0,"TESZT$i", LocalDate.now(),Category.ELOFIZETES)
+        val transactionplus = Transaction(i*50.0,"TESZT$i", LocalDate.now(), LocalTime.now(), Category.FIZETES)
+        val transactionminus = Transaction(i*50.0,"TESZT$i", LocalDate.now(), LocalTime.now(), Category.ELOFIZETES)
         Data.incomesList.add(transactionplus)
         Data.expensesList.add(transactionminus)
     }

@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.androidhf.data.Data
@@ -25,6 +27,7 @@ import com.androidhf.ui.reuseable.FirstXItemsList
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.LastXItemsList
 import com.androidhf.ui.reuseable.UIVariables
+
 
 @Composable
 fun FinanceScreen(navHostController: NavHostController) {

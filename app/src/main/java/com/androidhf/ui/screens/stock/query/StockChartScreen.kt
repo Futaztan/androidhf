@@ -1,4 +1,4 @@
-package com.androidhf.ui.screens.stock.detail
+package com.androidhf.ui.screens.stock.query
 
 import android.os.Build
 import androidx.annotation.RequiresApi

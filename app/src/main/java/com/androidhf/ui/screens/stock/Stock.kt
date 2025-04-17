@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.navigation.NavController
 
-import com.androidhf.ui.screens.stock.detail.stocksAggregatesBars
+import com.androidhf.ui.screens.stock.query.stocksAggregatesBars
 import io.polygon.kotlin.sdk.rest.AggregateDTO
 
 import io.polygon.kotlin.sdk.rest.PolygonRestClient
