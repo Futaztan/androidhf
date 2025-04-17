@@ -4,16 +4,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import com.androidhf.data.AiMessages
 
 data class ChatMessage(
     val sender: String,
@@ -21,12 +25,53 @@ data class ChatMessage(
     val timestamp: Long
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AIScreen() {
-    val messages = remember { mutableStateListOf<ChatMessage>() }
+fun AIScreen(viewModel: AIViewModel = viewModel()) {
+    val messages = AiMessages.messages
     var inputText by remember { mutableStateOf("") }
+    val isLoading by viewModel.isLoading.collectAsState()
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
+    // Törlés megerősítő dialógus
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Beszélgetés törlése") },
+            text = { Text("Biztosan törölni szeretnéd a teljes beszélgetést?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        messages.clear()
+                        showDeleteConfirmation = false
+                    }
+                ) {
+                    Text("Igen")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteConfirmation = false }
+                ) {
+                    Text("Mégsem")
+                }
+            }
+        )
+    }
+
+
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("AI Chat") },
+                actions = {
+                    IconButton(onClick = { showDeleteConfirmation = true }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Törlés")
+                    }
+                }
+            )
+        },
         bottomBar = {
             BottomAppBar {
                 Row(
@@ -45,25 +90,36 @@ fun AIScreen() {
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                             focusedContainerColor = MaterialTheme.colorScheme.surface
-                        )
+                        ),
+                        enabled = !isLoading,
+
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
                     IconButton(
                         onClick = {
-                            if (inputText.isNotBlank()) {
-                                messages.add(ChatMessage("user", inputText, System.currentTimeMillis()))
-                                messages.add(ChatMessage("AI", "halj meg", System.currentTimeMillis()))
+                            if (inputText.isNotBlank() && !isLoading) {
+                                val userMessage = ChatMessage("user", inputText, System.currentTimeMillis())
+                                messages.add(userMessage)
+                                viewModel.sendMessage(inputText, messages)
                                 inputText = ""
                             }
-                        }
+                        },
+                        enabled = !isLoading && inputText.isNotBlank()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Send,
-                            contentDescription = "Küldés",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Send,
+                                contentDescription = "Küldés",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
