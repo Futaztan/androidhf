@@ -17,12 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.BorderBox
+import com.androidhf.ui.reuseable.FirstXItemsList
 import com.androidhf.ui.reuseable.HeaderText
+import com.androidhf.ui.reuseable.LastXItemsList
 import com.androidhf.ui.reuseable.UIVariables
+
 
 @Composable
 fun FinanceScreen(navHostController: NavHostController) {
@@ -36,11 +41,12 @@ fun FinanceScreen(navHostController: NavHostController) {
             .verticalScroll(rememberScrollState())
         ) {
             BorderBox() {Finance_ui_egyenleg(navHostController)}
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(UIVariables.Padding))
             Row(modifier = Modifier.fillMaxWidth()) {
-                BorderBox(modifier = Modifier.weight(1f)) {Finance_ui_bevetel(navHostController)}
-                Spacer(modifier = Modifier.width(8.dp))
-                BorderBox(modifier = Modifier.weight(1f)) {Finance_ui_kiadas(navHostController)}
+                BorderBox(modifier = Modifier.weight(1f)) { LastXItemsList(Data.incomesList, 6, Color.Green)}
+                Spacer(modifier = Modifier.width(UIVariables.Padding))
+                BorderBox(modifier = Modifier.weight(1f)) { LastXItemsList(Data.expensesList, 6, Color.Red)}
+                //BorderBox(modifier = Modifier.weight(1f)) {Finance_ui_kiadas(navHostController)}
             }
 
         }
@@ -61,7 +67,6 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
     val money = Data.osszpenz
     Column(
         modifier = Modifier
-            .padding(8.dp)
     )
     {
         Row ( modifier = Modifier
@@ -88,7 +93,7 @@ fun Finance_ui_bevetel(navHostController: NavHostController)
         {
             for (i in bevetellist.size-1 downTo maxOf(0, bevetellist.size-6))
             {
-                Text("+${bevetellist[i]} Ft", color = Color.Green)
+                Text("+${bevetellist[i].amount} Ft", color = Color.Green)
             }
         }
     }
@@ -104,7 +109,7 @@ fun Finance_ui_kiadas(navHostController: NavHostController)
         {
             for (i in kiadaslist.size-1 downTo maxOf(0, kiadaslist.size-6))
             {
-                Text("-${kiadaslist[i]} Ft", color = Color.Red)
+                Text("-${kiadaslist[i].amount} Ft", color = Color.Red)
             }
         }
 

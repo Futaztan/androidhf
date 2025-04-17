@@ -27,6 +27,7 @@ import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Transaction
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun MoneyExpenseScreen(navController: NavController) {
@@ -56,7 +57,7 @@ fun MoneyExpenseScreen(navController: NavController) {
             val amount = input.toDoubleOrNull()
             if (amount != null) {
 
-                val transaction = Transaction(amount,"TODO", LocalDate.now(),Category.ELOFIZETES)
+                val transaction = Transaction(amount,"TODO", LocalDate.now(), LocalTime.now(),Category.ELOFIZETES)
                 Data.expensesList.add(transaction)
                 Data.addOsszpenz(-amount)
                 navController.popBackStack() // visszalép az előző képernyőre
