@@ -6,8 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +25,9 @@ import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.ui.Modifier
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.Shader
@@ -30,6 +35,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,10 +45,20 @@ import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.home.HomeScreen
+import com.androidhf.ui.screens.stock.detail.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
+
+import com.androidhf.ui.screens.stock.StockViewModel
+
 import com.androidhf.ui.theme.AndroidhfTheme
 
 class MainActivity : ComponentActivity() {
+
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,6 +67,7 @@ class MainActivity : ComponentActivity() {
 
 
                 val navController = rememberNavController()
+                val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -68,7 +85,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("home") { HomeScreen() }
                         composable("penzugy") { FinanceScreen(navController) }
-                        composable("stock") { StockScreen() }
+                        composable("stock") { StockScreen(navController, stockViewModel) }
+                        composable("stock_detail") { StockChartScreen(stockViewModel) }
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController) }
                         composable("money_expense") { MoneyExpenseScreen(navController) }
