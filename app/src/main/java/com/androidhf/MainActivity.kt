@@ -40,6 +40,7 @@ import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
+import com.androidhf.ui.screens.finance.MoneySavingsScreen
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
@@ -85,6 +86,7 @@ class MainActivity : ComponentActivity() {
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController) }
                         composable("money_expense") { MoneyExpenseScreen(navController) }
+                        composable("money_saving") { MoneySavingsScreen(navController) }
                     }
                 }
             }

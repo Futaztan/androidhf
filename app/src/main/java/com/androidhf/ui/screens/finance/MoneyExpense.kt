@@ -30,6 +30,7 @@ import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Frequency
 import com.androidhf.data.Transaction
+import com.androidhf.ui.reuseable.NumberTextField
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -79,13 +80,20 @@ fun MoneyExpenseScreen(navController: NavController) {
 
 
         Text("Add meg az összeget:")
-        TextField(
+
+        NumberTextField(
+            input = input,
+            onInputChange = { input = it }
+        )
+        /*TextField(
             value = input,
             onValueChange = {
                 if (it.matches(Regex("^\\d*\\.?\\d*\$"))) input = it
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
+
+         */
 
         Spacer(modifier = Modifier.height(16.dp))
 
