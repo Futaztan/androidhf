@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -67,14 +68,14 @@ fun MoneyExpenseScreen(navController: NavController) {
 
 
 
-        FrequencyDropdown(
-            selectedFrequency = frequency,
-            onFrequencySelected = { frequency = it }
+        FrequencyDropdownMenu(
+            selected = frequency,
+            onSelectedChange = { frequency = it }
         )
 
-        CategoryDropdown(
-            selectedCategory = category,
-            onCategorySelected = { category = it }
+        CategoryDropdownMenu(
+            selected = category,
+            onSelectedChange = { category = it }
         )
 
 
@@ -111,77 +112,31 @@ fun MoneyExpenseScreen(navController: NavController) {
         }
     }
 }
+
+
+
+//Frequency ENUM-nak készült dropdown menu
 @Composable
-private fun FrequencyDropdown(
-    selectedFrequency: Frequency,
-    onFrequencySelected: (Frequency) -> Unit
-) {
-
-
-    ExposedDropdown(
-        label = "Gyakoriság",
-        options = Frequency.entries,
-        selectedOption = selectedFrequency,
-        onOptionSelected = onFrequencySelected
-    )
-}
-
-
-@Composable
-private fun CategoryDropdown(
-    selectedCategory: Category,
-    onCategorySelected: (Category) -> Unit
-) {
-    val expenseCategories = Category.entries
-        .filter { it.type == Category.Type.EXPENSE }
-
-    ExposedDropdown(
-        label = "Kategória",
-        options = expenseCategories,
-        selectedOption = selectedCategory,
-        onOptionSelected = onCategorySelected,
-        optionToString = { it.toString() }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun <T> ExposedDropdown(
-    label: String,
-    options: List<T>,
-    selectedOption: T,
-    onOptionSelected: (T) -> Unit,
-    optionToString: (T) -> String = { it.toString() }
+private fun FrequencyDropdownMenu(
+    selected: Frequency,
+    onSelectedChange: (Frequency) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(),
-            readOnly = true,
-            value = optionToString(selectedOption),
-            onValueChange = {},
-            label = { Text(label) },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
-        )
+    Column {
+        Button(onClick = { expanded = true }) {
+            Text(text = selected.displayName)
+        }
 
-        ExposedDropdownMenu(
+        DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            Frequency.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(optionToString(option)) },
+                    text = { Text(type.displayName) },
                     onClick = {
-                        onOptionSelected(option)
+                        onSelectedChange(type)
                         expanded = false
                     }
                 )
@@ -190,6 +145,37 @@ private fun <T> ExposedDropdown(
     }
 }
 
+//Category ENUM-nak készült dropdown menu
+@Composable
+private fun CategoryDropdownMenu(
+    selected: Category,
+    onSelectedChange: (Category) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Button(onClick = { expanded = true }) {
+            Text(text = selected.displayName)
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            val expenseCategory = Category.entries.filter { it.type== Category.Type.EXPENSE }
+
+            expenseCategory.forEach { type ->
+                DropdownMenuItem(
+                    text = { Text(type.displayName) },
+                    onClick = {
+                        onSelectedChange(type)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
 
 
 

@@ -1,8 +1,8 @@
 package com.androidhf.data
 
-enum class Category(val type : Type) {
-    FIZETES(Type.INCOME),
-    ELOFIZETES(Type.EXPENSE);
+enum class Category(val type : Type, val displayName : String) {
+    FIZETES(Type.INCOME, "Fizetés"),
+    ELOFIZETES(Type.EXPENSE,"Előfizetés");
 
 
     enum class Type{
