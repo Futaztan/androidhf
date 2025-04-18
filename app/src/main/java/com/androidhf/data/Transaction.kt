@@ -16,7 +16,8 @@ class Transaction(
    _reason : String,
    _date : LocalDate,
    _time: LocalTime,
-   _category : Category
+   _category : Category,
+    _frequency : Frequency
 )
 {
     var amount by mutableStateOf(_amount)
@@ -24,4 +25,5 @@ class Transaction(
     var date by mutableStateOf(_date)
     var time by mutableStateOf(_time)
     var category by mutableStateOf(_category)
+    var frequency by mutableStateOf(_frequency)
 }
