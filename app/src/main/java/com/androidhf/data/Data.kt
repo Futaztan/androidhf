@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 object Data {
     var incomesList = mutableStateListOf<Transaction>()
     var expensesList = mutableStateListOf<Transaction>()
+    var savingsList = mutableStateListOf<Savings>()
     var osszpenz by mutableIntStateOf(0)
 
     fun addOsszpenz(amount : Int)

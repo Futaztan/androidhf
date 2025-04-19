@@ -33,10 +33,15 @@ import co.yml.charts.ui.wavechart.model.WaveFillColor
 import co.yml.charts.ui.wavechart.model.WavePlotData
 import com.androidhf.data.Data
 import com.androidhf.data.Data.calculateBalanceChangesSimple
+import com.androidhf.data.Data.savingsList
+import com.androidhf.data.Savings
+import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.LastXItemsTransactions
 import com.androidhf.ui.reuseable.UIVariables
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
+import java.time.LocalDate
 import kotlin.math.max
 import kotlin.math.min
 
@@ -48,6 +53,9 @@ fun FinanceScreen(navHostController: NavHostController) {
         .fillMaxSize()
     )
     {
+        val alma = Savings(50000, LocalDate.of(2025,4,12), LocalDate.now().plusDays(2), SavingsType.INCOMEGOAL_BYTIME, "Title", "Description", 20000)
+        savingsList.clear()//TODO: ez majd nem kell ide, most csak azért van, hogyha újra rajzolódik akkor ne vegye fel megint
+        savingsList.add(alma)
         Column( modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
@@ -56,6 +64,10 @@ fun FinanceScreen(navHostController: NavHostController) {
             Spacer(modifier = Modifier.height(UIVariables.Padding))
             Grafikon_init()
             Spacer(modifier = Modifier.height(UIVariables.Padding))
+            savingsList.forEach {
+                SavingCard_Income1(it)
+                Spacer(modifier = Modifier.height(UIVariables.Padding))
+            }
             Row(modifier = Modifier.fillMaxWidth()) {
                 BorderBox(modifier = Modifier.weight(1f)) {
                     Column {
@@ -79,11 +91,15 @@ fun FinanceScreen(navHostController: NavHostController) {
 
         Button(onClick = {navHostController.navigate("money_income")},
             modifier = Modifier.align(Alignment.BottomStart)
-        ) { Text("bevetel") }
+        ) { Text("Bevétel") }
+
+        Button(onClick = {navHostController.navigate("money_saving")},
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) { Text("Takarék???") }
 
         Button(onClick = {navHostController.navigate("money_expense")},
             modifier = Modifier.align(Alignment.BottomEnd)
-        ) { Text("kiadas") }
+        ) { Text("Kiadás") }
     }
 }
 
