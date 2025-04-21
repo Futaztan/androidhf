@@ -57,7 +57,7 @@ import kotlinx.coroutines.delay
 @Composable
 @ExperimentalMaterialApi
 fun FinanceScreen(navHostController: NavHostController, viewModel: SavingsViewModel) {
-    Data.topBarTitle = "Finance"
+    //Data.topBarTitle = "Finance"
     Box(modifier = Modifier
         .padding(UIVariables.Padding)
         .fillMaxSize()
@@ -95,31 +95,29 @@ fun FinanceScreen(navHostController: NavHostController, viewModel: SavingsViewMo
                 }
             }
             if (viewModel.savingsList.isNotEmpty()) {
-                item {
-                    this@LazyColumn.items(
-                        items = viewModel.savingsList,
-                        key = { it.id }
-                    ) { saving ->
-                        var visible by remember { mutableStateOf(true) }
+                this@LazyColumn.items(
+                    items = viewModel.savingsList,
+                    key = { it.id }
+                ) { saving ->
+                    var visible by remember { mutableStateOf(true) }
 
-                        Spacer(modifier = Modifier.height(UIVariables.Padding))
-                        AnimatedVisibility(
-                            visible = visible,
-                            exit = shrinkVertically() + fadeOut(),
-                            modifier = Modifier.animateItemPlacement()
-                        ) {
-                            SavingCard_Income1(
-                                saving = saving,
-                                onDismiss = {
-                                    visible = false
-                                }
-                            )
-                        }
-                        LaunchedEffect(visible) {
-                            if (!visible) {
-                                delay(300)
-                                viewModel.removeSaving(saving)
+                    Spacer(modifier = Modifier.height(UIVariables.Padding))
+                    AnimatedVisibility(
+                        visible = visible,
+                        exit = shrinkVertically() + fadeOut(),
+                        modifier = Modifier.animateItemPlacement()
+                    ) {
+                        SavingCard_Income1(
+                            saving = saving,
+                            onDismiss = {
+                                visible = false
                             }
+                        )
+                    }
+                    LaunchedEffect(visible) {
+                        if (!visible) {
+                            delay(300)
+                            viewModel.removeSaving(saving)
                         }
                     }
                 }

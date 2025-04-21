@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Data.Osszpenz
+import com.androidhf.data.Frequency
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidhfTheme {
 
-                //listafeltoles()
+                listafeltoles()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
@@ -157,8 +158,8 @@ fun listafeltoles()
     for (i in 1..25)
     {
         var random = Random.Default
-        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.FIZETES)
-        val transactionminus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES)
+        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.FIZETES, Frequency.EGYSZERI)
+        val transactionminus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES, Frequency.EGYSZERI)
         Data.incomesList.add(transactionplus)
         Data.expensesList.add(transactionminus)
     }
