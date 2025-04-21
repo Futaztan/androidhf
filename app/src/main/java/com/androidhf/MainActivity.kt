@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,6 +44,7 @@ import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.finance.MoneySavingsScreen
+import com.androidhf.ui.screens.finance.SavingsViewModel
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
@@ -53,6 +57,7 @@ import java.time.LocalTime
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterialApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +65,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidhfTheme {
 
-                listafeltoles()
+                //listafeltoles()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
@@ -73,19 +78,21 @@ class MainActivity : ComponentActivity() {
                         CustomTopAppBar()
                     }
                 ) { innerPadding ->
+
+                    val financeViewModel: SavingsViewModel = viewModel()
                     NavHost(
                         navController = navController,
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("home") { HomeScreen() }
-                        composable("penzugy") { FinanceScreen(navController) }
+                        composable("penzugy") { FinanceScreen(navController, financeViewModel) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController) }
                         composable("money_expense") { MoneyExpenseScreen(navController) }
-                        composable("money_saving") { MoneySavingsScreen(navController) }
+                        composable("money_saving") { MoneySavingsScreen(navController, financeViewModel) }
                     }
                 }
             }
@@ -133,7 +140,7 @@ fun BottomNavBar(navController: NavHostController) {
 @Composable
 fun CustomTopAppBar() {
     TopAppBar(
-        title = { Text("Itt lesz a cím") },
+        title = { Text(Data.topBarTitle) },
         actions = {
             IconButton(onClick = { /* TODO */ }) {
                 Icon(
@@ -147,11 +154,11 @@ fun CustomTopAppBar() {
 
 fun listafeltoles()
 {
-    for (i in 1..20)
+    for (i in 1..25)
     {
         var random = Random.Default
-        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now(), LocalTime.now(), Category.FIZETES)
-        val transactionminus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now(), LocalTime.now(), Category.ELOFIZETES)
+        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.FIZETES)
+        val transactionminus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES)
         Data.incomesList.add(transactionplus)
         Data.expensesList.add(transactionminus)
     }

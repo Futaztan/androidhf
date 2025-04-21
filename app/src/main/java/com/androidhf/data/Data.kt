@@ -4,15 +4,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.androidhf.ui.screens.finance.SavingsViewModel
 import java.time.LocalDateTime
 
 object Data {
     var incomesList = mutableStateListOf<Transaction>()
     var expensesList = mutableStateListOf<Transaction>()
-    var savingsList = mutableStateListOf<Savings>()
     var osszpenz by mutableIntStateOf(0)
+    var topBarTitle by mutableStateOf("Home")
 
+    //TODO: Ennek oda kell majd adni a savingViewModellt
     fun addOsszpenz(amount : Int)
     {
         osszpenz+=amount
