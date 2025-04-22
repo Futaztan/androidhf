@@ -41,7 +41,8 @@ android {
 }
 
 dependencies {
-
+    val work_version = "2.10.0"
+    implementation("androidx.work:work-runtime-ktx:$work_version")
     implementation("io.github.thechance101:chart:Beta-0.0.5")
     implementation(libs.client.jvm)
     implementation(libs.androidx.core.ktx)
