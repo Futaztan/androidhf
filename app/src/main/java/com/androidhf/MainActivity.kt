@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("home") { HomeScreen() }
+                        composable("home") { HomeScreen(financeViewModel) }
                         composable("penzugy") { FinanceScreen(navController, financeViewModel) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }

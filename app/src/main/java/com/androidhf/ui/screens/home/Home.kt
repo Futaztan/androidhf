@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,16 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVariables
+import com.androidhf.ui.screens.finance.SavingsViewModel
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 
-@Preview
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: SavingsViewModel) {
+    Data.topBarTitle = "Home"
     Column(
         modifier = Modifier.fillMaxWidth()
                             .verticalScroll(rememberScrollState()),
@@ -39,7 +41,11 @@ fun HomeScreen() {
             Spacer(modifier = Modifier.width(UIVariables.Padding))
             FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
         }
-
+        Text("3 legújabb takarék")
+        viewModel.savingsList.takeLast(3).forEach { item ->
+            Spacer(modifier = Modifier.padding(UIVariables.Padding))
+            SavingCard_Income1(item, { }, false)
+        }
 
 
         Button(onClick = {}) { Text("Stock market:") }

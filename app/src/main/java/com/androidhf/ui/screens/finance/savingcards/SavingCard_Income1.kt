@@ -56,8 +56,9 @@ import androidx.compose.ui.graphics.ColorFilter
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SavingCard_Income1(
-    saving: Savings,
-    onDismiss: () -> Unit
+    saving: Savings, //melyik savinget jelenítse meg
+    onDismiss: () -> Unit, //visible = false -ot kell meghívni ha törölni akarjuk, enélkül nem tűnik el
+    deleteAble: Boolean = true //Swipeal törölni szeretnénk akkor true, amúgy meg false
 ) {
     var showPopup by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -107,24 +108,32 @@ fun SavingCard_Income1(
         }
     }
 
-    SwipeToDismiss(
-        state = dismissState,
-        background = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Red, shape = RoundedCornerShape(UIVariables.Radius))
-                    .padding(16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+    if (deleteAble)
+    {
+        SwipeToDismiss(
+            state = dismissState,
+            background = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Red, shape = RoundedCornerShape(UIVariables.Radius))
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+                }
+            },
+            directions = setOf(DismissDirection.StartToEnd),
+            dismissContent = {
+                Content(saving)
             }
-        },
-        directions = setOf(DismissDirection.StartToEnd),
-        dismissContent = {
-            Content(saving)
-        }
-    )
+        )
+    }
+    else
+    {
+        Content(saving)
+    }
+
 }
 
 @Composable
