@@ -57,6 +57,7 @@ object Data {
 
 
     //ez mi gyuri
+    //kell a finance graphhoz david
     fun calculateBalanceChangesSimple(): List<Int> {
         val allTransactions = mutableListOf<Pair<Transaction, Boolean>>()
 
@@ -84,52 +85,11 @@ object Data {
             if (isIncome) {
                 currentBalance += transaction.amount
             } else {
-                currentBalance -= transaction.amount
+                currentBalance = transaction.amount
             }
             balanceValues.add(currentBalance)
         }
 
         return balanceValues
     }
-
-    /*
-    fun calculateBalanceChanges(): List<Pair<LocalDateTime, Double>> {
-    // Egyesítjük a bevételeket és kiadásokat egy listába
-    val allTransactions = mutableListOf<Pair<Transaction, Boolean>>()
-
-    // Bevételek hozzáadása (true jelzi, hogy bevétel)
-    incomesList.forEach { income ->
-        allTransactions.add(Pair(income, true))
-    }
-
-    // Kiadások hozzáadása (false jelzi, hogy kiadás)
-    expensesList.forEach { expense ->
-        allTransactions.add(Pair(expense, false))
-    }
-
-    // Rendezés dátum és idő szerint
-    allTransactions.sortBy { (transaction, _) ->
-        LocalDateTime.of(transaction.date, transaction.time)
-    }
-
-    // Egyenleg számítása időrendi sorrendben
-    var currentBalance = 0.0
-    val balanceChanges = mutableListOf<Pair<LocalDateTime, Double>>()
-
-    allTransactions.forEach { (transaction, isIncome) ->
-        // Ha bevétel, hozzáadjuk, ha kiadás, kivonjuk
-        if (isIncome) {
-            currentBalance += transaction.amount
-        } else {
-            currentBalance -= transaction.amount
-        }
-
-        // Az aktuális egyenleget és időpontot eltároljuk
-        val dateTime = LocalDateTime.of(transaction.date, transaction.time)
-        balanceChanges.add(Pair(dateTime, currentBalance))
-    }
-
-    return balanceChanges
-}
-     */
 }
