@@ -49,6 +49,8 @@ fun MoneyIncomeScreen(navController: NavController) {
                 frequency
             )
             Data.addTransaction(transaction)
+            if(transaction.frequency!=Frequency.EGYSZERI)
+                Data.repetitiveTransactions.add(transaction)
             navController.popBackStack() // visszalép az előző képernyőre
         }
     }

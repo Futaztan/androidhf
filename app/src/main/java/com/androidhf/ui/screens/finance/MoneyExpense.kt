@@ -40,6 +40,9 @@ fun MoneyExpenseScreen(navController: NavController) {
             val transaction = Transaction(-amount, "TODO", LocalDate.now(), LocalTime.now(), category,frequency)
 
            Data.addTransaction(transaction)
+            if(transaction.frequency!=Frequency.EGYSZERI)
+                Data.repetitiveTransactions.add(transaction)
+
             navController.popBackStack() // visszalép az előző képernyőre
         }
     }
