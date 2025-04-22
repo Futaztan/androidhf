@@ -20,10 +20,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,9 +32,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.androidhf.data.Category
 import com.androidhf.data.Data
-import com.androidhf.data.Data.Osszpenz
+
 import com.androidhf.data.Frequency
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
@@ -46,6 +47,7 @@ import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.finance.MoneySavingsScreen
 import com.androidhf.ui.screens.finance.SavingsViewModel
+import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
@@ -55,6 +57,7 @@ import com.androidhf.ui.screens.stock.StockViewModel
 import com.androidhf.ui.theme.AndroidhfTheme
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -63,6 +66,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val uploadWorkRequest: PeriodicWorkRequest =
+            PeriodicWorkRequestBuilder<DailyWorker>(24,TimeUnit.HOURS)
+                .build()
+        WorkManager
+            .getInstance(this)
+            .enqueueUniquePeriodicWork("every24hours", ExistingPeriodicWorkPolicy.UPDATE,uploadWorkRequest)
+
+
+
+
         setContent {
             AndroidhfTheme {
 
@@ -159,11 +172,12 @@ fun listafeltoles()
     {
         var random = Random.Default
         val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.FIZETES, Frequency.EGYSZERI)
-        val transactionminus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES, Frequency.EGYSZERI)
-        Data.incomesList.add(transactionplus)
-        Data.expensesList.add(transactionminus)
+        val transactionminus = Transaction(random.nextInt(-2000, -200),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES, Frequency.EGYSZERI)
+        Data.addTransaction(transactionplus)
+        Data.addTransaction(transactionminus)
+
     }
-    Osszpenz()
+
 }
 
 

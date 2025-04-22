@@ -18,6 +18,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import com.androidhf.data.AiMessages
+import androidx.compose.ui.unit.sp
+import dev.jeziellago.compose.markdowntext.MarkdownText
+
 
 data class ChatMessage(
     val sender: String,
@@ -33,7 +36,6 @@ fun AIScreen(viewModel: AIViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
-    // Törlés megerősítő dialógus
     if (showDeleteConfirmation) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
@@ -58,6 +60,7 @@ fun AIScreen(viewModel: AIViewModel = viewModel()) {
             }
         )
     }
+
 
 
 
@@ -174,13 +177,19 @@ fun MessageItem(message: ChatMessage) {
             Column(
                 modifier = Modifier.padding(12.dp)
             ) {
-                Text(
-                    text = message.content,
-                    color = if (isUserMessage)
-                        MaterialTheme.colorScheme.onPrimary
-                    else
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                if (isUserMessage) {
+                    Text(
+                        text = message.content,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    MarkdownText(
+                        markdown = message.content,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontSize = 16.sp,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
                 Text(
                     text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(message.timestamp)),

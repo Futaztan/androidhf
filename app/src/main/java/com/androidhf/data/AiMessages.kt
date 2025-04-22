@@ -6,4 +6,5 @@ import com.androidhf.ui.screens.ai.ChatMessage
 
 object AiMessages {
     val messages = mutableStateListOf<ChatMessage>()
+
 }
