@@ -55,7 +55,7 @@ import androidx.compose.ui.graphics.ColorFilter
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SavingCard_Income1(
+fun SavingCard_Income2(
     saving: Savings,
     onDismiss: () -> Unit
 ) {
@@ -169,7 +169,7 @@ private fun Content(saving: Savings)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Balance:", modifier = Modifier.weight(2f))
                     LinearProgressIndicator(
-                        progress = osszpenz.toFloat()/saving.Amount.toFloat(),
+                        progress = saving.Start.toFloat()/saving.Amount.toFloat(),
                         modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f)
                     )
                 }

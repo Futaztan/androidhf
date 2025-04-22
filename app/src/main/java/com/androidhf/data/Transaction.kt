@@ -13,11 +13,12 @@ import java.time.LocalTime
 
 class Transaction(
    _amount : Int,
-   _reason : String,
+   _reason : String,            //tranzakcio rövid leirasa a usertol
    _date : LocalDate,
    _time: LocalTime,
-   _category : Category,
-    _frequency : Frequency
+   _category : Category,            //Category-n belüli típus
+    _frequency : Frequency         //milyen gyakran van ez a tranzakcio
+
 )
 {
     var amount by mutableStateOf(_amount)

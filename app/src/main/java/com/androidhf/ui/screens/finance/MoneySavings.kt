@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -33,10 +34,10 @@ import java.time.LocalDate
 import java.util.Calendar
 
 @Composable
-fun MoneySavingsScreen(navController: NavController)
+fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel)
 {
     var input by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var selectedDate by remember { mutableStateOf<LocalDate>(LocalDate.now().plusDays(14)) }
     var selectedType by remember { mutableStateOf(SavingsType.INCOMEGOAL_BYTIME) }
     var description by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
@@ -44,7 +45,7 @@ fun MoneySavingsScreen(navController: NavController)
 
     if (showPopup) {
         LaunchedEffect(Unit) {
-            delay(2500)
+            delay(2000)
             showPopup = false
         }
         Popup {
@@ -55,7 +56,7 @@ fun MoneySavingsScreen(navController: NavController)
                         .background(Color.White)
                         .border(1.dp, Color.Black)
                         .padding(16.dp)
-                        .align(androidx.compose.ui.Alignment.BottomCenter)
+                        .align(Alignment.BottomCenter)
                 ) {
                     Text("Hiányos a kitöltés!", color = Color.Black)
                 }
@@ -64,7 +65,11 @@ fun MoneySavingsScreen(navController: NavController)
     }
 
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, selectedDate.year)
+        set(Calendar.MONTH, selectedDate.monthValue-1)
+        set(Calendar.DAY_OF_MONTH, selectedDate.dayOfMonth)
+    }
 
     val datePickerDialog = remember {
         DatePickerDialog(
@@ -82,28 +87,31 @@ fun MoneySavingsScreen(navController: NavController)
         Text("Adja meg az összeget:")
         NumberTextField(
             input = input,
-            onInputChange = { input = it }
+            onInputChange = { input = it },
+            placeholder = "50000"
         )
         Text("Válasszon egy dátumot:")
         Button(onClick = { datePickerDialog.show() }) {
-            Text(text = selectedDate?.toString() ?: "Dátum kiválasztása")
+            Text(text = selectedDate.toString() ?: "Dátum kiválasztása")
         }
         Text("Válasszon egy típust:")
         SimpleEnumDropdown(selected = selectedType, onSelectedChange = { selectedType = it })
         Text("Adjon egy nevet:")
         TextField(
             value = title,
-            onValueChange = { title = it }
+            onValueChange = { title = it },
+            placeholder = { Text("Cím") }
         )
         Text("Adjon egy rövid leírást miért hozta létre:")
         TextField(
             value = description,
-            onValueChange = { description = it }
+            onValueChange = { description = it },
+            placeholder = { Text("Rövid leírás")}
         )
         Button(
             onClick = {
-                if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && selectedDate != null) {
-                    selectedDate?.let { date ->
+                if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && input.toInt() > 0) {
+                    selectedDate.let { date ->
                         val saving = Savings(
                             input.toInt(),
                             LocalDate.now(),
@@ -113,7 +121,7 @@ fun MoneySavingsScreen(navController: NavController)
                             description,
                             Data.osszpenz
                         )
-                        Data.savingsList.add(saving)
+                        viewModel.addSaving(saving)
                         navController.popBackStack()
                     }
                 }
