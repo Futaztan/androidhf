@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,39 +20,68 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.ui.Modifier
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.Shader
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.androidhf.data.Category
+import com.androidhf.data.Data
+
+import com.androidhf.data.Frequency
+import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
+import com.androidhf.ui.screens.finance.MoneySavingsScreen
+import com.androidhf.ui.screens.finance.SavingsViewModel
+import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 import com.androidhf.ui.screens.home.HomeScreen
+import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
+
+import com.androidhf.ui.screens.stock.StockViewModel
+
 import com.androidhf.ui.theme.AndroidhfTheme
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterialApi::class)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val uploadWorkRequest: PeriodicWorkRequest =
+            PeriodicWorkRequestBuilder<DailyWorker>(24,TimeUnit.HOURS)
+                .build()
+        WorkManager
+            .getInstance(this)
+            .enqueueUniquePeriodicWork("every24hours", ExistingPeriodicWorkPolicy.UPDATE,uploadWorkRequest)
+
+
+
+
         setContent {
             AndroidhfTheme {
 
-
+                listafeltoles()
                 val navController = rememberNavController()
+                val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -61,17 +92,21 @@ class MainActivity : ComponentActivity() {
                         CustomTopAppBar()
                     }
                 ) { innerPadding ->
+
+                    val financeViewModel: SavingsViewModel = viewModel()
                     NavHost(
                         navController = navController,
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("home") { HomeScreen() }
-                        composable("penzugy") { FinanceScreen(navController) }
-                        composable("stock") { StockScreen() }
+                        composable("penzugy") { FinanceScreen(navController, financeViewModel) }
+                        composable("stock") { StockScreen(navController, stockViewModel) }
+                        composable("stock_detail") { StockChartScreen(stockViewModel) }
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController) }
                         composable("money_expense") { MoneyExpenseScreen(navController) }
+                        composable("money_saving") { MoneySavingsScreen(navController, financeViewModel) }
                     }
                 }
             }
@@ -119,7 +154,7 @@ fun BottomNavBar(navController: NavHostController) {
 @Composable
 fun CustomTopAppBar() {
     TopAppBar(
-        title = { Text("Itt lesz a cím") },
+        title = { Text(Data.topBarTitle) },
         actions = {
             IconButton(onClick = { /* TODO */ }) {
                 Icon(
@@ -127,11 +162,22 @@ fun CustomTopAppBar() {
                     contentDescription = "Account icon"
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0x80FFFFFF) // például világoskék háttér
-        )
+        }
     )
+}
+
+fun listafeltoles()
+{
+    for (i in 1..25)
+    {
+        var random = Random.Default
+        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.FIZETES, Frequency.EGYSZERI)
+        val transactionminus = Transaction(random.nextInt(-2000, -200),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES, Frequency.EGYSZERI)
+        Data.addTransaction(transactionplus)
+        Data.addTransaction(transactionminus)
+
+    }
+
 }
 
 

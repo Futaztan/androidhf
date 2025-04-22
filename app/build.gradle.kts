@@ -40,7 +40,10 @@ android {
 }
 
 dependencies {
-
+    val work_version = "2.10.0"
+    implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation("io.github.thechance101:chart:Beta-0.0.5")
+    implementation(libs.client.jvm)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -50,6 +53,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.core.i18n)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -57,4 +61,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.retrofit)
+    implementation(libs.gson.converter)
+    implementation(libs.ycharts)
+    implementation(libs.compose.markdown)
+
 }

@@ -6,31 +6,46 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.androidhf.data.Category
 import com.androidhf.data.Data
+import com.androidhf.data.Frequency
 import com.androidhf.data.Transaction
+import com.androidhf.ui.reuseable.NumberTextField
 import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun MoneyExpenseScreen(navController: NavController) {
     var input by remember { mutableStateOf("") }
+    var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
+    var category by remember { mutableStateOf(Category.ELOFIZETES) }
+
+    fun onSubmit()
+    {
+        val amount = input.toIntOrNull()
+        if (amount != null) {
+
+            val transaction = Transaction(-amount, "TODO", LocalDate.now(), LocalTime.now(), category,frequency)
+
+           Data.addTransaction(transaction)
+            if(transaction.frequency!=Frequency.EGYSZERI)
+                Data.repetitiveTransactions.add(transaction)
+
+            navController.popBackStack() // visszalép az előző képernyőre
+        }
+    }
 
 
 
@@ -40,9 +55,30 @@ fun MoneyExpenseScreen(navController: NavController) {
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        SimpleDropdown()
+
+
+
+
+
+        FrequencyDropdownMenu(
+            selected = frequency,
+            onSelectedChange = { frequency = it }
+        )
+
+        CategoryDropdownMenu(
+            selected = category,
+            onSelectedChange = { category = it }
+        )
+
+
+
         Text("Add meg az összeget:")
-        TextField(
+
+        NumberTextField(
+            input = input,
+            onInputChange = { input = it }
+        )
+        /*TextField(
             value = input,
             onValueChange = {
                 if (it.matches(Regex("^\\d*\\.?\\d*\$"))) input = it
@@ -50,18 +86,12 @@ fun MoneyExpenseScreen(navController: NavController) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
+         */
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            val amount = input.toDoubleOrNull()
-            if (amount != null) {
-
-                val transaction = Transaction(amount,"TODO", LocalDate.now(),Category.ELOFIZETES)
-                Data.expensesList.add(transaction)
-                Data.addOsszpenz(-amount)
-                navController.popBackStack() // visszalép az előző képernyőre
-            }
-        }) {
+        Button(onClick = { onSubmit() })
+        {
             Text("Hozzáadás és vissza")
         }
 
@@ -75,34 +105,30 @@ fun MoneyExpenseScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+
+//Frequency ENUM-nak készült dropdown menu
 @Composable
-private fun SimpleDropdown() {
-    val options = listOf("Forint", "Euró", "Dollár", "Bitcoin") //TODO: KATEGÓRIAK
+private fun FrequencyDropdownMenu(
+    selected: Frequency,
+    onSelectedChange: (Frequency) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(options[0]) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        TextField(
-            value = selectedOption,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Válassz pénznemet") },
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
-        )
+    Column {
+        Button(onClick = { expanded = true }) {
+            Text(text = selected.displayName)
+        }
 
-        ExposedDropdownMenu(
+        DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { selectionOption ->
+            Frequency.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(selectionOption) },
+                    text = { Text(type.displayName) },
                     onClick = {
-                        selectedOption = selectionOption
+                        onSelectedChange(type)
                         expanded = false
                     }
                 )
@@ -110,4 +136,39 @@ private fun SimpleDropdown() {
         }
     }
 }
+
+//Category ENUM-nak készült dropdown menu
+@Composable
+private fun CategoryDropdownMenu(
+    selected: Category,
+    onSelectedChange: (Category) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Button(onClick = { expanded = true }) {
+            Text(text = selected.displayName)
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            val expenseCategory = Category.entries.filter { it.type== Category.Type.EXPENSE }
+
+            expenseCategory.forEach { type ->
+                DropdownMenuItem(
+                    text = { Text(type.displayName) },
+                    onClick = {
+                        onSelectedChange(type)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+
 
