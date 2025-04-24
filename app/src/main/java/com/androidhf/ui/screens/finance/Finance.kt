@@ -58,7 +58,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @ExperimentalMaterialApi
-fun FinanceScreen(navHostController: NavHostController, viewModel: SavingsViewModel) {
+fun FinanceScreen(navHostController: NavHostController) {
     Data.topBarTitle = "Finance"
     Box(modifier = Modifier
         .padding(UIVariables.Padding)
@@ -93,9 +93,9 @@ fun FinanceScreen(navHostController: NavHostController, viewModel: SavingsViewMo
                     }
                 }
             }
-            if (viewModel.savingsList.isNotEmpty()) {
+            if (Data.savingsList.isNotEmpty()) {
                 this@LazyColumn.items(
-                    items = viewModel.savingsList,
+                    items = Data.savingsList,
                     key = { it.id }
                 ) { saving ->
                     var visible by remember { mutableStateOf(true) }
@@ -116,7 +116,7 @@ fun FinanceScreen(navHostController: NavHostController, viewModel: SavingsViewMo
                     LaunchedEffect(visible) {
                         if (!visible) {
                             delay(300)
-                            viewModel.removeSaving(saving)
+                            Data.savingsList.remove(saving)
                         }
                     }
                 }

@@ -43,7 +43,7 @@ import java.time.LocalDate
 import java.util.Calendar
 
 @Composable
-fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel)
+fun MoneySavingsScreen(navController: NavController)
 {
     Data.topBarTitle = "Takarék felvétel"
     var input by remember { mutableStateOf("") }
@@ -200,7 +200,7 @@ fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel
                                     description,
                                     Data.osszpenz
                                 )
-                                viewModel.addSaving(saving)
+                                Data.savingsList.add(saving)
                                 navController.popBackStack()
                             }
                         }

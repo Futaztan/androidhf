@@ -51,7 +51,7 @@ import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.finance.MoneySavingsScreen
-import com.androidhf.ui.screens.finance.SavingsViewModel
+
 import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.stock.query.StockChartScreen
@@ -74,11 +74,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val uploadWorkRequest: PeriodicWorkRequest =
-            PeriodicWorkRequestBuilder<DailyWorker>(24,TimeUnit.HOURS)
+            PeriodicWorkRequestBuilder<DailyWorker>(24, TimeUnit.HOURS)
                 .build()
         WorkManager
             .getInstance(this)
-            .enqueueUniquePeriodicWork("every24hours", ExistingPeriodicWorkPolicy.UPDATE,uploadWorkRequest)
+            .enqueueUniquePeriodicWork(
+                "every24hours",
+                ExistingPeriodicWorkPolicy.KEEP,
+                uploadWorkRequest
+            )
+
 
 
 
@@ -86,10 +91,9 @@ class MainActivity : ComponentActivity() {
             AndroidhfTheme {
 
                 var elso by remember { mutableStateOf(true) }
-                val financeViewModel: SavingsViewModel = viewModel()
-                if(elso)
-                {
-                    listafeltoles(financeViewModel)
+
+                if (elso) {
+                    listafeltoles()
                     elso = false
                 }
 
@@ -101,9 +105,9 @@ class MainActivity : ComponentActivity() {
                         BottomNavBar(navController)
                     },
                     topBar =
-                    {
-                        CustomTopAppBar()
-                    }
+                        {
+                            CustomTopAppBar()
+                        }
                 ) { innerPadding ->
 
                     NavHost(
@@ -111,14 +115,14 @@ class MainActivity : ComponentActivity() {
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("home") { HomeScreen(financeViewModel) }
-                        composable("penzugy") { FinanceScreen(navController, financeViewModel) }
+                        composable("home") { HomeScreen(/*financeViewModel*/) }
+                        composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController/*, financeViewModel*/) }
                         composable("money_expense") { MoneyExpenseScreen(navController/*, financeViewModel*/) }
-                        composable("money_saving") { MoneySavingsScreen(navController, financeViewModel) }
+                        composable("money_saving") { MoneySavingsScreen(navController /*financeViewModel*/) }
                     }
                 }
             }
@@ -137,26 +141,44 @@ fun BottomNavBar(navController: NavHostController) {
             selected = false,
             onClick = { navController.navigate("home") },
             icon = {
-                Icon(painter = painterResource(id = R.drawable.ic_home), contentDescription = "Home icon")
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_home),
+                    contentDescription = "Home icon"
+                )
             },
             label = { Text("Home") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("penzugy") },
-            icon = { Icon(painter = painterResource(id = R.drawable.ic_finance), contentDescription = "Finance icon") },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_finance),
+                    contentDescription = "Finance icon"
+                )
+            },
             label = { Text("Pénzügy") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("stock") },
-            icon = { Icon(painter = painterResource(id = R.drawable.ic_stocks), contentDescription = "Stocks icon") },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_stocks),
+                    contentDescription = "Stocks icon"
+                )
+            },
             label = { Text("Stock") }
         )
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate("ai") },
-            icon = { Icon(painter = painterResource(id = R.drawable.ic_ai2), contentDescription = "AI icon") },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_ai2),
+                    contentDescription = "AI icon"
+                )
+            },
             label = { Text("AI") }
         )
     }
@@ -178,26 +200,78 @@ fun CustomTopAppBar() {
     )
 }
 
-fun listafeltoles(viewModel: SavingsViewModel)
-{
-    for (i in 1..25)
-    {
+fun listafeltoles() {
+    for (i in 1..25) {
         var random = Random.Default
-        val transactionplus = Transaction(random.nextInt(200, 2000),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.FIZETES, Frequency.EGYSZERI)
-        val transactionminus = Transaction(random.nextInt(-2000, -200),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES, Frequency.EGYSZERI)
+        val transactionplus = Transaction(
+            random.nextInt(200, 2000),
+            "TESZT$i",
+            LocalDate.now().plusDays((i * 2).toLong()),
+            LocalTime.now(),
+            Category.FIZETES,
+            Frequency.EGYSZERI
+        )
+        val transactionminus = Transaction(
+            random.nextInt(-2000, -200),
+            "TESZT$i",
+            LocalDate.now().plusDays((i * 2).toLong()),
+            LocalTime.now(),
+            Category.ELOFIZETES,
+            Frequency.EGYSZERI
+        )
         Data.addTransaction(transactionplus)
         Data.addTransaction(transactionminus)
     }
-    val alma = Savings(50000, LocalDate.of(2025,4,12), LocalDate.now().plusDays(2), SavingsType.INCOMEGOAL_BYTIME, "Title", "Description", 20000)
-    viewModel.addSaving(alma)
-    val alma1 = Savings(40000, LocalDate.of(2025,4,11), LocalDate.now().plusDays(4), SavingsType.INCOMEGOAL_BYTIME, "Title1", "Description1", 10000)
-    viewModel.addSaving(alma1)
-    val alma2 = Savings(30000, LocalDate.of(2025,4,5), LocalDate.now().plusDays(5), SavingsType.INCOMEGOAL_BYTIME, "Title2", "Description2", 20000)
-    viewModel.addSaving(alma2)
-    val alma3 = Savings(20000, LocalDate.of(2025,4,20), LocalDate.now().plusDays(8), SavingsType.INCOMEGOAL_BYTIME, "Title3", "Description3", 20000)
-    viewModel.addSaving(alma3)
-    val alma4 = Savings(10000, LocalDate.of(2025,4,15), LocalDate.now().plusDays(25), SavingsType.INCOMEGOAL_BYTIME, "Title4", "Description4", 20000)
-    viewModel.addSaving(alma4)
+    val alma = Savings(
+        50000,
+        LocalDate.of(2025, 4, 12),
+        LocalDate.now().plusDays(2),
+        SavingsType.INCOMEGOAL_BYTIME,
+        "Title",
+        "Description",
+        20000
+    )
+    Data.savingsList.add(alma)
+    val alma1 = Savings(
+        40000,
+        LocalDate.of(2025, 4, 11),
+        LocalDate.now().plusDays(4),
+        SavingsType.INCOMEGOAL_BYTIME,
+        "Title1",
+        "Description1",
+        10000
+    )
+    Data.savingsList.add(alma1)
+    val alma2 = Savings(
+        30000,
+        LocalDate.of(2025, 4, 5),
+        LocalDate.now().plusDays(5),
+        SavingsType.INCOMEGOAL_BYTIME,
+        "Title2",
+        "Description2",
+        20000
+    )
+    Data.savingsList.add(alma2)
+    val alma3 = Savings(
+        20000,
+        LocalDate.of(2025, 4, 20),
+        LocalDate.now().plusDays(8),
+        SavingsType.INCOMEGOAL_BYTIME,
+        "Title3",
+        "Description3",
+        20000
+    )
+    Data.savingsList.add(alma3)
+    val alma4 = Savings(
+        10000,
+        LocalDate.of(2025, 4, 15),
+        LocalDate.now().plusDays(25),
+        SavingsType.INCOMEGOAL_BYTIME,
+        "Title4",
+        "Description4",
+        20000
+    )
+    Data.savingsList.add(alma4)
 }
 
 
