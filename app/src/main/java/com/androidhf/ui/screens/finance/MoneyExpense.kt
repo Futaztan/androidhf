@@ -27,7 +27,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-fun MoneyExpenseScreen(navController: NavController) {
+fun MoneyExpenseScreen(navController: NavController/*, viewModel: SavingsViewModel*/) {
     Data.topBarTitle = "Kiadás felvétel"
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
@@ -40,7 +40,7 @@ fun MoneyExpenseScreen(navController: NavController) {
 
             val transaction = Transaction(-amount, "TODO", LocalDate.now(), LocalTime.now(), category,frequency)
 
-           Data.addTransaction(transaction)
+           Data.addTransaction(transaction/*, viewModel*/)
             if(transaction.frequency!=Frequency.EGYSZERI)
                 Data.repetitiveTransactions.add(transaction)
 

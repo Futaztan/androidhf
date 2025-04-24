@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.androidhf.ui.screens.finance.SavingsViewModel
 import java.time.LocalDateTime
 
 //globális adatok az egész appban
@@ -33,19 +34,37 @@ object Data {
     var topBarTitle by mutableStateOf("Home")
     var repetitiveTransactions = mutableStateListOf<Transaction>()
 
-    //TODO: Ennek oda kell majd adni a savingViewModellt
-
     fun getIncomesList() : SnapshotStateList<Transaction> {return incomesList}
     fun getExpensesList() : SnapshotStateList<Transaction> { return expensesList}
 
-    fun addTransaction(transaction: Transaction)
+
+    //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
+    fun addTransaction(transaction: Transaction/*, viewModel: SavingsViewModel*/)
     {
         if(transaction.amount==0) throw IllegalArgumentException()
         if(transaction.amount<0)
         {
+            //kivonja a megfelelő savinglist elemekből
+            /* TODO: dávid ezt meg kell beszélnünk, mert ez kell ide nekem de akkor nem lesz kompatibilis a workerrel
+            viewModel.savingsList.forEach{ item ->
+                if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                {
+                    item.Amount -= transaction.amount
+                }
+            }*/
             expensesList.add(transaction)
         }
-        else incomesList.add(transaction)
+        else
+        {
+            //hozzáadja a bevételt a megfelelő savings típusokhoz
+            /*viewModel.savingsList.forEach{ item ->
+                if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                {
+                    item.Amount -= transaction.amount
+                }
+            }*/
+            incomesList.add(transaction)
+        }
         calculateOsszpenz()
 
     }
@@ -61,17 +80,14 @@ object Data {
     fun calculateBalanceChangesSimple(): List<Int> {
         val allTransactions = mutableListOf<Pair<Transaction, Boolean>>()
 
-        // Bevételek hozzáadása (true jelzi, hogy bevétel)
         incomesList.forEach { income ->
             allTransactions.add(Pair(income, true))
         }
 
-        // Kiadások hozzáadása (false jelzi, hogy kiadás)
         expensesList.forEach { expense ->
             allTransactions.add(Pair(expense, false))
         }
 
-        // Rendezés dátum és idő szerint
         allTransactions.sortBy { (transaction, _) ->
             LocalDateTime.of(transaction.date, transaction.time)
         }
@@ -79,7 +95,6 @@ object Data {
         val balanceChanges = mutableListOf<Pair<LocalDateTime, Int>>()
 
         val balanceValues = mutableListOf<Int>()
-        // Egyenleg számítása időrendi sorrendben
 
         allTransactions.forEach { (transaction, isIncome) ->
             if (isIncome) {

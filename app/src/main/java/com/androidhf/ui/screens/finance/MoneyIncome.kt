@@ -30,7 +30,7 @@ import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MoneyIncomeScreen(navController: NavController) {
+fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewModel*/) {
     Data.topBarTitle = "Bevétel felvétel"
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
@@ -49,7 +49,7 @@ fun MoneyIncomeScreen(navController: NavController) {
                 category,
                 frequency
             )
-            Data.addTransaction(transaction)
+            Data.addTransaction(transaction/*, viewModel*/)
             if(transaction.frequency!=Frequency.EGYSZERI)
                 Data.repetitiveTransactions.add(transaction)
             navController.popBackStack() // visszalép az előző képernyőre

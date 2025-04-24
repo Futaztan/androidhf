@@ -116,8 +116,8 @@ class MainActivity : ComponentActivity() {
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
                         composable("ai") { AIScreen() }
-                        composable("money_income") { MoneyIncomeScreen(navController) }
-                        composable("money_expense") { MoneyExpenseScreen(navController) }
+                        composable("money_income") { MoneyIncomeScreen(navController/*, financeViewModel*/) }
+                        composable("money_expense") { MoneyExpenseScreen(navController/*, financeViewModel*/) }
                         composable("money_saving") { MoneySavingsScreen(navController, financeViewModel) }
                     }
                 }
@@ -190,6 +190,14 @@ fun listafeltoles(viewModel: SavingsViewModel)
     }
     val alma = Savings(50000, LocalDate.of(2025,4,12), LocalDate.now().plusDays(2), SavingsType.INCOMEGOAL_BYTIME, "Title", "Description", 20000)
     viewModel.addSaving(alma)
+    val alma1 = Savings(40000, LocalDate.of(2025,4,11), LocalDate.now().plusDays(4), SavingsType.INCOMEGOAL_BYTIME, "Title1", "Description1", 10000)
+    viewModel.addSaving(alma1)
+    val alma2 = Savings(30000, LocalDate.of(2025,4,5), LocalDate.now().plusDays(5), SavingsType.INCOMEGOAL_BYTIME, "Title2", "Description2", 20000)
+    viewModel.addSaving(alma2)
+    val alma3 = Savings(20000, LocalDate.of(2025,4,20), LocalDate.now().plusDays(8), SavingsType.INCOMEGOAL_BYTIME, "Title3", "Description3", 20000)
+    viewModel.addSaving(alma3)
+    val alma4 = Savings(10000, LocalDate.of(2025,4,15), LocalDate.now().plusDays(25), SavingsType.INCOMEGOAL_BYTIME, "Title4", "Description4", 20000)
+    viewModel.addSaving(alma4)
 }
 
 
