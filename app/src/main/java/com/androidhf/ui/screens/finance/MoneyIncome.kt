@@ -31,6 +31,7 @@ import java.time.LocalTime
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MoneyIncomeScreen(navController: NavController) {
+    Data.topBarTitle = "Bevétel felvétel"
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.FIZETES) }

@@ -36,6 +36,7 @@ import java.util.Calendar
 @Composable
 fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel)
 {
+    Data.topBarTitle = "Takarék felvétel"
     var input by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf<LocalDate>(LocalDate.now().plusDays(14)) }
     var selectedType by remember { mutableStateOf(SavingsType.INCOMEGOAL_BYTIME) }

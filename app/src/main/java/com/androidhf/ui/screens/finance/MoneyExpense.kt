@@ -28,6 +28,7 @@ import java.time.LocalTime
 
 @Composable
 fun MoneyExpenseScreen(navController: NavController) {
+    Data.topBarTitle = "Kiadás felvétel"
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.ELOFIZETES) }

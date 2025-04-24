@@ -21,6 +21,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,6 +43,8 @@ import com.androidhf.data.Category
 import com.androidhf.data.Data
 
 import com.androidhf.data.Frequency
+import com.androidhf.data.Savings
+import com.androidhf.data.SavingsType
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
@@ -59,6 +64,8 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -75,11 +82,17 @@ class MainActivity : ComponentActivity() {
 
 
 
-
         setContent {
             AndroidhfTheme {
 
-                listafeltoles()
+                var elso by remember { mutableStateOf(true) }
+                val financeViewModel: SavingsViewModel = viewModel()
+                if(elso)
+                {
+                    listafeltoles(financeViewModel)
+                    elso = false
+                }
+
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
@@ -93,7 +106,6 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
 
-                    val financeViewModel: SavingsViewModel = viewModel()
                     NavHost(
                         navController = navController,
                         startDestination = "home",
@@ -166,7 +178,7 @@ fun CustomTopAppBar() {
     )
 }
 
-fun listafeltoles()
+fun listafeltoles(viewModel: SavingsViewModel)
 {
     for (i in 1..25)
     {
@@ -175,9 +187,9 @@ fun listafeltoles()
         val transactionminus = Transaction(random.nextInt(-2000, -200),"TESZT$i", LocalDate.now().plusDays((i*2).toLong()), LocalTime.now(), Category.ELOFIZETES, Frequency.EGYSZERI)
         Data.addTransaction(transactionplus)
         Data.addTransaction(transactionminus)
-
     }
-
+    val alma = Savings(50000, LocalDate.of(2025,4,12), LocalDate.now().plusDays(2), SavingsType.INCOMEGOAL_BYTIME, "Title", "Description", 20000)
+    viewModel.addSaving(alma)
 }
 
 

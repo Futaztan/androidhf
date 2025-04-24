@@ -47,24 +47,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import com.androidhf.data.Savings
+import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import kotlinx.coroutines.delay
+import java.time.LocalDate
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @ExperimentalMaterialApi
 fun FinanceScreen(navHostController: NavHostController, viewModel: SavingsViewModel) {
-    //Data.topBarTitle = "Finance"
+    Data.topBarTitle = "Finance"
     Box(modifier = Modifier
         .padding(UIVariables.Padding)
         .fillMaxSize()
     )
     {
-        //val alma = Savings(50000, LocalDate.of(2025,4,12), LocalDate.now().plusDays(2), SavingsType.INCOMEGOAL_BYTIME, "Title", "Description", 20000)
-        //savingsList.clear()//TODO: ez majd nem kell ide, most csak azért van, hogyha újra rajzolódik akkor ne vegye fel megint
-        //savingsList.add(alma)
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(bottom = 56.dp)) {
             item {
                 BorderBox() {
