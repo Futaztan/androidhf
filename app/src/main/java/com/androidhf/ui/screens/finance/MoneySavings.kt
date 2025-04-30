@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -139,7 +140,8 @@ fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel
                 NumberTextField(
                     input = input,
                     onInputChange = { input = it },
-                    placeholder = "50000"
+                    placeholder = "50000",
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -168,7 +170,8 @@ fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel
                 TextField(
                     value = title,
                     onValueChange = { title = it },
-                    placeholder = { Text("Cím") }
+                    placeholder = { Text("Cím") },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -179,7 +182,8 @@ fun MoneySavingsScreen(navController: NavController, viewModel: SavingsViewModel
                 TextField(
                     value = description,
                     onValueChange = { description = it },
-                    placeholder = { Text("Rövid leírás")}
+                    placeholder = { Text("Rövid leírás")},
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

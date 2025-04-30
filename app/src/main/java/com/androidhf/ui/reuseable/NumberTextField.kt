@@ -4,10 +4,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
-fun NumberTextField(input: String, onInputChange: (String) -> Unit, placeholder: String = "") {
+fun NumberTextField(modifier: Modifier = Modifier, input: String, onInputChange: (String) -> Unit, placeholder: String = "") {
     TextField(
         value = input,
         onValueChange = {
@@ -16,6 +17,7 @@ fun NumberTextField(input: String, onInputChange: (String) -> Unit, placeholder:
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        placeholder = { Text(placeholder) }
+        placeholder = { Text(placeholder) },
+        modifier = modifier
     )
 }
