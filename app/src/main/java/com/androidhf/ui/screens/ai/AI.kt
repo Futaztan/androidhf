@@ -26,7 +26,8 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 data class ChatMessage(
     val sender: String,
     val content: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val isVisible: Boolean = true
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +39,10 @@ fun AIScreen(viewModel: AIViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.defaultPrompt()
+    }
+
     if (showDeleteConfirmation) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
@@ -47,6 +52,7 @@ fun AIScreen(viewModel: AIViewModel = viewModel()) {
                 TextButton(
                     onClick = {
                         messages.clear()
+                        viewModel.defaultPrompt()
                         showDeleteConfirmation = false
                     }
                 ) {
@@ -107,7 +113,7 @@ fun AIScreen(viewModel: AIViewModel = viewModel()) {
                             if (inputText.isNotBlank() && !isLoading) {
                                 val userMessage = ChatMessage("user", inputText, System.currentTimeMillis())
                                 messages.add(userMessage)
-                                viewModel.sendMessage(inputText, messages)
+                                viewModel.sendMessage(inputText, messages,true)
                                 inputText = ""
                             }
                         },
@@ -153,7 +159,9 @@ fun AIScreen(viewModel: AIViewModel = viewModel()) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(messages.reversed()) { message ->
-                    MessageItem(message)
+                    if(message.isVisible){
+                        MessageItem(message)
+                    }
                 }
             }
         }

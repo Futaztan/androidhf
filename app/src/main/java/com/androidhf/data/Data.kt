@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.androidhf.ui.screens.finance.SavingsViewModel
+
 import java.time.LocalDateTime
 
 //globális adatok az egész appban
@@ -27,6 +27,7 @@ object Data {
     private var incomesList = mutableStateListOf<Transaction>()
 
     private var expensesList = mutableStateListOf<Transaction>()
+     val savingsList = mutableStateListOf<Savings>()
 
     var osszpenz by mutableIntStateOf(0)
     private set
@@ -39,30 +40,29 @@ object Data {
 
 
     //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
-    fun addTransaction(transaction: Transaction/*, viewModel: SavingsViewModel*/)
+    fun addTransaction(transaction: Transaction)
     {
         if(transaction.amount==0) throw IllegalArgumentException()
         if(transaction.amount<0)
         {
-            //kivonja a megfelelő savinglist elemekből
-            /* TODO: dávid ezt meg kell beszélnünk, mert ez kell ide nekem de akkor nem lesz kompatibilis a workerrel
-            viewModel.savingsList.forEach{ item ->
+
+            savingsList.forEach{ item ->
                 if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
                 {
                     item.Amount -= transaction.amount
                 }
-            }*/
+            }
             expensesList.add(transaction)
         }
         else
         {
             //hozzáadja a bevételt a megfelelő savings típusokhoz
-            /*viewModel.savingsList.forEach{ item ->
+            savingsList.forEach{ item ->
                 if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
                 {
                     item.Amount -= transaction.amount
                 }
-            }*/
+            }
             incomesList.add(transaction)
         }
         calculateOsszpenz()

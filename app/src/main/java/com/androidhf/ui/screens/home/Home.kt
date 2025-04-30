@@ -19,11 +19,11 @@ import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVariables
-import com.androidhf.ui.screens.finance.SavingsViewModel
+
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 
 @Composable
-fun HomeScreen(viewModel: SavingsViewModel) {
+fun HomeScreen() {
     Data.topBarTitle = "Home"
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -42,7 +42,7 @@ fun HomeScreen(viewModel: SavingsViewModel) {
             FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
         }
         Text("3 legújabb takarék")
-        viewModel.savingsList.takeLast(3).forEach { item ->
+        Data.savingsList.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVariables.Padding))
             SavingCard_Income1(item, { }, false)
         }
