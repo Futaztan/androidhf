@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import java.time.LocalDate
 
 import java.time.LocalDateTime
 
@@ -27,7 +28,7 @@ object Data {
     private var incomesList = mutableStateListOf<Transaction>()
 
     private var expensesList = mutableStateListOf<Transaction>()
-     val savingsList = mutableStateListOf<Savings>()
+    var savingsList = mutableStateListOf<Savings>()
 
     var osszpenz by mutableIntStateOf(0)
     private set
@@ -37,6 +38,32 @@ object Data {
 
     fun getIncomesList() : SnapshotStateList<Transaction> {return incomesList}
     fun getExpensesList() : SnapshotStateList<Transaction> { return expensesList}
+
+    fun dataToAIPrompt(): String {
+        var output: String = "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
+        incomesList.forEach { item ->
+            if (item.date.isAfter(LocalDate.now().minusDays(30))) {
+                output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "
+            }
+        }
+        output += "ezek a kiadásaim, ugyan az a formátum:"
+        expensesList.forEach { item ->
+            if (item.date.isAfter(LocalDate.now().minusDays(30))) {
+                output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "
+            }
+        }
+
+        //TODO: ide kell még a repetitiveTransactions
+
+        //TODO: ez csak félkész, majd szét kell szednem típusok alapján
+        output += "ezek a takarékaim, céljaim (formátum: megtakarítandó_összeg;kezdet;cél_vége;neve):"
+        savingsList.forEach{ items ->
+            output += items.Amount.toString() + ";" + items.StartDate.toString() + ";" + items.EndDate.toString() + ";" + items.Title + " "
+        }
+        //
+        output += "ezek alapján milyen tanácsokat tudnál nekem adni pénzügyi szempontból?"
+        return output
+    }
 
 
     //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez

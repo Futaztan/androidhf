@@ -1,7 +1,6 @@
 package com.androidhf.ui.screens.finance
 
 import android.app.DatePickerDialog
-import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -37,8 +36,7 @@ import com.androidhf.data.Savings
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
-import com.androidhf.ui.reuseable.UIVariables
-import com.androidhf.ui.theme.AndroidhfTheme
+import com.androidhf.ui.reuseable.UIVar
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.util.Calendar
@@ -145,7 +143,7 @@ fun MoneySavingsScreen(navController: NavController)
                 )
             }
         }
-        Spacer(modifier = Modifier.height(UIVariables.Padding))
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false, backgroundColor = MaterialTheme.colorScheme.primaryContainer)
         {
             Column{
@@ -155,14 +153,14 @@ fun MoneySavingsScreen(navController: NavController)
                 }
             }
         }
-        Spacer(modifier = Modifier.height(UIVariables.Padding))
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false, backgroundColor = MaterialTheme.colorScheme.primaryContainer) {
             Column{
                 Text("Válasszon egy típust:", color = MaterialTheme.colorScheme.onPrimaryContainer)
                 SimpleEnumDropdown(selected = selectedType, onSelectedChange = { selectedType = it })
             }
         }
-        Spacer(modifier = Modifier.height(UIVariables.Padding))
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false, backgroundColor = title_background_color)
         {
             Column{
@@ -175,7 +173,7 @@ fun MoneySavingsScreen(navController: NavController)
                 )
             }
         }
-        Spacer(modifier = Modifier.height(UIVariables.Padding))
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false, backgroundColor = desc_background_color) {
             Column {
                 Text("Adjon egy rövid leírást miért hozta létre:", color = desc_text_color)
@@ -187,7 +185,7 @@ fun MoneySavingsScreen(navController: NavController)
                 )
             }
         }
-        Spacer(modifier = Modifier.height(UIVariables.Padding))
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(backgroundColor = MaterialTheme.colorScheme.primaryContainer)
         {
             Row {
@@ -228,11 +226,11 @@ fun MoneySavingsScreen(navController: NavController)
                         }
                     }
                 ) {
-                    Text("Mentés", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text("Mentés")
                 }
-                Spacer(modifier = Modifier.width(UIVariables.Padding))
+                Spacer(modifier = Modifier.width(UIVar.Padding))
                 Button(onClick = {navController.popBackStack()}) {
-                    Text("Mégse", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text("Mégse")
                 }
             }
         }

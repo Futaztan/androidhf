@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,17 +40,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.androidhf.R
-import com.androidhf.data.Data
 import com.androidhf.data.Data.osszpenz
 import com.androidhf.data.Savings
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
-import com.androidhf.ui.reuseable.UIVariables
-import kotlinx.coroutines.delay
+import com.androidhf.ui.reuseable.UIVar
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -116,7 +114,7 @@ fun SavingCard_Income1(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Red, shape = RoundedCornerShape(UIVariables.Radius))
+                        .background(Color.Red, shape = RoundedCornerShape(UIVar.Radius))
                         .padding(16.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -148,12 +146,12 @@ private fun Content(saving: Savings)
             }
             Column {
                 Row {
-                    Column(modifier = Modifier.weight(8f)) {
+                    Column(modifier = Modifier.weight(6.5f)) {
                         HeaderText(saving.Title)
-                        Text(saving.Description)
+                        Text(saving.Description, color = UIVar.onBoxColor())
                     }
-                    Box(modifier = Modifier.fillMaxHeight().weight(2f)) {
-                        Text("${saving.Amount} Ft", modifier = Modifier.align(Alignment.Center))
+                    Box(modifier = Modifier.fillMaxHeight().weight(3.5f)) {
+                        Text("${saving.Amount} Ft", modifier = Modifier.align(Alignment.CenterEnd), fontWeight = FontWeight.ExtraBold, color = UIVar.onBoxColor())
                     }
                 }
                 Box(modifier = Modifier.fillMaxWidth())
@@ -161,14 +159,14 @@ private fun Content(saving: Savings)
                     Row {
                         Spacer(modifier = Modifier.weight(2f))
                         Box(modifier = Modifier.weight(8f)){
-                            Text("${saving.StartDate}", modifier = Modifier.align(Alignment.CenterStart))
-                            Text("${saving.EndDate}", modifier = Modifier.align(Alignment.CenterEnd))
+                            Text("${saving.StartDate}", modifier = Modifier.align(Alignment.CenterStart), color = UIVar.onBoxColor())
+                            Text("${saving.EndDate}", modifier = Modifier.align(Alignment.CenterEnd), color = UIVar.onBoxColor())
                         }
                     }
 
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Date:", modifier = Modifier.weight(2f))
+                    Text("Date:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
                         progress = DateProgressBar(saving).coerceIn(0f, 1f),
                         modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f), color = Color.Green
@@ -176,7 +174,7 @@ private fun Content(saving: Savings)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Balance:", modifier = Modifier.weight(2f))
+                    Text("Balance:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
                         progress = osszpenz.toFloat()/saving.Amount.toFloat(),
                         modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f)
@@ -194,8 +192,8 @@ private fun Content(saving: Savings)
                     Row {
                         Column(modifier = Modifier.weight(8f)) {
                             HeaderText(saving.Title)
-                            Text("${saving.Amount} Ft")
-                            Text("Successfully achieved!")
+                            Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
+                            Text("Successfully achieved!", color = UIVar.onBoxColor())
                         }
                         Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
                             Icon(painter = painterResource(id = R.drawable.ic_check_48dp), contentDescription = "Home icon")

@@ -18,7 +18,7 @@ import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
-import com.androidhf.ui.reuseable.UIVariables
+import com.androidhf.ui.reuseable.UIVar
 
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 
@@ -38,12 +38,12 @@ fun HomeScreen() {
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }
         Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
             FirstXItemsTransactions(Data.getIncomesList(),10,Color.Green,Modifier.weight(1f))
-            Spacer(modifier = Modifier.width(UIVariables.Padding))
+            Spacer(modifier = Modifier.width(UIVar.Padding))
             FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
         }
         Text("3 legújabb takarék")
         Data.savingsList.takeLast(3).forEach { item ->
-            Spacer(modifier = Modifier.padding(UIVariables.Padding))
+            Spacer(modifier = Modifier.padding(UIVar.Padding))
             SavingCard_Income1(item, { }, false)
         }
 

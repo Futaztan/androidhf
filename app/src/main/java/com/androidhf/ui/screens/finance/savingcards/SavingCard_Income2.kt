@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,13 +40,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.androidhf.R
-import com.androidhf.data.Data
 import com.androidhf.data.Data.osszpenz
 import com.androidhf.data.Savings
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
-import com.androidhf.ui.reuseable.UIVariables
-import kotlinx.coroutines.delay
+import com.androidhf.ui.reuseable.UIVar
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -113,7 +110,7 @@ fun SavingCard_Income2(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Red, shape = RoundedCornerShape(UIVariables.Radius))
+                    .background(Color.Red, shape = RoundedCornerShape(UIVar.Radius))
                     .padding(16.dp),
                 contentAlignment = Alignment.CenterStart
             ) {

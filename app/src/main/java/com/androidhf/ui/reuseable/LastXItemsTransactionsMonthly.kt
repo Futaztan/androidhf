@@ -1,5 +1,6 @@
 package com.androidhf.ui.reuseable
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -27,6 +28,21 @@ fun LastXItemsTransactionsMonthly(
     _fitMaxWidth: Boolean = false //kitöltse a rendelkezésre álló helyet, ha két panel kell egymás mellé akkor false és kívül kell megadni weightet
 )
 {
+    var color: Color = _color
+    if(color == Color.Green)
+    {
+        if(!isSystemInDarkTheme())
+        {
+            color = Color(0, 165, 0)
+        }
+    }
+    else if(color == Color.Red)
+    {
+        if(!isSystemInDarkTheme())
+        {
+            color = Color(185, 0, 0)
+        }
+    }
     val firstItems = items.takeLast(count).asReversed()
 
     if(firstItems.isNotEmpty())
@@ -51,7 +67,7 @@ fun LastXItemsTransactionsMonthly(
                                 append("${item.category} ${item.reason} ${item.time.hour}:${item.time.minute}:${item.time.second}")
                             },
                             modifier = Modifier.padding(8.dp),
-                            color = _color
+                            color = color
                         )
                     }
                     else
@@ -65,7 +81,7 @@ fun LastXItemsTransactionsMonthly(
                                 append("${item.category} ${item.reason} ${item.time.hour}:${item.time.minute}:${item.time.second}")
                             },
                             modifier = Modifier.padding(8.dp),
-                            color = _color
+                            color = color
                         )
                     }
                 }
