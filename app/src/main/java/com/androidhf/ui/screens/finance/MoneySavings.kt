@@ -101,7 +101,7 @@ fun MoneySavingsScreen(navController: NavController)
     var desc_text_color: Color
     var title_background_color: Color
     var title_text_color: Color
-    Column {
+    Column(modifier = Modifier.padding(UIVar.Padding)) {
         if (input_invalid)
         {
             input_background_color = MaterialTheme.colorScheme.error
@@ -193,15 +193,32 @@ fun MoneySavingsScreen(navController: NavController)
                     onClick = {
                         if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && input.toInt() > 0) {
                             selectedDate.let { date ->
-                                val saving = Savings(
-                                    input.toInt(),
-                                    LocalDate.now(),
-                                    date,
-                                    selectedType,
-                                    title,
-                                    description,
-                                    Data.osszpenz
-                                )
+
+                                var saving: Savings
+                                if(selectedType == SavingsType.INCOMEGOAL_BYAMOUNT || selectedType == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                                {
+                                     saving = Savings(
+                                        input.toInt(),
+                                        LocalDate.now(),
+                                        date,
+                                        selectedType,
+                                        title,
+                                        description,
+                                        0
+                                    )
+                                }
+                                else
+                                {
+                                    saving = Savings(
+                                        input.toInt(),
+                                        LocalDate.now(),
+                                        date,
+                                        selectedType,
+                                        title,
+                                        description,
+                                        Data.osszpenz
+                                    )
+                                }
                                 Data.savingsList.add(saving)
                                 navController.popBackStack()
                             }

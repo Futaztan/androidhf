@@ -50,8 +50,10 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.delay
 
 
@@ -63,6 +65,7 @@ fun FinanceScreen(navHostController: NavHostController) {
 
     //alsó gombok eltüntetése
     val listState = rememberLazyListState()
+
 
     val isScrolledToBottom by remember {
         derivedStateOf {
@@ -129,12 +132,23 @@ fun FinanceScreen(navHostController: NavHostController) {
                         exit = shrinkVertically() + fadeOut(),
                         modifier = Modifier.animateItemPlacement()
                     ) {
-                        SavingCard_Income1(
-                            saving = saving,
-                            onDismiss = {
-                                visible = false
-                            }
-                        )
+                        if(saving.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
+                        {
+                            SavingCard_Income2(
+                                saving = saving,
+                                onDismiss = {
+                                    visible = false
+                                }
+                            )
+                        }
+                        else{
+                            SavingCard_Income1(
+                                saving = saving,
+                                onDismiss = {
+                                    visible = false
+                                }
+                            )
+                        }
                     }
                     LaunchedEffect(visible) {
                         if (!visible) {

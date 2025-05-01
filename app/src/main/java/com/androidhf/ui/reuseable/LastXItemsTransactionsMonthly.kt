@@ -60,7 +60,7 @@ fun LastXItemsTransactionsMonthly(
                         Text("${prevYear}-${prevMonth}")
                         Text(
                             buildAnnotatedString {
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold))
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold))
                                 {
                                     append("${item.amount} Ft ")
                                 }
@@ -74,7 +74,7 @@ fun LastXItemsTransactionsMonthly(
                     {
                         Text(
                             buildAnnotatedString {
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold))
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold))
                                 {
                                     append("${item.amount} Ft ")
                                 }

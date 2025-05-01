@@ -76,7 +76,7 @@ object Data {
             savingsList.forEach{ item ->
                 if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
                 {
-                    item.Amount -= transaction.amount
+                    item.Start -= transaction.amount
                 }
             }
             expensesList.add(transaction)
@@ -85,9 +85,9 @@ object Data {
         {
             //hozzáadja a bevételt a megfelelő savings típusokhoz
             savingsList.forEach{ item ->
-                if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
                 {
-                    item.Amount -= transaction.amount
+                    item.Start += transaction.amount
                 }
             }
             incomesList.add(transaction)

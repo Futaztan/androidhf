@@ -49,6 +49,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -63,13 +64,15 @@ fun SavingCard_Income2(
 
     if (showPopup) {
         Popup {
-            Box(modifier = Modifier.fillMaxSize().padding(bottom = 300.dp))
+            Box(modifier = Modifier.fillMaxSize().padding(bottom = 275.dp))
             {
                 Box(
                     modifier = Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth()
                         .background(Color.White)
-                        .border(1.dp, Color.Black)
-                        .padding(16.dp)
+                        .border(4.dp, UIVar.boxBorderColor())
+                        .padding(8.dp)
                         .align(Alignment.BottomCenter)
                 ) {
                     Column {
@@ -127,7 +130,7 @@ fun SavingCard_Income2(
 @Composable
 private fun Content(saving: Savings)
 {
-    if(saving.Amount > osszpenz)
+    if(saving.Start < saving.Amount)
     {
 
         BorderBox {
@@ -136,12 +139,12 @@ private fun Content(saving: Savings)
             }
             Column {
                 Row {
-                    Column(modifier = Modifier.weight(8f)) {
+                    Column(modifier = Modifier.weight(6.5f)) {
                         HeaderText(saving.Title)
                         Text(saving.Description)
                     }
-                    Box(modifier = Modifier.fillMaxHeight().weight(2f)) {
-                        Text("${saving.Amount} Ft", modifier = Modifier.align(Alignment.Center))
+                    Box(modifier = Modifier.fillMaxHeight().weight(3.5f)) {
+                        Text("${saving.Amount} Ft", modifier = Modifier.align(Alignment.Center), fontWeight = FontWeight.ExtraBold)
                     }
                 }
                 Box(modifier = Modifier.fillMaxWidth())

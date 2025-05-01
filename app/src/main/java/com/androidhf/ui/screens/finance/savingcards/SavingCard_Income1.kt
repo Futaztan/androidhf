@@ -3,6 +3,7 @@ package com.androidhf.ui.screens.finance.savingcards
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
@@ -21,8 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,30 +69,43 @@ fun SavingCard_Income1(
 
     if (showPopup) {
         Popup {
-            Box(modifier = Modifier.fillMaxSize().padding(bottom = 300.dp))
+            Box(modifier = Modifier.fillMaxSize().padding(bottom = 250.dp))
             {
                 Box(
                     modifier = Modifier
-                        .background(Color.White)
-                        .border(1.dp, Color.Black)
-                        .padding(16.dp)
+                        .padding(40.dp)
+                        .fillMaxWidth()
+                        .border(4.dp, UIVar.boxBorderColor(), RoundedCornerShape(UIVar.Radius))
+                        .background(MaterialTheme.colorScheme.onError, RoundedCornerShape(UIVar.Radius))
+                        .padding(UIVar.Padding)
                         .align(Alignment.BottomCenter)
                 ) {
                     Column {
-                        Text("Biztosan törölni szeretné?", color = Color.Black)
+                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                            Text("Biztosan törölni szeretné?", modifier = Modifier.align(Alignment.CenterVertically), color = MaterialTheme.colorScheme.error)
+                            Icon(painter = painterResource(id = R.drawable.ic_warning_48), contentDescription = "Warning", modifier = Modifier.align(Alignment.CenterVertically), tint = MaterialTheme.colorScheme.error)
+                        }
                         Row {
-                            Button(onClick = {
-                                showPopup=false
-                                onDismiss()
-                            }) {
-                                Text("Igen")
+                            Button(
+                                onClick = {
+                                    showPopup = false
+                                    onDismiss()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.error
+                                ),
+                                modifier = Modifier.weight(3f)
+                            ) {
+                                Text("Igen", color = MaterialTheme.colorScheme.onError) // szöveg szín
                             }
+                            Spacer(modifier = Modifier.width(UIVar.Padding))
                             Button(onClick = {
                                 showPopup=false
                                 coroutineScope.launch {
                                     dismissState.snapTo(DismissValue.Default)
                                 }
-                            }) {
+                            }, modifier = Modifier.weight(7f)
+                            ) {
                                 Text("Nem")
                             }
                         }
