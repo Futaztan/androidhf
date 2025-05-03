@@ -2,6 +2,7 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -66,6 +67,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalView
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -132,6 +134,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BottomNavBar(navController: NavHostController) {
+    val haptic = LocalView.current
+
     NavigationBar(
         modifier = Modifier
             .background(Color.Transparent),
@@ -139,7 +143,8 @@ fun BottomNavBar(navController: NavHostController) {
     ) {
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("home") },
+            onClick = { navController.navigate("home")
+                haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY) },
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_home),
@@ -150,7 +155,8 @@ fun BottomNavBar(navController: NavHostController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("penzugy") },
+            onClick = { navController.navigate("penzugy")
+                haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)},
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_finance),
@@ -161,7 +167,8 @@ fun BottomNavBar(navController: NavHostController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("stock") },
+            onClick = { navController.navigate("stock")
+                haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)},
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_stocks),
@@ -172,7 +179,8 @@ fun BottomNavBar(navController: NavHostController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate("ai") },
+            onClick = { navController.navigate("ai")
+                haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)},
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_ai2),

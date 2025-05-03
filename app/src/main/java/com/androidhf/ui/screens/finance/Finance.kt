@@ -1,5 +1,6 @@
 package com.androidhf.ui.screens.finance
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -50,6 +51,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalView
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
@@ -65,6 +67,7 @@ fun FinanceScreen(navHostController: NavHostController) {
 
     //alsó gombok eltüntetése
     val listState = rememberLazyListState()
+    val haptic = LocalView.current
 
 
     val isScrolledToBottom by remember {
@@ -83,6 +86,9 @@ fun FinanceScreen(navHostController: NavHostController) {
             isLastItemFullyVisible && contentLargerThanViewport
         }
     }
+
+    //haptic pöccentés ha a legaljára görgettünk
+    if(isScrolledToBottom)      haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
     //
     Box(modifier = Modifier
         .padding(UIVar.Padding)
@@ -152,6 +158,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                     }
                     LaunchedEffect(visible) {
                         if (!visible) {
+                            haptic.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             delay(300)
                             Data.savingsList.remove(saving)
                         }

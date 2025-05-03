@@ -1,5 +1,6 @@
 package com.androidhf.ui.screens.home
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
@@ -25,18 +27,23 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 @Composable
 fun HomeScreen() {
     Data.topBarTitle = "Home"
+
+    val scrollState = rememberScrollState()
+    val haptic = LocalView.current
+
+    if(scrollState.value == scrollState.maxValue)     haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
     Column(
         modifier = Modifier.fillMaxWidth()
-                            .verticalScroll(rememberScrollState()),
+                            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally)
-
     {
         Panel{
             HeaderText("Szia Teszt!")
         }
 
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }
-        Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
+        Row (modifier = Modifier.fillMaxWidth()){
             FirstXItemsTransactions(Data.getIncomesList(),10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
             FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
@@ -46,13 +53,7 @@ fun HomeScreen() {
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             SavingCard_Income1(item, { }, false)
         }
-
-
         Button(onClick = {}) { Text("Stock market:") }
     }
-
-
-
-
 }
 
