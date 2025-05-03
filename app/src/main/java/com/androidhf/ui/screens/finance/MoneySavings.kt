@@ -195,10 +195,22 @@ fun MoneySavingsScreen(navController: NavController)
                             selectedDate.let { date ->
 
                                 var saving: Savings
-                                if(selectedType == SavingsType.INCOMEGOAL_BYAMOUNT || selectedType == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                                if(selectedType == SavingsType.INCOMEGOAL_BYAMOUNT)
                                 {
                                      saving = Savings(
                                         input.toInt(),
+                                        LocalDate.now(),
+                                        date,
+                                        selectedType,
+                                        title,
+                                        description,
+                                        0
+                                    )
+                                }
+                                else if(selectedType == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                                {
+                                    saving = Savings(
+                                        input.toInt()*-1,
                                         LocalDate.now(),
                                         date,
                                         selectedType,

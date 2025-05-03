@@ -54,10 +54,11 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SavingCard_Income2(
+fun SavingCard_Expense2(
     saving: Savings, //melyik savinget jelenítse meg
     onDismiss: () -> Unit, //visible = false -ot kell meghívni ha törölni akarjuk, enélkül nem tűnik el
     deleteAble: Boolean = true //Swipeal törölni szeretnénk akkor true, amúgy meg false
@@ -154,7 +155,7 @@ fun SavingCard_Income2(
 @Composable
 private fun Content(saving: Savings)
 {
-    if(!saving.Closed && saving.Amount > saving.Start && LocalDate.now() < saving.EndDate)
+    if(!saving.Closed && saving.Amount.absoluteValue > saving.Start.absoluteValue && LocalDate.now() < saving.EndDate)
     {
 
         BorderBox {
@@ -180,7 +181,7 @@ private fun Content(saving: Savings)
                             Text("${saving.Amount} Ft", fontWeight = FontWeight.ExtraBold, color = UIVar.onBoxColor(),modifier = Modifier.align(Alignment.End))
                             Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 3.dp, end = 3.dp).align(Alignment.End))
                             {
-                                Text("Type: Collect", color = UIVar.boxColor())
+                                Text("Type: Limit", color = UIVar.boxColor())
                             }
                         }
                     }
@@ -214,33 +215,8 @@ private fun Content(saving: Savings)
             }
         }
     }
-    else if((!saving.Closed && (saving.Completed || (saving.Amount <= saving.Start && LocalDate.now() <= saving.EndDate))) || saving.Closed && saving.Completed)
+    else if((!saving.Closed && (saving.Completed || (saving.Amount.absoluteValue <= saving.Start.absoluteValue && LocalDate.now() <= saving.EndDate))) || saving.Closed && saving.Completed)
     {
-        saving.Completed = true
-        saving.Closed = true
-        BorderBox {
-            Box()
-            {
-                Column {
-                    Row {
-                        Column(modifier = Modifier.weight(8f)) {
-                            HeaderText(saving.Title)
-                            Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
-                            Text("Successfully achieved!", color = UIVar.onBoxColor())
-                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
-                            {
-                                Text("Type: Collect", color = UIVar.boxColor())
-                            }
-                        }
-                        Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
-                            Icon(painter = painterResource(id = R.drawable.ic_check_48dp), contentDescription = "Tick Icon")
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else{
         saving.Failed = true
         saving.Closed = true
         BorderBox {
@@ -254,11 +230,36 @@ private fun Content(saving: Savings)
                             Text("Failed to achieve!", color = UIVar.onBoxColor())
                             Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
                             {
-                                Text("Type: Collect", color = UIVar.boxColor())
+                                Text("Type: Limit", color = UIVar.boxColor())
                             }
                         }
                         Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
                             Icon(painter = painterResource(id = R.drawable.ic_cross_48dp), contentDescription = "Cross Icon")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else{
+        saving.Completed = true
+        saving.Closed = true
+        BorderBox {
+            Box()
+            {
+                Column {
+                    Row {
+                        Column(modifier = Modifier.weight(8f)) {
+                            HeaderText(saving.Title)
+                            Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
+                            Text("Successfully achieved!", color = UIVar.onBoxColor())
+                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
+                            {
+                                Text("Type: Limit", color = UIVar.boxColor())
+                            }
+                        }
+                        Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
+                            Icon(painter = painterResource(id = R.drawable.ic_check_48dp), contentDescription = "Tick Icon")
                         }
                     }
                 }

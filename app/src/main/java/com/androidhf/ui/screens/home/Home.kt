@@ -17,12 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import com.androidhf.data.Data
+import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
 
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 
 @Composable
 fun HomeScreen() {
@@ -51,7 +54,18 @@ fun HomeScreen() {
         Text("3 legújabb takarék")
         Data.savingsList.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
-            SavingCard_Income1(item, { }, false)
+            if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
+            {
+                SavingCard_Income2(item, { }, false)
+            }
+            else if(item.Type == SavingsType.INCOMEGOAL_BYTIME)
+            {
+                SavingCard_Income1(item, { }, false)
+            }
+            else
+            {
+                SavingCard_Expense2(item, { }, false)
+            }
         }
         Button(onClick = {}) { Text("Stock market:") }
     }

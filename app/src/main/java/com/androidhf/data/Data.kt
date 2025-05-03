@@ -76,7 +76,7 @@ object Data {
             savingsList.forEach{ item ->
                 if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
                 {
-                    item.Start -= transaction.amount
+                    item.Start += transaction.amount
                 }
             }
             expensesList.add(transaction)

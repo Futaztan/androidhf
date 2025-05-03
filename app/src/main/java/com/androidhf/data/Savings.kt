@@ -18,4 +18,7 @@ class Savings(
     var Title: String = title               //a megtakarítás neve
     var Description: String = description   //rövid leírása, hogy mit szerettünk volna elérni
     var Start: Int = start                  //kezdő pénz mennyisége
+    var Completed: Boolean = false          //teljesített-e
+    var Failed: Boolean = false             //elbukott
+    var Closed: Boolean = false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 }

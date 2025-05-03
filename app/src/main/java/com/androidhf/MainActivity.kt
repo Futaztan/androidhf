@@ -230,6 +230,7 @@ fun listafeltoles() {
         Data.addTransaction(transactionplus)
         Data.addTransaction(transactionminus)
     }
+    /*
     val alma = Savings(
         50000,
         LocalDate.of(2025, 4, 12),
@@ -280,6 +281,7 @@ fun listafeltoles() {
         20000
     )
     Data.savingsList.add(alma4)
+    */
 }
 
 

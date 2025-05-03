@@ -54,6 +54,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalView
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.delay
@@ -141,6 +142,15 @@ fun FinanceScreen(navHostController: NavHostController) {
                         if(saving.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
                         {
                             SavingCard_Income2(
+                                saving = saving,
+                                onDismiss = {
+                                    visible = false
+                                }
+                            )
+                        }
+                        else if(saving.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                        {
+                            SavingCard_Expense2(
                                 saving = saving,
                                 onDismiss = {
                                     visible = false

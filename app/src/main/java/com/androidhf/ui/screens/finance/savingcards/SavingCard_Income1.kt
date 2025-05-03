@@ -154,7 +154,7 @@ fun SavingCard_Income1(
 @Composable
 private fun Content(saving: Savings)
 {
-    if(saving.Amount > osszpenz)
+    if(!saving.Closed && LocalDate.now() < saving.EndDate)
     {
 
         BorderBox {
@@ -166,9 +166,23 @@ private fun Content(saving: Savings)
                     Column(modifier = Modifier.weight(6.5f)) {
                         HeaderText(saving.Title)
                         Text(saving.Description, color = UIVar.onBoxColor())
+                        if(ChronoUnit.DAYS.between(LocalDate.now(), saving.EndDate) in 0..7)
+                        {
+                            Row(modifier = Modifier.background(MaterialTheme.colorScheme.error, RoundedCornerShape(UIVar.Radius)), verticalAlignment = Alignment.CenterVertically){
+                                Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
+                                Text("Deadline Inbound!", color = MaterialTheme.colorScheme.onError)
+                                Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
+                            }
+                        }
                     }
                     Box(modifier = Modifier.fillMaxHeight().weight(3.5f)) {
-                        Text("${saving.Amount} Ft", modifier = Modifier.align(Alignment.CenterEnd), fontWeight = FontWeight.ExtraBold, color = UIVar.onBoxColor())
+                        Column( modifier = Modifier.align(Alignment.CenterEnd)) {
+                            Text("${saving.Amount} Ft", fontWeight = FontWeight.ExtraBold, color = UIVar.onBoxColor(),modifier = Modifier.align(Alignment.End))
+                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 3.dp, end = 3.dp).align(Alignment.End))
+                            {
+                                Text("Type: Hold", color = UIVar.boxColor())
+                            }
+                        }
                     }
                 }
                 Box(modifier = Modifier.fillMaxWidth())
@@ -200,8 +214,10 @@ private fun Content(saving: Savings)
             }
         }
     }
-    else
+    else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszpenz && LocalDate.now() >= saving.EndDate)))
     {
+        saving.Completed = true
+        saving.Closed = true
         BorderBox {
             Box()
             {
@@ -211,9 +227,38 @@ private fun Content(saving: Savings)
                             HeaderText(saving.Title)
                             Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
                             Text("Successfully achieved!", color = UIVar.onBoxColor())
+                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
+                            {
+                                Text("Type: Hold", color = UIVar.boxColor())
+                            }
                         }
                         Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
-                            Icon(painter = painterResource(id = R.drawable.ic_check_48dp), contentDescription = "Home icon")
+                            Icon(painter = painterResource(id = R.drawable.ic_check_48dp), contentDescription = "Tick Icon")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else{
+        saving.Failed = true
+        saving.Closed = true
+        BorderBox {
+            Box()
+            {
+                Column {
+                    Row {
+                        Column(modifier = Modifier.weight(8f)) {
+                            HeaderText(saving.Title)
+                            Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
+                            Text("Failed to achieve!", color = UIVar.onBoxColor())
+                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
+                            {
+                                Text("Type: Hold", color = UIVar.boxColor())
+                            }
+                        }
+                        Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
+                            Icon(painter = painterResource(id = R.drawable.ic_cross_48dp), contentDescription = "Cross Icon")
                         }
                     }
                 }
