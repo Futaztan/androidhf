@@ -67,6 +67,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
+import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.screens.user.UserScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -107,17 +109,23 @@ class MainActivity : ComponentActivity() {
                     },
                     topBar =
                         {
-                            CustomTopAppBar()
+                            CustomTopAppBar(navController)
                         }
                 ) { innerPadding ->
 
+
+                    //be van e jelentkezve check
+                    val startScreen : String
+                    if(AuthService.isLoggedIn() || AuthService.isGuest) startScreen="home"
+                    else startScreen="login"
                     NavHost(
                         navController = navController,
-                        startDestination = "login",
+                        startDestination = startScreen,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("login") { LoginScreen(navController) }
                         composable("register") { RegisterScreen(navController) }
+                        composable("user") { UserScreen(navController)}
                         composable("home") { HomeScreen(/*financeViewModel*/) }
                         composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
@@ -195,11 +203,11 @@ fun BottomNavBar(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar() {
+fun CustomTopAppBar(navController: NavHostController) {
     TopAppBar(
         title = { Text(Data.topBarTitle) },
         actions = {
-            IconButton(onClick = { /* TODO */ }) {
+            IconButton(onClick = { navController.navigate("user") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_account),
                     contentDescription = "Account icon"

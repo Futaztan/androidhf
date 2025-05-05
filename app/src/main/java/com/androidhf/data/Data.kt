@@ -33,12 +33,13 @@ object Data {
     var osszpenz by mutableIntStateOf(0)
     private set
 
-    var topBarTitle by mutableStateOf("Home")
     var repetitiveTransactions = mutableStateListOf<Transaction>()
+    var topBarTitle by mutableStateOf("Home")
 
     fun getIncomesList() : SnapshotStateList<Transaction> {return incomesList}
     fun getExpensesList() : SnapshotStateList<Transaction> { return expensesList}
 
+    //ezt valahová ai-ba basszátok ne ide
     fun dataToAIPrompt(): String {
         var output: String = "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
         incomesList.forEach { item ->

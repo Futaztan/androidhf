@@ -3,6 +3,7 @@ package com.androidhf.data
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.room.vo.Entity
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -11,13 +12,13 @@ import java.time.LocalTime
 //mutable ha editelni akarjuk valamelyik tranzaikciot akkor változzonm az ui
 
 
-class Transaction(
-   _amount : Int,
-   _reason : String,            //tranzakcio rövid leirasa a usertol
-   _date : LocalDate,
-   _time: LocalTime,
-   _category : Category,            //Category-n belüli típus
-    _frequency : Frequency         //milyen gyakran van ez a tranzakcio
+data class Transaction(
+    val _amount : Int,
+    val _reason : String,            //tranzakcio rövid leirasa a usertol
+    val _date : LocalDate,
+    val _time: LocalTime,
+    val _category : Category,            //Category-n belüli típus
+    val _frequency : Frequency         //milyen gyakran van ez a tranzakcio
 
 )
 {
@@ -28,3 +29,5 @@ class Transaction(
     var category by mutableStateOf(_category)
     var frequency by mutableStateOf(_frequency)
 }
+
+

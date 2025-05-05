@@ -23,8 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.androidhf.ui.reuseable.NameField
+import com.androidhf.ui.reuseable.PasswordField
 import com.androidhf.ui.reuseable.UIVar
-import com.androidhf.ui.screens.login.auth.FirebaseAuthService
+import com.androidhf.ui.screens.login.auth.AuthService
 
 
 private fun onRegister(email: String, password1 : String,password2 : String,  navController: NavController, context: Context)
@@ -34,7 +36,7 @@ private fun onRegister(email: String, password1 : String,password2 : String,  na
         Toast.makeText(context, "Sikertelen regisztracio", Toast.LENGTH_LONG).show();
         return
     }
-    FirebaseAuthService.registerWithEmailAndPassword(email,password1){success->
+    AuthService.registerWithEmailAndPassword(email,password1){ success->
         if(success)
             navController.navigate("login")
         else Toast.makeText(context,"Sikertelen regisztracio",Toast.LENGTH_LONG).show()

@@ -43,6 +43,7 @@ android {
 dependencies {
     implementation(libs.firebase.auth)
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation(libs.androidx.room.compiler)
     val work_version = "2.10.0"
     implementation("androidx.work:work-runtime-ktx:$work_version")
     implementation("io.github.thechance101:chart:Beta-0.0.5")

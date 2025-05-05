@@ -5,9 +5,33 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
-object FirebaseAuthService {
+object AuthService {
 
     private val firebaseAuth: FirebaseAuth = Firebase.auth
+    var isGuest = false
+
+
+    fun getUserEmail() : String
+    {
+        Log.d("useremail:", firebaseAuth.currentUser?.email.toString())
+        return firebaseAuth.currentUser?.email.toString()
+
+    }
+    fun getUserDisplayName() : String
+    {
+        Log.d("userdisplayname:", firebaseAuth.currentUser?.displayName.toString())
+        return firebaseAuth.currentUser?.displayName.toString()
+    }
+    fun logOut()
+    {
+        firebaseAuth.signOut()
+    }
+    fun isLoggedIn() : Boolean
+    {
+        if(firebaseAuth.currentUser==null) return false
+        return true
+    }
+
 
 
     fun registerWithEmailAndPassword(email: String, password: String, onResult: (Boolean) -> Unit)

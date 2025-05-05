@@ -26,6 +26,8 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import com.androidhf.ui.screens.login.auth.AuthService
+
 
 @Composable
 fun HomeScreen() {
@@ -42,7 +44,8 @@ fun HomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Panel{
-            HeaderText("Szia Teszt!")
+            if(AuthService.isGuest) HeaderText("Szia Vendég")
+            else HeaderText("Szia ${AuthService.getUserEmail()}")
         }
 
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }
@@ -67,7 +70,7 @@ fun HomeScreen() {
                 SavingCard_Expense2(item, { }, false)
             }
         }
-        Button(onClick = {}) { Text("Stock market:") }
+        Button(onClick = {  }) { Text("Stock market:") }
     }
 }
 
