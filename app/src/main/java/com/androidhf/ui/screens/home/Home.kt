@@ -1,5 +1,6 @@
 package com.androidhf.ui.screens.home
 
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,9 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen() {
@@ -68,6 +72,17 @@ fun HomeScreen() {
             }
         }
         Button(onClick = {}) { Text("Stock market:") }
+        Button(onClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                Data.saveTransactions()
+            }
+        }) { Text("SAVE") }
+        Button(onClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                Data.loadTransactions()
+            }
+
+        }) { Text("LOAD")}
     }
 }
 

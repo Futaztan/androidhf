@@ -53,7 +53,7 @@ fun FirstXItemsTransactions(
                         {
                             append("${item.amount} Ft ")
                         }
-                        append("${item.category} ${item.reason} ${item.date} ${item.time}")
+                        append("${item.category} ${item.description} ${item.date} ${item.time}")
                     },
                     modifier = Modifier.padding(8.dp),
                     color = color

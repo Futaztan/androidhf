@@ -72,6 +72,8 @@ import androidx.compose.ui.platform.LocalView
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -86,18 +88,19 @@ class MainActivity : ComponentActivity() {
                 uploadWorkRequest
             )
 
+        Data.init(this)
 
 
 
         setContent {
             AndroidhfTheme {
-
+                /*
                 var elso by remember { mutableStateOf(true) }
 
                 if (elso) {
                     listafeltoles()
                     elso = false
-                }
+                } */
 
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
