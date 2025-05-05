@@ -114,13 +114,9 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
 
 
-                    //be van e jelentkezve check
-                    val startScreen : String
-                    if(AuthService.isLoggedIn() || AuthService.isGuest) startScreen="home"
-                    else startScreen="login"
                     NavHost(
                         navController = navController,
-                        startDestination = startScreen,
+                        startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("login") { LoginScreen(navController) }
@@ -207,7 +203,13 @@ fun CustomTopAppBar(navController: NavHostController) {
     TopAppBar(
         title = { Text(Data.topBarTitle) },
         actions = {
-            IconButton(onClick = { navController.navigate("user") }) {
+            IconButton(
+                onClick =
+                    {
+                        if(AuthService.isLoggedIn()) navController.navigate("user")
+                        else navController.navigate("login")
+                    })
+            {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_account),
                     contentDescription = "Account icon"

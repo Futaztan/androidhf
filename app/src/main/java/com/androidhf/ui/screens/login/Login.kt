@@ -39,11 +39,7 @@ private fun onLogin(email: String, password : String, navController: NavControll
 
 
 }
-private fun continueWithoutAccount(navController: NavController)
-{
-    AuthService.isGuest=true
-    navController.navigate("home")
-}
+
 @Composable
 fun LoginScreen(navController: NavController) {
 
@@ -72,7 +68,7 @@ fun LoginScreen(navController: NavController) {
             )
             Button(onClick = {onLogin(name,password,navController,context)}) { Text("LOGIN") }
             Button(onClick ={navController.navigate("register")}) { Text("REGISTER")}
-            Button(onClick = { continueWithoutAccount(navController) }) { Text("I do not want to have an account") }
+
         }
 
     }

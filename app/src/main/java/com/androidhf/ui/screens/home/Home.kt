@@ -44,7 +44,7 @@ fun HomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Panel{
-            if(AuthService.isGuest) HeaderText("Szia Vendég")
+            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
             else HeaderText("Szia ${AuthService.getUserEmail()}")
         }
 

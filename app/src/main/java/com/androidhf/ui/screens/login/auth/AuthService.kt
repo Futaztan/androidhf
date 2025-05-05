@@ -8,7 +8,7 @@ import com.google.firebase.auth.auth
 object AuthService {
 
     private val firebaseAuth: FirebaseAuth = Firebase.auth
-    var isGuest = false
+
 
 
     fun getUserEmail() : String
