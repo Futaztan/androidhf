@@ -20,7 +20,7 @@ class DailyWorker(appContext: Context, workerParams: WorkerParameters):
         Log.d("DailyWorker", "Munka fut: ${System.currentTimeMillis()}")
         for (transaction in Data.repetitiveTransactions)
         {
-            val newTransaction = Transaction(transaction.amount,transaction.reason, LocalDate.now(),
+            val newTransaction = Transaction(transaction.amount,transaction.description, LocalDate.now(),
                 LocalTime.now(),transaction.category,transaction.frequency)
             when(transaction.frequency)
             {
