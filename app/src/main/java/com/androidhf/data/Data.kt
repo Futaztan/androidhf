@@ -62,6 +62,7 @@ object Data {
         expensesList.forEach {
             db.transactionDao().insertTransaction(it.toEntity())
         }
+        TODO()  //TODO ISMETLODO TRANZAKCIOK
     }
     suspend fun loadTransactions()
     {

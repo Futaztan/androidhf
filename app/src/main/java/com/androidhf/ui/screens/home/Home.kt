@@ -71,7 +71,7 @@ fun HomeScreen() {
                 SavingCard_Expense2(item, { }, false)
             }
         }
-        Button(onClick = {}) { Text("Stock market:") }
+        Button(onClick = {}) { Text("Stock market:") } //TODO
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Data.saveTransactions()
