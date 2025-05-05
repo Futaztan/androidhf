@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -44,8 +43,6 @@ import com.androidhf.data.Category
 import com.androidhf.data.Data
 
 import com.androidhf.data.Frequency
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsType
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.FinanceScreen
@@ -68,7 +65,8 @@ import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
-import com.androidhf.ui.screens.LoginScreen
+import com.androidhf.ui.screens.login.LoginScreen
+import com.androidhf.ui.screens.login.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -118,7 +116,8 @@ class MainActivity : ComponentActivity() {
                         startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("login") { LoginScreen(navController)}
+                        composable("login") { LoginScreen(navController) }
+                        composable("register") { RegisterScreen(navController) }
                         composable("home") { HomeScreen(/*financeViewModel*/) }
                         composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }

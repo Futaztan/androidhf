@@ -1,4 +1,7 @@
-package com.androidhf.ui.screens
+package com.androidhf.ui.screens.login
+
+import android.content.Context
+import android.widget.Toast
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +18,6 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,14 +41,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.login.auth.FirebaseAuthService
 
 
-fun onSubmit()
+private fun onLogin(email: String, password : String, navController: NavController, context: Context)
 {
+
+    FirebaseAuthService.loginWithEmailAndPassword(email,password){success->
+        if(success)
+            navController.navigate("home")
+        else Toast.makeText(context,"Sikertelen bejelentkezes",Toast.LENGTH_LONG).show()
+    }
 
 
 }
-fun continueWithoutAccount(navController: NavController)
+private fun continueWithoutAccount(navController: NavController)
 {
     navController.navigate("home")
 }
@@ -54,6 +64,7 @@ fun LoginScreen(navController: NavController) {
 
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
     Surface {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -71,11 +82,12 @@ fun LoginScreen(navController: NavController) {
             PasswordField(
                 value = password,
                 onChange = { password=it },
-                submit = ::onSubmit,
+                submit = {onLogin(name,password,navController, context)},
                 modifier = Modifier.fillMaxWidth()
             )
-            Button(onClick = ::onSubmit) { Text("LOGIN") }
-            Button(onClick = {continueWithoutAccount(navController)}) { Text("I do not want to have an account") }
+            Button(onClick = {onLogin(name,password,navController,context)}) { Text("LOGIN") }
+            Button(onClick ={navController.navigate("register")}) { Text("REGISTER")}
+            Button(onClick = { continueWithoutAccount(navController) }) { Text("I do not want to have an account") }
         }
 
     }
@@ -120,7 +132,7 @@ fun NameField(
 fun PasswordField(
     value: String,
     onChange: (String) -> Unit,
-    submit: () -> Unit,
+    submit:  () -> Unit = {},
     modifier: Modifier = Modifier,
     label: String = "Password",
     placeholder: String = "Enter your Password"

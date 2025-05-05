@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -40,6 +41,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.auth)
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     val work_version = "2.10.0"
     implementation("androidx.work:work-runtime-ktx:$work_version")
     implementation("io.github.thechance101:chart:Beta-0.0.5")
