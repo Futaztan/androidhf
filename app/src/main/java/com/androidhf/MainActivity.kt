@@ -68,6 +68,7 @@ import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import com.androidhf.ui.screens.LoginScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -114,9 +115,10 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "home",
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable("login") { LoginScreen(navController)}
                         composable("home") { HomeScreen(/*financeViewModel*/) }
                         composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
