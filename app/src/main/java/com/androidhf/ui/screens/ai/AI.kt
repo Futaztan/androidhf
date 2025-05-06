@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,7 +32,7 @@ data class ChatMessage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AIScreen(viewModel: AIViewModel = viewModel()) {
+fun AIScreen(viewModel: AIViewModel) {
     val messages = AiMessages.messages
     var inputText by remember { mutableStateOf("") }
     val isLoading by viewModel.isLoading.collectAsState()
@@ -180,7 +181,8 @@ fun MessageItem(message: ChatMessage) {
                 MaterialTheme.colorScheme.primary
             else
                 MaterialTheme.colorScheme.secondaryContainer,
-            modifier = Modifier.widthIn(max = 300.dp)
+            //modifier = Modifier.widthIn(max = 300.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier.padding(12.dp)
@@ -191,12 +193,15 @@ fun MessageItem(message: ChatMessage) {
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    MarkdownText(
-                        markdown = message.content,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        fontSize = 16.sp,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Column(modifier = Modifier){
+                        Text(text = "AI", color = Color.Gray)
+                        MarkdownText(
+                            markdown = message.content,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontSize = 16.sp,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
 
                 Text(
