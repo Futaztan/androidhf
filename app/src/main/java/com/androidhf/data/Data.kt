@@ -36,7 +36,7 @@ object Data {
     private var incomesList = mutableStateListOf<Transaction>()
 
     private var expensesList = mutableStateListOf<Transaction>()
-    var savingsList = mutableStateListOf<Savings>()
+    private var savingsList = mutableStateListOf<Savings>()
 
     var osszpenz by mutableIntStateOf(0)
     private set
@@ -44,7 +44,7 @@ object Data {
     var topBarTitle by mutableStateOf("Home")
     var repetitiveTransactions = mutableStateListOf<Transaction>()
 
-    lateinit var db: RoomDB
+    private lateinit var db: RoomDB
 
     fun init(context: Context) {
         db = Room.databaseBuilder(
@@ -54,6 +54,16 @@ object Data {
             ).fallbackToDestructiveMigration(true)
             .build()
     }
+    private suspend fun saveSaves(save : Savings) : Long
+    {
+         return db.savingDao().insertSaving(save.toEntity())
+    }
+    suspend fun loadSaves()
+    {
+        val loaded = db.savingDao().getAllSavings()
+        val converted = loaded.map { it.toDomain() }
+        savingsList.addAll(converted)
+    }
     suspend fun saveTransactions()
     {
         incomesList.forEach {
@@ -62,7 +72,9 @@ object Data {
         expensesList.forEach {
             db.transactionDao().insertTransaction(it.toEntity())
         }
-        TODO()  //TODO ISMETLODO TRANZAKCIOK
+        repetitiveTransactions.forEach {
+            db.transactionDao().insertTransaction(it.toEntity())
+        }
     }
     suspend fun loadTransactions()
     {
@@ -75,11 +87,19 @@ object Data {
         converted = loaded.map { it.toDomain() }
         incomesList.addAll(converted)
 
+        loaded = db.transactionDao().getRepetitiveTransactions(true)
+        converted = loaded.map { it.toDomain() }
+        repetitiveTransactions.addAll(converted)
+
+
+        calculateOsszpenz()
+
 
     }
 
     fun getIncomesList() : SnapshotStateList<Transaction> {return incomesList}
     fun getExpensesList() : SnapshotStateList<Transaction> { return expensesList}
+    fun getSavingsList() : SnapshotStateList<Savings> {return savingsList}
 
     fun dataToAIPrompt(): String {
         var output: String = "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
@@ -107,6 +127,14 @@ object Data {
         return output
     }
 
+
+    suspend fun addSave(save : Savings)
+    {
+
+        val id = saveSaves(save)
+        val saveWithId = save.copy(id = id)
+        savingsList.add(saveWithId)
+    }
 
     //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
     fun addTransaction(transaction: Transaction)

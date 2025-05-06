@@ -50,8 +50,12 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
                 frequency
             )
             Data.addTransaction(transaction/*, viewModel*/)
-            if(transaction.frequency!=Frequency.EGYSZERI)
-                Data.repetitiveTransactions.add(transaction)
+            if(transaction.frequency!=Frequency.EGYSZERI){
+                val repetitiveTransaction = transaction.copy()
+                repetitiveTransaction.isRepetitive = true
+                Data.repetitiveTransactions.add(repetitiveTransaction)
+            }
+
             navController.popBackStack() // visszalép az előző képernyőre
         }
     }

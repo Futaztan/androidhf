@@ -56,7 +56,7 @@ fun HomeScreen() {
             FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
         }
         Text("3 legújabb takarék")
-        Data.savingsList.takeLast(3).forEach { item ->
+        Data.getSavingsList().takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {
@@ -75,11 +75,13 @@ fun HomeScreen() {
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Data.saveTransactions()
+
             }
         }) { Text("SAVE") }
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Data.loadTransactions()
+                Data.loadSaves()
             }
 
         }) { Text("LOAD")}

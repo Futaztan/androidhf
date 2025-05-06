@@ -55,8 +55,11 @@ fun MoneyExpenseScreen(navController: NavController/*, viewModel: SavingsViewMod
             val transaction = Transaction(-amount, "TODO", LocalDate.now(), LocalTime.now(), category,frequency)
 
            Data.addTransaction(transaction/*, viewModel*/)
-            if(transaction.frequency!=Frequency.EGYSZERI)
+            if(transaction.frequency!=Frequency.EGYSZERI){
+                transaction.isRepetitive=true
                 Data.repetitiveTransactions.add(transaction)
+            }
+
 
             navController.popBackStack() // visszalép az előző képernyőre
         }
@@ -147,7 +150,7 @@ fun MoneyExpenseScreen(navController: NavController/*, viewModel: SavingsViewMod
         Button(onClick = {
             val amount = input.toIntOrNull()
             if (amount != null) {
-                val found = Data.savingsList.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
+                val found = Data.getSavingsList().filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
                     item.Start - amount < item.Amount
                 }
                 if(found) showPopup = true

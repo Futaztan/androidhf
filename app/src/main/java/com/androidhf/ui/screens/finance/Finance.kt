@@ -126,9 +126,9 @@ fun FinanceScreen(navHostController: NavHostController) {
                     }
                 }
             }
-            if (Data.savingsList.isNotEmpty()) {
+            if (Data.getSavingsList().isNotEmpty()) {
                 this@LazyColumn.items(
-                    items = Data.savingsList,
+                    items = Data.getSavingsList(),
                     key = { it.id }
                 ) { saving ->
                     var visible by remember { mutableStateOf(true) }
@@ -170,7 +170,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                         if (!visible) {
                             haptic.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             delay(300)
-                            Data.savingsList.remove(saving)
+                            Data.getSavingsList().remove(saving)
                         }
                     }
                 }

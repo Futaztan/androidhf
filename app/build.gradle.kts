@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.room.common.jvm)
     val work_version = "2.10.0"
     val room_version = "2.7.1"
     ksp("androidx.room:room-compiler:$room_version")
