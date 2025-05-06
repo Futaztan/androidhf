@@ -1,9 +1,13 @@
 package com.androidhf.ui.screens.login.auth
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
+import com.google.firebase.auth.userProfileChangeRequest
 
 object AuthService {
 
@@ -13,13 +17,13 @@ object AuthService {
 
     fun getUserEmail() : String
     {
-        Log.d("useremail:", firebaseAuth.currentUser?.email.toString())
+
         return firebaseAuth.currentUser?.email.toString()
 
     }
     fun getUserDisplayName() : String
     {
-        Log.d("userdisplayname:", firebaseAuth.currentUser?.displayName.toString())
+
         return firebaseAuth.currentUser?.displayName.toString()
     }
     fun logOut()
@@ -31,33 +35,37 @@ object AuthService {
         if(firebaseAuth.currentUser==null) return false
         return true
     }
+    /*TODO*/
+    fun setUserDisplayName(newname : String)
+    {
+        val changeRequest = userProfileChangeRequest { displayName = newname }
+        firebaseAuth.currentUser?.updateProfile(changeRequest)
+    }
 
 
 
-    fun registerWithEmailAndPassword(email: String, password: String, onResult: (Boolean) -> Unit)
+    fun registerWithEmailAndPassword(email: String, password: String, context: Context,onResult: (Boolean) -> Unit)
     {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener() { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("TAG", "createUserWithEmail:success")
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("TAG", "createUserWithEmail:failure", task.exception)
+
+                if (!task.isSuccessful) {
+                    Toast.makeText(context, task.exception?.message,Toast.LENGTH_LONG).show()
+                }
+                else {
+                    val changeRequest = userProfileChangeRequest { displayName = getUserEmail().substringBefore('@') }
+                    firebaseAuth.currentUser?.updateProfile(changeRequest)
                 }
                 onResult(task.isSuccessful)
             }
     }
 
-    fun loginWithEmailAndPassword(email: String, password : String, onResult: (Boolean) -> Unit)
+    fun loginWithEmailAndPassword(email: String, password : String, context: Context, onResult: (Boolean) -> Unit)
     {
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(){task->
-            if(task.isSuccessful)
+            if(!task.isSuccessful)
             {
-                Log.d("TAG", "signInWithEmail:success")
-            }
-            else {
-                Log.w("TAG", "signInWithEmail:failure", task.exception)
+                Toast.makeText(context, task.exception?.message,Toast.LENGTH_LONG).show()
             }
             onResult(task.isSuccessful)
         }

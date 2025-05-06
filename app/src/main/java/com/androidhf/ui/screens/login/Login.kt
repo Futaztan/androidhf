@@ -31,10 +31,10 @@ private fun onLogin(email: String, password : String, navController: NavControll
 {
 
     AuthService.getUserEmail()
-    AuthService.loginWithEmailAndPassword(email,password){ success->
+    AuthService.loginWithEmailAndPassword(email,password, context){ success->
         if(success)
             navController.navigate("home")
-        else Toast.makeText(context,"Sikertelen bejelentkezes",Toast.LENGTH_LONG).show()
+
     }
 
 
@@ -57,6 +57,7 @@ fun LoginScreen(navController: NavController) {
             NameField(
                 value = name,
                 onChange = { name = it },
+                label = "Login",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.padding(UIVar.Padding))

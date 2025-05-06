@@ -45,7 +45,7 @@ fun HomeScreen() {
     {
         Panel{
             if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
-            else HeaderText("Szia ${AuthService.getUserEmail()}")
+            else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
 
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }

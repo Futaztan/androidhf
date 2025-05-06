@@ -1,7 +1,6 @@
 package com.androidhf.ui.screens.login
 
 
-
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -29,17 +28,25 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.login.auth.AuthService
 
 
-private fun onRegister(email: String, password1 : String,password2 : String,  navController: NavController, context: Context)
-{
+private fun onRegister(
+    email: String,
+    password1: String,
+    password2: String,
+    navController: NavController,
+    context: Context
+) {
 
-    if(!password1.equals(password2)) {
-        Toast.makeText(context, "Sikertelen regisztracio", Toast.LENGTH_LONG).show();
+    if (email.isBlank() || password1.isBlank() || password2.isBlank()) {
         return
     }
-    AuthService.registerWithEmailAndPassword(email,password1){ success->
-        if(success)
+    if (!password1.equals(password2)) {
+        Toast.makeText(context, "A ket jelszo nem egyezik", Toast.LENGTH_LONG).show();
+        return
+    }
+    AuthService.registerWithEmailAndPassword(email, password1, context) { success ->
+        if (success)
             navController.navigate("login")
-        else Toast.makeText(context,"Sikertelen regisztracio",Toast.LENGTH_LONG).show()
+
     }
 
 
@@ -63,23 +70,32 @@ fun RegisterScreen(navController: NavController) {
             NameField(
                 value = name,
                 onChange = { name = it },
+                label = "Register",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.padding(UIVar.Padding))
             PasswordField(
                 value = password1,
-                onChange = { password1=it },
-               // submit = { onRegister(name,password1,navController, context) },
+                onChange = { password1 = it },
+                // submit = { onRegister(name,password1,navController, context) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.padding(UIVar.Padding))
             PasswordField(
                 value = password2,
-                onChange = { password2=it },
-                submit = { onRegister(name,password1,password2, navController, context) },
+                onChange = { password2 = it },
+                submit = { onRegister(name, password1, password2, navController, context) },
                 modifier = Modifier.fillMaxWidth()
             )
-            Button(onClick = { onRegister(name,password1,password2, navController,context) }) { Text("REGISTER") }
+            Button(onClick = {
+                onRegister(
+                    name,
+                    password1,
+                    password2,
+                    navController,
+                    context
+                )
+            }) { Text("REGISTER") }
 
         }
 

@@ -21,7 +21,7 @@ fun NameField(
     value: String,
     onChange: (String) -> Unit = {},
     modifier: Modifier = Modifier,
-    label: String = "Login",
+    label: String,
     placeholder: String = "Enter your name"
 ) {
 
