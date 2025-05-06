@@ -5,11 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -18,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +35,8 @@ import com.androidhf.data.Data
 import com.androidhf.data.Savings
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
+import com.androidhf.ui.reuseable.Panel
+import com.androidhf.ui.reuseable.UIVar
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.util.Calendar
@@ -35,16 +44,20 @@ import java.util.Calendar
 @Composable
 fun MoneySavingsScreen(navController: NavController)
 {
+    Data.topBarTitle = "Takarék felvétel"
     var input by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var input_invalid by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf<LocalDate>(LocalDate.now().plusDays(14)) }
     var selectedType by remember { mutableStateOf(SavingsType.INCOMEGOAL_BYTIME) }
     var description by remember { mutableStateOf("") }
+    var description_invalid by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
+    var title_invalid by remember { mutableStateOf(false) }
     var showPopup by remember { mutableStateOf(false) }
 
     if (showPopup) {
         LaunchedEffect(Unit) {
-            delay(2500)
+            delay(2000)
             showPopup = false
         }
         Popup {
@@ -55,7 +68,7 @@ fun MoneySavingsScreen(navController: NavController)
                         .background(Color.White)
                         .border(1.dp, Color.Black)
                         .padding(16.dp)
-                        .align(androidx.compose.ui.Alignment.BottomCenter)
+                        .align(Alignment.BottomCenter)
                 ) {
                     Text("Hiányos a kitöltés!", color = Color.Black)
                 }
@@ -64,7 +77,11 @@ fun MoneySavingsScreen(navController: NavController)
     }
 
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, selectedDate.year)
+        set(Calendar.MONTH, selectedDate.monthValue-1)
+        set(Calendar.DAY_OF_MONTH, selectedDate.dayOfMonth)
+    }
 
     val datePickerDialog = remember {
         DatePickerDialog(
@@ -78,52 +95,176 @@ fun MoneySavingsScreen(navController: NavController)
         )
     }
 
-    Column {
-        Text("Adja meg az összeget:")
-        NumberTextField(
-            input = input,
-            onInputChange = { input = it }
-        )
-        Text("Válasszon egy dátumot:")
-        Button(onClick = { datePickerDialog.show() }) {
-            Text(text = selectedDate?.toString() ?: "Dátum kiválasztása")
+    var input_background_color: Color
+    var input_text_color: Color
+    var desc_background_color: Color
+    var desc_text_color: Color
+    var title_background_color: Color
+    var title_text_color: Color
+    Column(modifier = Modifier.padding(UIVar.Padding)) {
+        if (input_invalid)
+        {
+            input_background_color = MaterialTheme.colorScheme.error
+            input_text_color = MaterialTheme.colorScheme.onError
         }
-        Text("Válasszon egy típust:")
-        SimpleEnumDropdown(selected = selectedType, onSelectedChange = { selectedType = it })
-        Text("Adjon egy nevet:")
-        TextField(
-            value = title,
-            onValueChange = { title = it }
-        )
-        Text("Adjon egy rövid leírást miért hozta létre:")
-        TextField(
-            value = description,
-            onValueChange = { description = it }
-        )
-        Button(
-            onClick = {
-                if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && selectedDate != null) {
-                    selectedDate?.let { date ->
-                        val saving = Savings(
-                            input.toInt(),
-                            LocalDate.now(),
-                            date,
-                            selectedType,
-                            title,
-                            description,
-                            Data.osszpenz
-                        )
-                        Data.savingsList.add(saving)
-                        navController.popBackStack()
-                    }
-                }
-                else{
-                    showPopup = true
+        else
+        {
+            input_background_color = MaterialTheme.colorScheme.primaryContainer
+            input_text_color = MaterialTheme.colorScheme.onPrimaryContainer
+        }
+        if (description_invalid)
+        {
+            desc_background_color = MaterialTheme.colorScheme.error
+            desc_text_color = MaterialTheme.colorScheme.onError
+        }
+        else
+        {
+            desc_background_color = MaterialTheme.colorScheme.primaryContainer
+            desc_text_color = MaterialTheme.colorScheme.onPrimaryContainer
+        }
+        if (title_invalid)
+        {
+            title_background_color = MaterialTheme.colorScheme.error
+            title_text_color = MaterialTheme.colorScheme.onError
+        }
+        else
+        {
+            title_background_color = MaterialTheme.colorScheme.primaryContainer
+            title_text_color = MaterialTheme.colorScheme.onPrimaryContainer
+        }
+        Panel(centerItems = false, backgroundColor = input_background_color){
+            Column{
+                Text("Adja meg az összeget:", color = input_text_color)
+                NumberTextField(
+                    input = input,
+                    onInputChange = { input = it },
+                    placeholder = "50000",
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(centerItems = false, backgroundColor = MaterialTheme.colorScheme.primaryContainer)
+        {
+            Column{
+                Text("Válasszon egy dátumot:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Button(onClick = { datePickerDialog.show() }) {
+                    Text(text = selectedDate.toString() ?: "Dátum kiválasztása")
                 }
             }
-        ) {
-            Text("Mentés")
         }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(centerItems = false, backgroundColor = MaterialTheme.colorScheme.primaryContainer) {
+            Column{
+                Text("Válasszon egy típust:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                SimpleEnumDropdown(selected = selectedType, onSelectedChange = { selectedType = it })
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(centerItems = false, backgroundColor = title_background_color)
+        {
+            Column{
+                Text("Adjon egy nevet:", color = title_text_color)
+                TextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    placeholder = { Text("Cím") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(centerItems = false, backgroundColor = desc_background_color) {
+            Column {
+                Text("Adjon egy rövid leírást miért hozta létre:", color = desc_text_color)
+                TextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    placeholder = { Text("Rövid leírás")},
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(backgroundColor = MaterialTheme.colorScheme.primaryContainer)
+        {
+            Row {
+                Button(
+                    onClick = {
+                        if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && input.toInt() > 0) {
+                            selectedDate.let { date ->
+
+                                var saving: Savings
+                                if(selectedType == SavingsType.INCOMEGOAL_BYAMOUNT)
+                                {
+                                     saving = Savings(
+                                        input.toInt(),
+                                        LocalDate.now(),
+                                        date,
+                                        selectedType,
+                                        title,
+                                        description,
+                                        0
+                                    )
+                                }
+                                else if(selectedType == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                                {
+                                    saving = Savings(
+                                        input.toInt()*-1,
+                                        LocalDate.now(),
+                                        date,
+                                        selectedType,
+                                        title,
+                                        description,
+                                        0
+                                    )
+                                }
+                                else
+                                {
+                                    saving = Savings(
+                                        input.toInt(),
+                                        LocalDate.now(),
+                                        date,
+                                        selectedType,
+                                        title,
+                                        description,
+                                        Data.osszpenz
+                                    )
+                                }
+                                Data.savingsList.add(saving)
+                                navController.popBackStack()
+                            }
+                        }
+                        else{
+                            if(input.isBlank() || input.toInt() < 0)
+                            {
+                                input_invalid = true
+                            }
+                            else input_invalid = false
+                            if(description.isBlank())
+                            {
+                                description_invalid = true
+                            }
+                            else description_invalid = false
+                            if(title.isBlank())
+                            {
+                                title_invalid = true
+                            }
+                            else title_invalid = false
+                            //showPopup = true
+                        }
+                    }
+                ) {
+                    Text("Mentés")
+                }
+                Spacer(modifier = Modifier.width(UIVar.Padding))
+                Button(onClick = {navController.popBackStack()}) {
+                    Text("Mégse")
+                }
+            }
+        }
+
+
     }
 }
 

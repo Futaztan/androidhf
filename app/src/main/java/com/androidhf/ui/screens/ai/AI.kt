@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.androidhf.data.AiMessages
 import androidx.compose.ui.unit.sp
+import com.androidhf.data.Data
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 
@@ -33,6 +34,8 @@ data class ChatMessage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AIScreen(viewModel: AIViewModel) {
+    Data.topBarTitle = "AI"
+
     val messages = AiMessages.messages
     var inputText by remember { mutableStateOf("") }
     val isLoading by viewModel.isLoading.collectAsState()

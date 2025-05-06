@@ -2,12 +2,14 @@ package com.androidhf.data
 
 import java.time.LocalDate
 import java.util.Date
+import java.util.UUID
 
 
 //ez a class kezeli a megtakarításokat meg ilyeneket
 class Savings(
     amount: Int, startdate: LocalDate, enddate: LocalDate, type: SavingsType, title: String, description: String, start: Int
 ) {
+    val id: String = UUID.randomUUID().toString() //TODO: ez lehet hogy nem működik ha elmentjük majd
     var Amount: Int = amount                //a megtakarítási cél
     var StartDate: LocalDate = startdate         //mikor hoztuk létre
     var EndDate: LocalDate = enddate             //mikorra szeretnénk elérni
@@ -16,4 +18,7 @@ class Savings(
     var Title: String = title               //a megtakarítás neve
     var Description: String = description   //rövid leírása, hogy mit szerettünk volna elérni
     var Start: Int = start                  //kezdő pénz mennyisége
+    var Completed: Boolean = false          //teljesített-e
+    var Failed: Boolean = false             //elbukott
+    var Closed: Boolean = false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 }

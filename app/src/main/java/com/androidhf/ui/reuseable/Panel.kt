@@ -1,7 +1,6 @@
 package com.androidhf.ui.reuseable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,9 +16,9 @@ import androidx.compose.ui.unit.Dp
 @Composable
 fun Panel(
     modifier: Modifier = Modifier, //modifierek
-    backgroundColor: Color = UIVariables.BoxBackgroundColor, //panel háttere
-    cornerRadius: Dp = UIVariables.Radius, //mennyire legyen lekerekítve
-    padding: Dp = UIVariables.Padding, //mekkora legyen a belső padding
+    backgroundColor: Color = UIVar.panelColor(), //panel háttere
+    cornerRadius: Dp = UIVar.Radius, //mennyire legyen lekerekítve
+    padding: Dp = UIVar.Padding, //mekkora legyen a belső padding
     centerItems: Boolean = true, //legyenek-e középre igazítve a belső elemek
     fitMaxWidth: Boolean = true, //kitöltse a maximális helyet ami rendelkezésre áll, ha kettő oszlopot kell egymás mellé tenni akkor ne
     uibemenet: @Composable () -> Unit //ide a jön a ui amit bele kell tenni

@@ -3,7 +3,6 @@ package com.androidhf.ui.reuseable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -18,9 +17,9 @@ import androidx.compose.ui.unit.dp
 fun BorderBox(modifier: Modifier = Modifier, uibemenet: @Composable () -> Unit)
 {
     Box(modifier = modifier
-        .border(UIVariables.BorderWidth, Color.Red, RoundedCornerShape(UIVariables.Radius))
-        .background(UIVariables.BoxBackgroundColor, RoundedCornerShape(UIVariables.Radius))
-        .padding(UIVariables.Padding)
+        .border(UIVar.BorderWidth, UIVar.boxBorderColor(), RoundedCornerShape(UIVar.Radius))
+        .background(UIVar.boxColor(), RoundedCornerShape(UIVar.Radius))
+        .padding(UIVar.Padding)
     )
     {
         uibemenet()

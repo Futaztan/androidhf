@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -10,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.androidhf"
-        minSdk = 26
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -40,7 +41,12 @@ android {
 }
 
 dependencies {
+    val work_version = "2.10.0"
+    val room_version = "2.7.1"
+    ksp("androidx.room:room-compiler:$room_version")
 
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.work:work-runtime-ktx:$work_version")
     implementation("io.github.thechance101:chart:Beta-0.0.5")
     implementation(libs.client.jvm)
     implementation(libs.androidx.core.ktx)

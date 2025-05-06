@@ -1,5 +1,11 @@
 package com.androidhf.ui.screens.finance
 
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,11 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,74 +39,167 @@ import co.yml.charts.ui.wavechart.model.WaveChartData
 import co.yml.charts.ui.wavechart.model.WaveFillColor
 import co.yml.charts.ui.wavechart.model.WavePlotData
 import com.androidhf.data.Data
-import com.androidhf.data.Data.calculateBalanceChangesSimple
-import com.androidhf.data.Data.savingsList
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
-import com.androidhf.ui.reuseable.LastXItemsTransactions
-import com.androidhf.ui.reuseable.UIVariables
-import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
-import java.time.LocalDate
+import com.androidhf.ui.reuseable.UIVar
 import kotlin.math.max
 import kotlin.math.min
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalView
+import com.androidhf.data.SavingsType
+import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
+import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import kotlinx.coroutines.delay
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
+@ExperimentalMaterialApi
 fun FinanceScreen(navHostController: NavHostController) {
+    Data.topBarTitle = "Finance"
+
+    //alsó gombok eltüntetése
+    val listState = rememberLazyListState()
+    val haptic = LocalView.current
+
+
+    val isScrolledToBottom by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+            val isLastItemFullyVisible = lastVisibleItem?.let {
+                it.index == layoutInfo.totalItemsCount - 1 &&
+                        it.offset + it.size <= layoutInfo.viewportEndOffset
+            } ?: false
+
+            val contentLargerThanViewport =
+                layoutInfo.totalItemsCount > 0 &&
+                        layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount
+
+            isLastItemFullyVisible && contentLargerThanViewport
+        }
+    }
+
+    //haptic pöccentés ha a legaljára görgettünk
+    if(isScrolledToBottom)      haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+    //
     Box(modifier = Modifier
-        .padding(UIVariables.Padding)
+        .padding(UIVar.Padding)
         .fillMaxSize()
     )
     {
-        val alma = Savings(50000, LocalDate.of(2025,4,12), LocalDate.now().plusDays(2), SavingsType.INCOMEGOAL_BYTIME, "Title", "Description", 20000)
-        savingsList.clear()//TODO: ez majd nem kell ide, most csak azért van, hogyha újra rajzolódik akkor ne vegye fel megint
-        savingsList.add(alma)
-        Column( modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-        ) {
-            BorderBox() {Finance_ui_egyenleg(navHostController)}
-            Spacer(modifier = Modifier.height(UIVariables.Padding))
-            Grafikon_init()
-            Spacer(modifier = Modifier.height(UIVariables.Padding))
-            savingsList.forEach {
-                SavingCard_Income1(it)
-                Spacer(modifier = Modifier.height(UIVariables.Padding))
+        LazyColumn(modifier = Modifier
+            .fillMaxWidth(),
+            state = listState) {
+            item {
+                BorderBox() {
+                    Finance_ui_egyenleg(navHostController)
+                }
             }
-            Row(modifier = Modifier.fillMaxWidth()) {
-                BorderBox(modifier = Modifier.weight(1f)) {
-                    Column {
-                        HeaderText("Bevétel")
-                        LastXItemsTransactions(Data.incomesList, 6, Color.Green)
+            item {
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                Grafikon_init()
+            }
+            item {
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    BorderBox(modifier = Modifier.weight(1f)) {
+                        Column {
+                            HeaderText("Bevétel")
+                            LastXItemsTransactionsMonthly(Data.getIncomesList(), 40, Color.Green)
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(UIVar.Padding))
+                    BorderBox(modifier = Modifier.weight(1f)) {
+                        Column {
+                            HeaderText("Kiadás")
+                            LastXItemsTransactionsMonthly(Data.getExpensesList(), 40, Color.Red)
+                        }
                     }
                 }
-                Spacer(modifier = Modifier.width(UIVariables.Padding))
-                BorderBox(modifier = Modifier.weight(1f)) {
-                    Column {
-                        HeaderText("Kiadás")
-                        LastXItemsTransactions(Data.expensesList, 6, Color.Red)
+            }
+            if (Data.savingsList.isNotEmpty()) {
+                this@LazyColumn.items(
+                    items = Data.savingsList,
+                    key = { it.id }
+                ) { saving ->
+                    var visible by remember { mutableStateOf(true) }
+
+                    Spacer(modifier = Modifier.height(UIVar.Padding))
+                    AnimatedVisibility(
+                        visible = visible,
+                        exit = shrinkVertically() + fadeOut(),
+                        modifier = Modifier.animateItemPlacement()
+                    ) {
+                        if(saving.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
+                        {
+                            SavingCard_Income2(
+                                saving = saving,
+                                onDismiss = {
+                                    visible = false
+                                }
+                            )
+                        }
+                        else if(saving.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
+                        {
+                            SavingCard_Expense2(
+                                saving = saving,
+                                onDismiss = {
+                                    visible = false
+                                }
+                            )
+                        }
+                        else{
+                            SavingCard_Income1(
+                                saving = saving,
+                                onDismiss = {
+                                    visible = false
+                                }
+                            )
+                        }
+                    }
+                    LaunchedEffect(visible) {
+                        if (!visible) {
+                            haptic.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                            delay(300)
+                            Data.savingsList.remove(saving)
+                        }
                     }
                 }
-                //BorderBox(modifier = Modifier.weight(1f)) {Finance_ui_kiadas(navHostController)}
             }
-            val balance = calculateBalanceChangesSimple()
         }
 
 
 
-        Button(onClick = {navHostController.navigate("money_income")},
-            modifier = Modifier.align(Alignment.BottomStart)
-        ) { Text("Bevétel") }
+        AnimatedVisibility(
+            visible = !isScrolledToBottom,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(),
+            exit = shrinkVertically(animationSpec = tween(durationMillis = 300)) + fadeOut(animationSpec = tween(durationMillis = 300))
+        ) {
+            Box {
+                Button(onClick = {navHostController.navigate("money_income")},
+                    modifier = Modifier.align(Alignment.BottomStart)
+                ) { Text("Bevétel") }
 
-        Button(onClick = {navHostController.navigate("money_saving")},
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) { Text("Takarék???") }
+                Button(onClick = {navHostController.navigate("money_saving")},
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                ) { Text("Takarék???") }
 
-        Button(onClick = {navHostController.navigate("money_expense")},
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) { Text("Kiadás") }
+                Button(onClick = {navHostController.navigate("money_expense")},
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                ) { Text("Kiadás") }
+            }
+        }
     }
 }
 
@@ -128,7 +228,7 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
 @Composable
 fun Finance_ui_bevetel(navHostController: NavHostController)
 {
-    val bevetellist = Data.incomesList
+    val bevetellist = Data.getIncomesList()
     Column(modifier = Modifier.fillMaxWidth()) {
         HeaderText("Bevetelek")
         if(bevetellist.size >= 1)
@@ -144,7 +244,7 @@ fun Finance_ui_bevetel(navHostController: NavHostController)
 @Composable
 fun Finance_ui_kiadas(navHostController: NavHostController)
 {
-    val kiadaslist = Data.expensesList
+    val kiadaslist = Data.getExpensesList()
     Column(modifier = Modifier.fillMaxWidth()) {
         HeaderText("Kiadas")
         if(kiadaslist.size >= 1)

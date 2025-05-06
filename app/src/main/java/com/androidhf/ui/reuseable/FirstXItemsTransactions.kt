@@ -1,5 +1,6 @@
 package com.androidhf.ui.reuseable
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -28,7 +29,21 @@ fun FirstXItemsTransactions(
 )
 {
     val firstItems = items.take(count)
-
+    var color: Color = _color
+    if(color == Color.Green)
+    {
+        if(!isSystemInDarkTheme())
+        {
+            color = Color(0, 165, 0)
+        }
+    }
+    else if(color == Color.Red)
+    {
+        if(!isSystemInDarkTheme())
+        {
+            color = Color(185, 0, 0)
+        }
+    }
     Panel(fitMaxWidth = false, modifier = _modifier) {
         Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             firstItems.forEach { item ->
@@ -38,10 +53,10 @@ fun FirstXItemsTransactions(
                         {
                             append("${item.amount} Ft ")
                         }
-                        append("${item.category} ${item.reason} ${item.date} ${item.time}")
+                        append("${item.category} ${item.description} ${item.date} ${item.time}")
                     },
                     modifier = Modifier.padding(8.dp),
-                    color = _color
+                    color = color
                 )
             }
         }

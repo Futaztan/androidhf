@@ -1,5 +1,7 @@
 package com.androidhf.ui.reuseable
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -8,7 +10,7 @@ import androidx.compose.ui.unit.sp
 
 //Random UI változók hogy ne kelljen mindenhol mindent külön megadni
 
-object UIVariables
+object UIVar
 {
     val Padding: Dp = 8.dp
     val Radius: Dp = 8.dp
@@ -17,6 +19,25 @@ object UIVariables
     val HeaderText: TextUnit = 24.sp
     val AccentColor: Color = Color.Yellow
     val BackgroundColor: Color = Color(255f, 255f, 255f, 1f)
+
+    //Ezeket használjátok majd színek beállítására ha lehet ne a fenti cuccokat
+    //Használat pl ... Modifier.background(UIVar.boxColor())
+    //Minden elemhez két szín és két függvény tartozik az első az maga a háttér vagyis a fő szín pl: boxColor() és ehhez tartozik egy másik szín
+    //ami meg a rajta lévő elemeket színezi, többnyire a szöveget ez meg egy "on"-al kezdődik pl onBoxColor()
+    @Composable
+    fun boxColor(): Color = MaterialTheme.colorScheme.primaryContainer
+    @Composable
+    fun onBoxColor(): Color = MaterialTheme.colorScheme.onPrimaryContainer
+    @Composable
+    fun boxBorderColor(): Color = MaterialTheme.colorScheme.onPrimaryContainer
+
+
+    @Composable
+    fun panelColor(): Color = MaterialTheme.colorScheme.primaryContainer
+    @Composable
+    fun onPanelColor(): Color = MaterialTheme.colorScheme.onPrimaryContainer
+
+
 
     // grafikon
     //Lenne ha lehetne módosítani a hátterét, de nyílván nem lehet mert egy UI elemnek minek is módosítani a színét, kinek kell az

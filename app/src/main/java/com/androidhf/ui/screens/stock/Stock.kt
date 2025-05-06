@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import androidx.navigation.NavController
+import com.androidhf.data.Data
 
 import com.androidhf.ui.screens.stock.query.stocksAggregatesBars
 import io.polygon.kotlin.sdk.rest.AggregateDTO
@@ -35,6 +36,7 @@ import kotlinx.coroutines.withContext
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
+    Data.topBarTitle = "Stock"
     var showChart by remember { mutableStateOf(false) }
 
     val stockData = remember { mutableStateListOf<AggregateDTO>()  }
