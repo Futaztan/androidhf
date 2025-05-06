@@ -48,6 +48,7 @@ import com.androidhf.data.Savings
 import com.androidhf.data.SavingsType
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
+import com.androidhf.ui.screens.ai.AIViewModel
 import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
@@ -104,6 +105,7 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
+                val aIViewModel: AIViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -124,10 +126,12 @@ class MainActivity : ComponentActivity() {
                         composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
-                        composable("ai") { AIScreen() }
+
+                        composable("ai") { AIScreen(aIViewModel) }
                         composable("money_income") { MoneyIncomeScreen(navController/*, financeViewModel*/) }
                         composable("money_expense") { MoneyExpenseScreen(navController/*, financeViewModel*/) }
                         composable("money_saving") { MoneySavingsScreen(navController /*financeViewModel*/) }
+
                     }
                 }
             }
