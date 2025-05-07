@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "879802840942",
+    "project_id": "androidhf-a9aae",
+    "storage_bucket": "androidhf-a9aae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879802840942:android:f91bb506046b3f6fa5337f",
+        "android_client_info": {
+          "package_name": "com.androidhf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzVlD91OpMzfMXerr_DTg44PpZDUXJYVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -23,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -45,8 +44,6 @@ import com.androidhf.data.Category
 import com.androidhf.data.Data
 
 import com.androidhf.data.Frequency
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsType
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.ai.AIViewModel
@@ -70,6 +67,10 @@ import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import com.androidhf.ui.screens.login.LoginScreen
+import com.androidhf.ui.screens.login.RegisterScreen
+import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.screens.user.UserScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,15 +123,19 @@ class MainActivity : ComponentActivity() {
                     },
                     topBar =
                         {
-                            CustomTopAppBar()
+                            CustomTopAppBar(navController)
                         }
                 ) { innerPadding ->
+
 
                     NavHost(
                         navController = navController,
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable("login") { LoginScreen(navController) }
+                        composable("register") { RegisterScreen(navController) }
+                        composable("user") { UserScreen(navController)}
                         composable("home") { HomeScreen(/*financeViewModel*/) }
                         composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
@@ -210,11 +215,17 @@ fun BottomNavBar(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar() {
+fun CustomTopAppBar(navController: NavHostController) {
     TopAppBar(
         title = { Text(Data.topBarTitle) },
         actions = {
-            IconButton(onClick = { /* TODO */ }) {
+            IconButton(
+                onClick =
+                    {
+                        if(AuthService.isLoggedIn()) navController.navigate("user")
+                        else navController.navigate("login")
+                    })
+            {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_account),
                     contentDescription = "Account icon"

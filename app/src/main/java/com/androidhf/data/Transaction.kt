@@ -12,7 +12,6 @@ import java.time.LocalTime
 //bevétel vagy kiadások
 //mutable ha editelni akarjuk valamelyik tranzaikciot akkor változzonm az ui
 
-
  data class Transaction(
 
      val amount : Int,
@@ -88,3 +87,4 @@ data class TransactionEntity(
         )
     }
 }
+
