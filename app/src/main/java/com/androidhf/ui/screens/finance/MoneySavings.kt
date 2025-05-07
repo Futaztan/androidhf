@@ -37,7 +37,10 @@ import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -231,7 +234,9 @@ fun MoneySavingsScreen(navController: NavController)
                                         Data.osszpenz
                                     )
                                 }
-                                Data.savingsList.add(saving)
+                                CoroutineScope(Dispatchers.IO).launch{
+                                    Data.addSave(saving)
+                                }
                                 navController.popBackStack()
                             }
                         }

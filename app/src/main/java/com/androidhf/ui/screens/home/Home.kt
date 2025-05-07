@@ -29,7 +29,9 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 @Composable
 fun HomeScreen() {
@@ -56,7 +58,7 @@ fun HomeScreen() {
             FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
         }
         Text("3 legújabb takarék")
-        Data.savingsList.takeLast(3).forEach { item ->
+        Data.getSavingsList().takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {
@@ -71,18 +73,15 @@ fun HomeScreen() {
                 SavingCard_Expense2(item, { }, false)
             }
         }
-        Button(onClick = {}) { Text("Stock market:") }
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.saveTransactions()
-            }
-        }) { Text("SAVE") }
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.loadTransactions()
-            }
+        Button(onClick = {}) { Text("Stock market:") } //TODO
 
-        }) { Text("LOAD")}
+//        Button(onClick = {
+//            CoroutineScope(Dispatchers.IO).launch {
+//                Data.loadTransactions()
+//                Data.loadSaves()
+//            }
+//
+//        }) { Text("LOAD")}
     }
 }
 

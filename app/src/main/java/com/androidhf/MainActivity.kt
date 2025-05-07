@@ -2,6 +2,7 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -69,6 +70,9 @@ import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -78,6 +82,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
         val uploadWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<DailyWorker>(24, TimeUnit.HOURS)
                 .build()
@@ -90,7 +96,10 @@ class MainActivity : ComponentActivity() {
             )
 
         Data.init(this)
-
+        CoroutineScope(Dispatchers.IO).launch {
+            Data.loadTransactions()
+            Data.loadSaves()
+        }
 
 
         setContent {
@@ -234,8 +243,10 @@ fun listafeltoles() {
             Category.ELOFIZETES,
             Frequency.EGYSZERI
         )
-        Data.addTransaction(transactionplus)
-        Data.addTransaction(transactionminus)
+        CoroutineScope(Dispatchers.IO).launch {
+            Data.addTransaction(transactionplus)
+            Data.addTransaction(transactionminus)
+        }
     }
     /*
     val alma = Savings(

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,13 +53,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalView
+import com.androidhf.data.Savings
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+private fun deleteSaving(save : Savings)
+{
+    CoroutineScope(Dispatchers.IO).launch {  Data.deleteSave(save) }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -126,9 +135,9 @@ fun FinanceScreen(navHostController: NavHostController) {
                     }
                 }
             }
-            if (Data.savingsList.isNotEmpty()) {
+            if (Data.getSavingsList().isNotEmpty()) {
                 this@LazyColumn.items(
-                    items = Data.savingsList,
+                    items = Data.getSavingsList(),
                     key = { it.id }
                 ) { saving ->
                     var visible by remember { mutableStateOf(true) }
@@ -145,6 +154,8 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
+                                    deleteSaving(saving)
+                                    Log.d("delete","torles")
                                 }
                             )
                         }
@@ -154,6 +165,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
+                                    deleteSaving(saving)
                                 }
                             )
                         }
@@ -162,6 +174,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
+                                    deleteSaving(saving)
                                 }
                             )
                         }
@@ -170,7 +183,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                         if (!visible) {
                             haptic.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             delay(300)
-                            Data.savingsList.remove(saving)
+                            Data.getSavingsList().remove(saving)
                         }
                     }
                 }

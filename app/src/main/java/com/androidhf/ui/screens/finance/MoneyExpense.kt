@@ -35,6 +35,9 @@ import com.androidhf.data.SavingsType
 import com.androidhf.data.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.UIVar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -54,9 +57,14 @@ fun MoneyExpenseScreen(navController: NavController/*, viewModel: SavingsViewMod
 
             val transaction = Transaction(-amount, "TODO", LocalDate.now(), LocalTime.now(), category,frequency)
 
-           Data.addTransaction(transaction/*, viewModel*/)
-            if(transaction.frequency!=Frequency.EGYSZERI)
+            CoroutineScope(Dispatchers.IO).launch {
+                Data.addTransaction(transaction)
+            }
+            if(transaction.frequency!=Frequency.EGYSZERI){
+                transaction.isRepetitive=true
                 Data.repetitiveTransactions.add(transaction)
+            }
+
 
             navController.popBackStack() // visszalép az előző képernyőre
         }
@@ -132,22 +140,14 @@ fun MoneyExpenseScreen(navController: NavController/*, viewModel: SavingsViewMod
             input = input,
             onInputChange = { input = it }
         )
-        /*TextField(
-            value = input,
-            onValueChange = {
-                if (it.matches(Regex("^\\d*\\.?\\d*\$"))) input = it
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
 
-         */
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
             val amount = input.toIntOrNull()
             if (amount != null) {
-                val found = Data.savingsList.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
+                val found = Data.getSavingsList().filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
                     item.Start - amount < item.Amount
                 }
                 if(found) showPopup = true
