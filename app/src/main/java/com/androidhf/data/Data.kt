@@ -1,20 +1,16 @@
 package com.androidhf.data
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.room.Room
 import com.androidhf.data.database.RoomDB
 import java.time.LocalDate
-
 import java.time.LocalDateTime
-import kotlin.math.exp
 
 
 //globális adatok az egész appban
@@ -66,19 +62,7 @@ object Data {
     }
     private suspend fun saveTransaction(transaction: Transaction) : Long
     {
-
         return db.transactionDao().insertTransaction(transaction.toEntity())
-//        incomesList.forEach {
-//            db.transactionDao().insertTransaction(it.toEntity())
-//        }
-//        expensesList.forEach {
-//            db.transactionDao().insertTransaction(it.toEntity())
-//        }
-//        repetitiveTransactions.forEach {
-//            db.transactionDao().insertTransaction(it.toEntity())
-//        }
-
-
     }
     suspend fun loadTransactions()
     {
@@ -95,10 +79,7 @@ object Data {
         converted = loaded.map { it.toDomain() }
         repetitiveTransactions.addAll(converted)
 
-
         calculateOsszpenz()
-
-
     }
 
     fun getIncomesList() : SnapshotStateList<Transaction> {return incomesList}
@@ -169,8 +150,6 @@ object Data {
             incomesList.add(transactionWithId)
         }
         calculateOsszpenz()
-
-
 
     }
 

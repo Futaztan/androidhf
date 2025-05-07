@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -145,6 +146,8 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
+                                    TODO()
+                                    Log.d("delete","torles")
                                 }
                             )
                         }

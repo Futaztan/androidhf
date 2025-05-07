@@ -29,7 +29,9 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 @Composable
 fun HomeScreen() {
@@ -73,13 +75,13 @@ fun HomeScreen() {
         }
         Button(onClick = {}) { Text("Stock market:") } //TODO
 
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.loadTransactions()
-                Data.loadSaves()
-            }
-
-        }) { Text("LOAD")}
+//        Button(onClick = {
+//            CoroutineScope(Dispatchers.IO).launch {
+//                Data.loadTransactions()
+//                Data.loadSaves()
+//            }
+//
+//        }) { Text("LOAD")}
     }
 }
 
