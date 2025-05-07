@@ -40,47 +40,50 @@ object Data {
     var topBarTitle by mutableStateOf("Home")
     var repetitiveTransactions = mutableStateListOf<Transaction>()
 
-    private lateinit var db: RoomDB
+    private lateinit var roomDB: RoomDB
+
+
 
     fun init(context: Context) {
-        db = Room.databaseBuilder(
+        roomDB = Room.databaseBuilder(
                 context.applicationContext,
                 RoomDB::class.java,
                 "app_database"
             ).fallbackToDestructiveMigration(true)
             .build()
+
     }
     private suspend fun saveSaves(save : Savings) : Long
     {
-         return db.savingDao().insertSaving(save.toEntity())
+         return roomDB.savingDao().insertSaving(save.toEntity())
     }
     suspend fun loadSaves()
     {
-        val loaded = db.savingDao().getAllSavings()
+        val loaded = roomDB.savingDao().getAllSavings()
         val converted = loaded.map { it.toDomain() }
         savingsList.addAll(converted)
     }
     suspend fun deleteSave(save: Savings)
     {
-        db.savingDao().deleteSavingById(save.id)
+        roomDB.savingDao().deleteSavingById(save.id)
         savingsList.remove(save)
     }
     private suspend fun saveTransaction(transaction: Transaction) : Long
     {
-        return db.transactionDao().insertTransaction(transaction.toEntity())
+        return roomDB.transactionDao().insertTransaction(transaction.toEntity())
     }
     suspend fun loadTransactions()
     {
 
-        var loaded = db.transactionDao().getTransactionsByType("EXPENSE")
+        var loaded = roomDB.transactionDao().getTransactionsByType("EXPENSE")
         var converted = loaded.map { it.toDomain() }
         expensesList.addAll(converted)
 
-        loaded = db.transactionDao().getTransactionsByType("INCOME")
+        loaded = roomDB.transactionDao().getTransactionsByType("INCOME")
         converted = loaded.map { it.toDomain() }
         incomesList.addAll(converted)
 
-        loaded = db.transactionDao().getRepetitiveTransactions(true)
+        loaded = roomDB.transactionDao().getRepetitiveTransactions(true)
         converted = loaded.map { it.toDomain() }
         repetitiveTransactions.addAll(converted)
 
