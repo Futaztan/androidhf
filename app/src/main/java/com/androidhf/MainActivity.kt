@@ -2,6 +2,7 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -45,6 +46,7 @@ import com.androidhf.data.Data
 import com.androidhf.data.Frequency
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
+import com.androidhf.ui.screens.ai.AIViewModel
 import com.androidhf.ui.screens.finance.FinanceScreen
 import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
@@ -69,13 +71,20 @@ import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
 import com.androidhf.ui.screens.login.auth.AuthService
 import com.androidhf.ui.screens.user.UserScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
         val uploadWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<DailyWorker>(24, TimeUnit.HOURS)
                 .build()
@@ -87,21 +96,26 @@ class MainActivity : ComponentActivity() {
                 uploadWorkRequest
             )
 
-
+        Data.init(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            Data.loadTransactions()
+            Data.loadSaves()
+        }
 
 
         setContent {
             AndroidhfTheme {
-
+                /*
                 var elso by remember { mutableStateOf(true) }
 
                 if (elso) {
                     listafeltoles()
                     elso = false
-                }
+                } */
 
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
+                val aIViewModel: AIViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -126,10 +140,12 @@ class MainActivity : ComponentActivity() {
                         composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
-                        composable("ai") { AIScreen() }
+
+                        composable("ai") { AIScreen(aIViewModel) }
                         composable("money_income") { MoneyIncomeScreen(navController/*, financeViewModel*/) }
                         composable("money_expense") { MoneyExpenseScreen(navController/*, financeViewModel*/) }
                         composable("money_saving") { MoneySavingsScreen(navController /*financeViewModel*/) }
+
                     }
                 }
             }
@@ -238,8 +254,10 @@ fun listafeltoles() {
             Category.ELOFIZETES,
             Frequency.EGYSZERI
         )
-        Data.addTransaction(transactionplus)
-        Data.addTransaction(transactionminus)
+        CoroutineScope(Dispatchers.IO).launch {
+            Data.addTransaction(transactionplus)
+            Data.addTransaction(transactionminus)
+        }
     }
     /*
     val alma = Savings(

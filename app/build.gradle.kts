@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -43,8 +44,17 @@ android {
 dependencies {
     implementation(libs.firebase.auth)
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
-
+    implementation(libs.androidx.room.common.jvm)
     val work_version = "2.10.0"
+    val room_version = "2.7.1"
+    ksp("androidx.room:room-compiler:$room_version")
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.work:work-runtime-ktx:$work_version")
     implementation("io.github.thechance101:chart:Beta-0.0.5")
     implementation(libs.client.jvm)
