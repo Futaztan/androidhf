@@ -146,7 +146,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
-                                    TODO()
+                                    TODO() //TODO MEGCSINALNI A TORLEST ROOMBOL
                                     Log.d("delete","torles")
                                 }
                             )
