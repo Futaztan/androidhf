@@ -25,6 +25,9 @@ import com.androidhf.data.Data
 import com.androidhf.data.Frequency
 import com.androidhf.data.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -49,7 +52,9 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
                 category,
                 frequency
             )
-            Data.addTransaction(transaction/*, viewModel*/)
+            CoroutineScope(Dispatchers.IO).launch {
+                Data.addTransaction(transaction)
+            }
             if(transaction.frequency!=Frequency.EGYSZERI){
                 val repetitiveTransaction = transaction.copy()
                 repetitiveTransaction.isRepetitive = true

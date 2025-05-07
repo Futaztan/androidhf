@@ -68,6 +68,9 @@ import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -230,8 +233,10 @@ fun listafeltoles() {
             Category.ELOFIZETES,
             Frequency.EGYSZERI
         )
-        Data.addTransaction(transactionplus)
-        Data.addTransaction(transactionminus)
+        CoroutineScope(Dispatchers.IO).launch {
+            Data.addTransaction(transactionplus)
+            Data.addTransaction(transactionminus)
+        }
     }
     /*
     val alma = Savings(

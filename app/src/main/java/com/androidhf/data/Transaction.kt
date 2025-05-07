@@ -23,7 +23,7 @@ import java.time.LocalTime
      val frequency : Frequency,         //milyen gyakran van ez a tranzakcio
      var isRepetitive : Boolean = false,   /*ez jelzi h eredeti ismetlodo tranzakcio, ezek vannak a repetitive
                                           listába, room db miatt kell foleg   */
-     val id : Int =0                    //nem hasznaljuk, csak db-hez kell
+     val id : Long =0                    //nem hasznaljuk, csak db-hez kell
 
 )
 {
@@ -44,6 +44,8 @@ import java.time.LocalTime
 
     fun toEntity(): TransactionEntity {
 
+
+        
         return TransactionEntity(
             id = this.id,
             amount = this.amount,
@@ -62,7 +64,7 @@ import java.time.LocalTime
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val amount: Int,
     val description: String,
     val date: LocalDate,
@@ -75,6 +77,7 @@ data class TransactionEntity(
     fun toDomain() : Transaction
     {
         return Transaction(
+            id = this.id,
             amount = this.amount,
             description = this.description,
             date = this.date,

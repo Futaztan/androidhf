@@ -64,17 +64,21 @@ object Data {
         val converted = loaded.map { it.toDomain() }
         savingsList.addAll(converted)
     }
-    suspend fun saveTransactions()
+    private suspend fun saveTransaction(transaction: Transaction) : Long
     {
-        incomesList.forEach {
-            db.transactionDao().insertTransaction(it.toEntity())
-        }
-        expensesList.forEach {
-            db.transactionDao().insertTransaction(it.toEntity())
-        }
-        repetitiveTransactions.forEach {
-            db.transactionDao().insertTransaction(it.toEntity())
-        }
+
+        return db.transactionDao().insertTransaction(transaction.toEntity())
+//        incomesList.forEach {
+//            db.transactionDao().insertTransaction(it.toEntity())
+//        }
+//        expensesList.forEach {
+//            db.transactionDao().insertTransaction(it.toEntity())
+//        }
+//        repetitiveTransactions.forEach {
+//            db.transactionDao().insertTransaction(it.toEntity())
+//        }
+
+
     }
     suspend fun loadTransactions()
     {
@@ -137,9 +141,11 @@ object Data {
     }
 
     //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
-    fun addTransaction(transaction: Transaction)
+    suspend fun addTransaction(transaction: Transaction)
     {
         if(transaction.amount==0) throw IllegalArgumentException()
+        val id =saveTransaction(transaction)
+        val transactionWithId = transaction.copy(id = id)
         if(transaction.amount<0)
         {
 
@@ -149,7 +155,7 @@ object Data {
                     item.Start += transaction.amount
                 }
             }
-            expensesList.add(transaction)
+            expensesList.add(transactionWithId)
         }
         else
         {
@@ -160,9 +166,11 @@ object Data {
                     item.Start += transaction.amount
                 }
             }
-            incomesList.add(transaction)
+            incomesList.add(transactionWithId)
         }
         calculateOsszpenz()
+
+
 
     }
 

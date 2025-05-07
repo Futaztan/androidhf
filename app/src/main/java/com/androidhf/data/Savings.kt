@@ -17,7 +17,7 @@ data class Savings(
     val Title: String,   //a megtakarítás neve
     val Description: String,  //rövid leírása, hogy mit szerettünk volna elérni
     var Start: Int,  //kezdő pénz mennyisége
-    val id : Long = 0
+    val id : Long = -1
 ) {
 
 //    val id: String =
@@ -34,7 +34,6 @@ data class Savings(
     {
         return SavingsEntity(
             Amount = this.Amount,
-            id = this.id,
             StartDate = this.StartDate,
             EndDate = this.EndDate,
             Type = this.Type,
@@ -72,7 +71,8 @@ data class SavingsEntity(
             Type = this.Type,
             Title = this.Title,
             Description = this.Description,
-            Start = this.Start
+            Start = this.Start,
+            id = this.id
         )
     }
 }

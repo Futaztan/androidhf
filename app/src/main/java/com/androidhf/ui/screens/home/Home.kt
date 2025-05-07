@@ -72,12 +72,7 @@ fun HomeScreen() {
             }
         }
         Button(onClick = {}) { Text("Stock market:") } //TODO
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.saveTransactions()
 
-            }
-        }) { Text("SAVE") }
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Data.loadTransactions()
