@@ -14,4 +14,7 @@ interface SavingDao {
 
     @Query("SELECT * FROM savings")
     suspend fun getAllSavings(): List<SavingsEntity>
+
+    @Query("DELETE FROM savings WHERE id = :id")
+    suspend fun deleteSavingById(id: Long)
 }

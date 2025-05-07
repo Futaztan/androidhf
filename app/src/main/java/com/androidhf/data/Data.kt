@@ -60,6 +60,11 @@ object Data {
         val converted = loaded.map { it.toDomain() }
         savingsList.addAll(converted)
     }
+    suspend fun deleteSave(save: Savings)
+    {
+        db.savingDao().deleteSavingById(save.id)
+        savingsList.remove(save)
+    }
     private suspend fun saveTransaction(transaction: Transaction) : Long
     {
         return db.transactionDao().insertTransaction(transaction.toEntity())
