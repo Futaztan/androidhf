@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Frequency
+import com.androidhf.data.RepetitiveTransaction
 import com.androidhf.data.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import kotlinx.coroutines.CoroutineScope
@@ -39,11 +40,9 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.FIZETES) }
 
-    fun onSubmit()
-    {
+    fun onSubmit() {
         val amount = input.toIntOrNull()
         if (amount != null) {
-
             val transaction = Transaction(
                 amount,
                 "TODO",
@@ -52,14 +51,21 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
                 category,
                 frequency
             )
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.addTransaction(transaction)
+            if (frequency == Frequency.EGYSZERI) {
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    Data.addTransaction(transaction)
+                }
+            } else {
+                val repetitiveTransaction =
+                    RepetitiveTransaction(transaction, LocalDate.now(), LocalDate.now().plusDays(5))
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    Data.addRepetitiveTransaction(repetitiveTransaction)
+                }
             }
-            if(transaction.frequency!=Frequency.EGYSZERI){
-                val repetitiveTransaction = transaction.copy()
-                repetitiveTransaction.isRepetitive = true
-                Data.repetitiveTransactions.add(repetitiveTransaction)
-            }
+
+
 
             navController.popBackStack() // visszalép az előző képernyőre
         }
@@ -109,6 +115,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
         }
     }
 }
+
 //Frequency ENUM-nak készült dropdown menu
 @Composable
 private fun FrequencyDropdownMenu(
@@ -156,7 +163,7 @@ private fun CategoryDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            val incomeCategory = Category.entries.filter { it.type== Category.Type.INCOME }
+            val incomeCategory = Category.entries.filter { it.type == Category.Type.INCOME }
 
             incomeCategory.forEach { type ->
                 DropdownMenuItem(

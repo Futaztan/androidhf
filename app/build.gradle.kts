@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation(libs.androidx.room.common.jvm)
+    implementation(libs.firebase.auth.ktx)
     val work_version = "2.10.0"
     val room_version = "2.7.1"
     ksp("androidx.room:room-compiler:$room_version")

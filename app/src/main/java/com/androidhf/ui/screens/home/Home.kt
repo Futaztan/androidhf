@@ -76,7 +76,11 @@ fun HomeScreen() {
             }
         }
 
-        Button(onClick = {}) { Text("Stock market:") } //TODO
+        Button(onClick = {
+            Data.repetitiveTransactions.forEach{
+                Log.d("repeater",it.toString())
+            }
+        }) { Text("Stock market:") } //TODO
 
 //        Button(onClick = {
 //            CoroutineScope(Dispatchers.IO).launch {

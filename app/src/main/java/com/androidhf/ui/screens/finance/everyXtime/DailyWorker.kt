@@ -21,22 +21,22 @@ class DailyWorker(appContext: Context, workerParams: WorkerParameters):
 
 
         Log.d("DailyWorker", "Munka fut: ${System.currentTimeMillis()}")
-        for (transaction in Data.repetitiveTransactions)
+        for (repTransaction in Data.repetitiveTransactions)
         {
-            val newTransaction = Transaction(transaction.amount,transaction.description, LocalDate.now(),
-                LocalTime.now(),transaction.category,transaction.frequency)
-            when(transaction.frequency)
+            val newTransaction = Transaction(repTransaction.transaction.amount,repTransaction.transaction.description, LocalDate.now(),
+                LocalTime.now(),repTransaction.transaction.category,repTransaction.transaction.frequency)
+            when(repTransaction.transaction.frequency)
             {
                 Frequency.NAPI-> CoroutineScope(Dispatchers.IO).launch { Data.addTransaction(newTransaction) }
                 Frequency.HETI -> {
-                    val differenceInDays = Duration.between(transaction.date.atStartOfDay(),LocalDate.now().atStartOfDay()).toDays()
+                    val differenceInDays = Duration.between(repTransaction.fromDate.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()
                     if((differenceInDays%7).toInt() ==0)
                     {
                         CoroutineScope(Dispatchers.IO).launch { Data.addTransaction(newTransaction) }
                     }
                 }
                 Frequency.HAVI -> {
-                    val differenceInDays = Duration.between(transaction.date.atStartOfDay(),LocalDate.now().atStartOfDay()).toDays()
+                    val differenceInDays = Duration.between(repTransaction.fromDate.atStartOfDay(),LocalDate.now().atStartOfDay()).toDays()
                     if((differenceInDays%30).toInt() ==0)
                     {
                         CoroutineScope(Dispatchers.IO).launch { Data.addTransaction(newTransaction) }

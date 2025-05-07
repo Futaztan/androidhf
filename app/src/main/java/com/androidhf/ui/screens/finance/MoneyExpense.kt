@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import com.androidhf.data.Category
 import com.androidhf.data.Data
 import com.androidhf.data.Frequency
+import com.androidhf.data.RepetitiveTransaction
 import com.androidhf.data.SavingsType
 import com.androidhf.data.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
@@ -57,12 +58,18 @@ fun MoneyExpenseScreen(navController: NavController/*, viewModel: SavingsViewMod
 
             val transaction = Transaction(-amount, "TODO", LocalDate.now(), LocalTime.now(), category,frequency)
 
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.addTransaction(transaction)
-            }
-            if(transaction.frequency!=Frequency.EGYSZERI){
-                transaction.isRepetitive=true
-                Data.repetitiveTransactions.add(transaction)
+            if (frequency == Frequency.EGYSZERI) {
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    Data.addTransaction(transaction)
+                }
+            } else {
+                val repetitiveTransaction =
+                    RepetitiveTransaction(transaction, LocalDate.now(), LocalDate.now().plusDays(5))
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    Data.addRepetitiveTransaction(repetitiveTransaction)
+                }
             }
 
 

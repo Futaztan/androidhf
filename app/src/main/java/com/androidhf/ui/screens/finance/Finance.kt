@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 
 private fun deleteSaving(save : Savings)
 {
-    CoroutineScope(Dispatchers.IO).launch {  Data.deleteSave(save) }
+    CoroutineScope(Dispatchers.IO).launch {  Data.deleteSaving(save) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
