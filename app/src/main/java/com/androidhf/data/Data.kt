@@ -153,6 +153,8 @@ object Data {
         val transactionWithId = repTransaction.transaction.copy(id=id)
         val repTransactionWithId = repTransaction.copy(transaction = transactionWithId)
         repetitiveTransactions.add(repTransactionWithId)
+        if(AuthService.isLoggedIn())
+            firebaseDB.addRepetitiveTransactionToFireabase(repTransactionWithId)
     }
 
     //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
