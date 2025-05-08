@@ -1,6 +1,7 @@
 package com.androidhf.data.database
 
 import android.util.Log
+import com.androidhf.data.RepetitiveTransaction
 import com.androidhf.data.Savings
 import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -42,4 +43,22 @@ class FirebaseDB {
             }
 
     }
+
+    fun addRepetitiveTransactionToFireabase(repTransaction: RepetitiveTransaction)
+    {
+        val user = AuthService.getUserEmail()
+        firestore
+            .collection("users")
+            .document(user)
+            .collection("repetitive_transactions")
+            .add(repTransaction)
+            .addOnSuccessListener { docRef ->
+                Log.d("firestore","Transaction added with ID: ${docRef.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.d("firestore","Error adding transaction: $e")
+            }
+    }
+
+
 }
