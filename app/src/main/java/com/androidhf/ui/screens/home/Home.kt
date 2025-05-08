@@ -23,15 +23,12 @@ import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
-
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import com.androidhf.ui.screens.login.auth.AuthService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDate
 
 
 @Composable
@@ -76,7 +73,14 @@ fun HomeScreen() {
             }
         }
 
-        Button(onClick = {}) { Text("Stock market:") } //TODO
+        Button(onClick = {
+            Data.repetitiveTransactions.forEach{
+                Log.d("repeater",it.toString())
+            }
+            val a = Duration.between(LocalDate.now().atStartOfDay(), LocalDate.now().minusDays(3).atStartOfDay()).toDays()
+            val b = a % 3
+            println(b)
+        }) { Text("Stock market:") } //TODO
 
 //        Button(onClick = {
 //            CoroutineScope(Dispatchers.IO).launch {

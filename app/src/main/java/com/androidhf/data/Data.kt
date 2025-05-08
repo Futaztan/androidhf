@@ -8,7 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.room.Room
+import com.androidhf.data.database.FirebaseDB
 import com.androidhf.data.database.RoomDB
+import com.androidhf.ui.screens.login.auth.AuthService
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -35,45 +37,50 @@ object Data {
     private var savingsList = mutableStateListOf<Savings>()
 
     var osszpenz by mutableIntStateOf(0)
-    private set
+        private set
 
-    var repetitiveTransactions = mutableStateListOf<Transaction>()
+    var repetitiveTransactions = mutableStateListOf<RepetitiveTransaction>()
     var topBarTitle by mutableStateOf("Home")
 
     private lateinit var roomDB: RoomDB
-
+    private val firebaseDB = FirebaseDB()
 
 
     fun init(context: Context) {
         roomDB = Room.databaseBuilder(
-                context.applicationContext,
-                RoomDB::class.java,
-                "app_database"
-            ).fallbackToDestructiveMigration(true)
+            context.applicationContext,
+            RoomDB::class.java,
+            "app_database"
+        ).fallbackToDestructiveMigration(true)
             .build()
 
     }
-    private suspend fun saveSaves(save : Savings) : Long
-    {
-         return roomDB.savingDao().insertSaving(save.toEntity())
+
+    private suspend fun saveSaving(save: Savings): Long {
+        return roomDB.savingDao().insertSaving(save.toEntity())
     }
-    suspend fun loadSaves()
-    {
+
+    suspend fun loadSavings() {
         val loaded = roomDB.savingDao().getAllSavings()
         val converted = loaded.map { it.toDomain() }
         savingsList.addAll(converted)
     }
-    suspend fun deleteSave(save: Savings)
-    {
+
+    suspend fun deleteSaving(save: Savings) {
         roomDB.savingDao().deleteSavingById(save.id)
         savingsList.remove(save)
     }
-    private suspend fun saveTransaction(transaction: Transaction) : Long
-    {
+
+    private suspend fun saveTransaction(transaction: Transaction): Long {
         return roomDB.transactionDao().insertTransaction(transaction.toEntity())
     }
-    suspend fun loadTransactions()
+    private suspend fun saveRepetitiveTransaction(repTransaction: RepetitiveTransaction) : Long
     {
+        return roomDB.repTransactionDao().insertRepTransaction(repTransaction.toEntity())
+    }
+
+    suspend fun loadEveryTransactions() {
+
 
         var loaded = roomDB.transactionDao().getTransactionsByType("EXPENSE")
         var converted = loaded.map { it.toDomain() }
@@ -83,20 +90,29 @@ object Data {
         converted = loaded.map { it.toDomain() }
         incomesList.addAll(converted)
 
-        loaded = roomDB.transactionDao().getRepetitiveTransactions(true)
-        converted = loaded.map { it.toDomain() }
-        repetitiveTransactions.addAll(converted)
+        val reploaded = roomDB.repTransactionDao().getAllRepTransactions()
+        val repconverted = reploaded.map { it.toDomain() }
+        repetitiveTransactions.addAll(repconverted)
 
         calculateOsszpenz()
     }
 
-    fun getIncomesList() : SnapshotStateList<Transaction> {return incomesList}
-    fun getExpensesList() : SnapshotStateList<Transaction> { return expensesList}
-    fun getSavingsList() : SnapshotStateList<Savings> {return savingsList}
+    fun getIncomesList(): SnapshotStateList<Transaction> {
+        return incomesList
+    }
+
+    fun getExpensesList(): SnapshotStateList<Transaction> {
+        return expensesList
+    }
+
+    fun getSavingsList(): SnapshotStateList<Savings> {
+        return savingsList
+    }
 
     //ezt valahová ai-ba basszátok ne ide
     fun dataToAIPrompt(): String {
-        var output: String = "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
+        var output: String =
+            "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
         incomesList.forEach { item ->
             if (item.date.isAfter(LocalDate.now().minusDays(30))) {
                 output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "
@@ -113,7 +129,7 @@ object Data {
 
         //TODO: ez csak félkész, majd szét kell szednem típusok alapján
         output += "ezek a takarékaim, céljaim (formátum: megtakarítandó_összeg;kezdet;cél_vége;neve):"
-        savingsList.forEach{ items ->
+        savingsList.forEach { items ->
             output += items.Amount.toString() + ";" + items.StartDate.toString() + ";" + items.EndDate.toString() + ";" + items.Title + " "
         }
         //
@@ -122,37 +138,45 @@ object Data {
     }
 
 
-    suspend fun addSave(save : Savings)
-    {
+    suspend fun addSave(save: Savings) {
 
-        val id = saveSaves(save)
+        val id = saveSaving(save)
         val saveWithId = save.copy(id = id)
+        firebaseDB.addSavingToFirebase(saveWithId)
         savingsList.add(saveWithId)
     }
 
-    //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
-    suspend fun addTransaction(transaction: Transaction)
+    suspend fun addRepetitiveTransaction(repTransaction: RepetitiveTransaction)
     {
-        if(transaction.amount==0) throw IllegalArgumentException()
-        val id =saveTransaction(transaction)
-        val transactionWithId = transaction.copy(id = id)
-        if(transaction.amount<0)
-        {
+        if (repTransaction.transaction.amount == 0) throw IllegalArgumentException()
+        val id = saveRepetitiveTransaction(repTransaction)
+        val transactionWithId = repTransaction.transaction.copy(id=id)
+        val repTransactionWithId = repTransaction.copy(transaction = transactionWithId)
+        repetitiveTransactions.add(repTransactionWithId)
+    }
 
-            savingsList.forEach{ item ->
-                if(item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
-                {
+    //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
+    suspend fun addTransaction(transaction: Transaction) {
+        if (transaction.amount == 0) throw IllegalArgumentException()
+
+        val id = saveTransaction(transaction)
+        val transactionWithId = transaction.copy(id = id)
+
+        if (AuthService.isLoggedIn())
+            firebaseDB.addTransactionToFirebase(transactionWithId)
+
+        if (transaction.amount < 0) {
+
+            savingsList.forEach { item ->
+                if (item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT) {
                     item.Start += transaction.amount
                 }
             }
             expensesList.add(transactionWithId)
-        }
-        else
-        {
+        } else {
             //hozzáadja a bevételt a megfelelő savings típusokhoz
-            savingsList.forEach{ item ->
-                if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
-                {
+            savingsList.forEach { item ->
+                if (item.Type == SavingsType.INCOMEGOAL_BYAMOUNT) {
                     item.Start += transaction.amount
                 }
             }
@@ -162,8 +186,7 @@ object Data {
 
     }
 
-    private fun calculateOsszpenz()
-    {
+    private fun calculateOsszpenz() {
         osszpenz = incomesList.sumOf { it.amount } + expensesList.sumOf { it.amount }
     }
 

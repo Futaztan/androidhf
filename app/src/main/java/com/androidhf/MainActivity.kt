@@ -2,7 +2,6 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,8 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,8 +61,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
@@ -77,8 +72,6 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
-    @RequiresApi(Build.VERSION_CODES.O)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,8 +91,8 @@ class MainActivity : ComponentActivity() {
 
         Data.init(this)
         CoroutineScope(Dispatchers.IO).launch {
-            Data.loadTransactions()
-            Data.loadSaves()
+            Data.loadEveryTransactions()
+            Data.loadSavings()
         }
 
 

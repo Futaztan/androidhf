@@ -20,8 +20,6 @@ import java.time.LocalTime
      val time: LocalTime,
      val category : Category,            //Category-n belüli típus
      val frequency : Frequency,         //milyen gyakran van ez a tranzakcio
-     var isRepetitive : Boolean = false,   /*ez jelzi h eredeti ismetlodo tranzakcio, ezek vannak a repetitive
-                                          listába, room db miatt kell foleg   */
      val id : Long =0                    //nem hasznaljuk, csak db-hez kell
 
 )
@@ -54,7 +52,7 @@ import java.time.LocalTime
             category = this.category,
             type = this.category.type,
             frequency = this.frequency,
-            isRepetitive = this.isRepetitive
+
         )
     }
 
@@ -71,7 +69,7 @@ data class TransactionEntity(
     val category: Category,
     val type : Category.Type,
     val frequency: Frequency,
-    val isRepetitive : Boolean
+
 ){
     fun toDomain() : Transaction
     {
@@ -83,7 +81,7 @@ data class TransactionEntity(
             time = this.time,
             category = this.category,
             frequency = this.frequency,
-            isRepetitive = this.isRepetitive
+
         )
     }
 }
