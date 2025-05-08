@@ -10,7 +10,7 @@ import com.google.firebase.firestore.firestore
 class FirebaseDB {
     private val firestore = Firebase.firestore
 
-    fun addTranasctionToFirebase(transaction: Transaction)
+    fun addTransactionToFirebase(transaction: Transaction)
     {
         val user = AuthService.getUserEmail()
         firestore

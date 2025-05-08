@@ -163,7 +163,7 @@ object Data {
         val transactionWithId = transaction.copy(id = id)
 
         if (AuthService.isLoggedIn())
-            firebaseDB.addTranasctionToFirebase(transaction)
+            firebaseDB.addTransactionToFirebase(transactionWithId)
 
         if (transaction.amount < 0) {
 
