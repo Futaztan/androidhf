@@ -22,7 +22,7 @@ fun NameField(
     onChange: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     label: String,
-    placeholder: String = "Enter your name"
+    placeholder: String = "Enter your Email address"
 ) {
 
     val focusManager = LocalFocusManager.current

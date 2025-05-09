@@ -2,7 +2,6 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +13,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,6 +68,9 @@ import kotlin.random.Random
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -216,14 +220,21 @@ fun BottomNavBar(navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTopAppBar(navController: NavHostController) {
+    val haptic = LocalView.current
+    var showDropdown by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = { Text(Data.topBarTitle) },
         actions = {
             IconButton(
                 onClick =
                     {
+                        haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        showDropdown = !showDropdown
+                        /*
                         if(AuthService.isLoggedIn()) navController.navigate("user")
                         else navController.navigate("login")
+                        */
                     })
             {
                 Icon(
@@ -231,8 +242,60 @@ fun CustomTopAppBar(navController: NavHostController) {
                     contentDescription = "Account icon"
                 )
             }
+            ProfileDropdown(
+                navController = navController,
+                visible = showDropdown,
+                onDismissRequest = { showDropdown = false }
+            )
         }
     )
+}
+
+@Composable
+fun ProfileDropdown(
+    navController: NavHostController,
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    DropdownMenu(
+        expanded = visible,
+        onDismissRequest = onDismissRequest,
+        offset = DpOffset(x = 0.dp, y = 8.dp),
+        properties = PopupProperties(focusable = true)
+    ) {
+        if (AuthService.isLoggedIn()) {
+            DropdownMenuItem(
+                text = { Text("Profile") },
+                onClick = {
+                    navController.navigate("user")
+                    onDismissRequest()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Logout") },
+                onClick = {
+                    AuthService.logOut()
+                    navController.navigate("home")
+                    onDismissRequest()
+                }
+            )
+        } else {
+            DropdownMenuItem(
+                text = { Text("Login") },
+                onClick = {
+                    navController.navigate("login")
+                    onDismissRequest()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Register") },
+                onClick = {
+                    navController.navigate("register")
+                    onDismissRequest()
+                }
+            )
+        }
+    }
 }
 
 fun listafeltoles() {

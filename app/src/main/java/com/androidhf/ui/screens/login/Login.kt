@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,10 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.NameField
 import com.androidhf.ui.reuseable.PasswordField
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.reuseable.Panel
 
 
 private fun onLogin(email: String, password : String, navController: NavController, context: Context)
@@ -42,17 +43,17 @@ private fun onLogin(email: String, password : String, navController: NavControll
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    Data.topBarTitle = "Login"
 
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
-    Surface {
+    Panel(cornerRadius = 0.dp) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 30.dp)
         ) {
             NameField(
                 value = name,
@@ -67,8 +68,15 @@ fun LoginScreen(navController: NavController) {
                 submit = {onLogin(name,password,navController, context)},
                 modifier = Modifier.fillMaxWidth()
             )
-            Button(onClick = {onLogin(name,password,navController,context)}) { Text("LOGIN") }
-            Button(onClick ={navController.navigate("register")}) { Text("REGISTER")}
+            Spacer(Modifier.padding(UIVar.Padding))
+            Button(onClick = {
+                onLogin(name,password,navController,context)},
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("LOGIN") }
+            Button(onClick ={
+                navController.navigate("register")},
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("REGISTER")}
 
         }
 
