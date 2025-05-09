@@ -3,8 +3,6 @@ package com.androidhf.ui.reuseable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,10 +15,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.androidhf.R
 
 @Composable
 fun PasswordField(
@@ -44,11 +44,23 @@ fun PasswordField(
 
     val trailingIcon = @Composable {
         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-            Icon(
-                if (isPasswordVisible) Icons.Default.Done else Icons.Default.Close,
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.primary
-            )
+            if(isPasswordVisible)
+            {
+                Icon(
+                    painter = painterResource(R.drawable.ic_visibility_24),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            else
+            {
+                Icon(
+                    painter = painterResource(R.drawable.ic_visibilityoff_24),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
         }
     }
 

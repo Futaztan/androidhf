@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.NameField
+import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.PasswordField
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -54,18 +56,18 @@ private fun onRegister(
 
 @Composable
 fun RegisterScreen(navController: NavController) {
+    Data.topBarTitle = "Register"
 
     var name by remember { mutableStateOf("") }
     var password1 by remember { mutableStateOf("") }
     var password2 by remember { mutableStateOf("") }
     val context = LocalContext.current
-    Surface {
+    Panel(cornerRadius = 0.dp) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 30.dp)
         ) {
             NameField(
                 value = name,
@@ -87,6 +89,7 @@ fun RegisterScreen(navController: NavController) {
                 submit = { onRegister(name, password1, password2, navController, context) },
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(Modifier.padding(UIVar.Padding))
             Button(onClick = {
                 onRegister(
                     name,
@@ -95,7 +98,9 @@ fun RegisterScreen(navController: NavController) {
                     navController,
                     context
                 )
-            }) { Text("REGISTER") }
+            },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("REGISTER") }
 
         }
 
