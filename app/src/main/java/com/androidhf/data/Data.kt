@@ -1,6 +1,7 @@
 package com.androidhf.data
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -109,35 +110,6 @@ object Data {
         return savingsList
     }
 
-    //ezt valahová ai-ba basszátok ne ide
-    fun dataToAIPrompt(): String {
-        var output: String =
-            "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
-        incomesList.forEach { item ->
-            if (item.date.isAfter(LocalDate.now().minusDays(30))) {
-                output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "
-            }
-        }
-        output += "ezek a kiadásaim, ugyan az a formátum:"
-        expensesList.forEach { item ->
-            if (item.date.isAfter(LocalDate.now().minusDays(30))) {
-                output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "
-            }
-        }
-
-        //TODO: ide kell még a repetitiveTransactions
-
-        //TODO: ez csak félkész, majd szét kell szednem típusok alapján
-        output += "ezek a takarékaim, céljaim (formátum: megtakarítandó_összeg;kezdet;cél_vége;neve):"
-        savingsList.forEach { items ->
-            output += items.Amount.toString() + ";" + items.StartDate.toString() + ";" + items.EndDate.toString() + ";" + items.Title + " "
-        }
-        //
-        output += "ezek alapján milyen tanácsokat tudnál nekem adni pénzügyi szempontból?"
-        return output
-    }
-
-
     suspend fun addSave(save: Savings) {
 
         val id = saveSaving(save)
@@ -157,7 +129,6 @@ object Data {
             firebaseDB.addRepetitiveTransactionToFireabase(repTransactionWithId)
     }
 
-    //ehhez hozzaadtam a financeViewModellt, mert kell a saving kezeléshez
     suspend fun addTransaction(transaction: Transaction) {
         if (transaction.amount == 0) throw IllegalArgumentException()
 

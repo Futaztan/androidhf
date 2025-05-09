@@ -17,5 +17,4 @@ abstract class RoomDB : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun savingDao(): SavingDao
     abstract fun repTransactionDao(): RepetitiveTransactionDao
-
 }
