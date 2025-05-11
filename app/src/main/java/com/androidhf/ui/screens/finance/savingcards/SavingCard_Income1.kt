@@ -55,7 +55,6 @@ import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.finance.TransactionViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -121,7 +120,7 @@ fun SavingCard_Income1(
     }
 
     if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-        LaunchedEffect(saving.id) {
+        LaunchedEffect(saving.Id) {
             showPopup=true
         }
     }

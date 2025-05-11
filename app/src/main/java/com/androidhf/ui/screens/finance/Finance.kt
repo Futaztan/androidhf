@@ -135,7 +135,7 @@ fun FinanceScreen(navHostController: NavHostController) {
             if (savings.value.isNotEmpty()) {
                 this@LazyColumn.items(
                     items = savings.value,
-                    key = { it.id }
+                    key = { it.Id }
                 ) { saving ->
                     var visible by remember { mutableStateOf(true) }
 

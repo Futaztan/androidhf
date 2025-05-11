@@ -22,5 +22,5 @@ interface SavingDao {
     suspend fun deleteSavingById(id: Long)
 
     @Update
-    suspend fun updateSaving(saving: SavingsEntity)
+    suspend fun updateSaving(saving: SavingsEntity): Int
 }

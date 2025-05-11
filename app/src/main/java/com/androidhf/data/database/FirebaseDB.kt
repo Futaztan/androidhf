@@ -49,7 +49,7 @@ class FirebaseDB @Inject constructor() {
 
     fun updateSavingInFirebase(saving: Savings) {
         val user = AuthService.getUserEmail()
-        if (saving.id == 0L) {
+        if (saving.Id == 0L) {
             Log.e("firestore", "Cannot update saving without a valid ID")
             return
         }
@@ -58,10 +58,10 @@ class FirebaseDB @Inject constructor() {
             .collection("users")
             .document(user)
             .collection("savings")
-            .document(saving.id.toString())
+            .document(saving.Id.toString())
             .set(saving, SetOptions.merge())
             .addOnSuccessListener {
-                Log.d("firestore","Saving updated with ID: ${saving.id}")
+                Log.d("firestore","Saving updated with ID: ${saving.Id}")
             }
             .addOnFailureListener { e ->
                 Log.d("firestore","Error updating saving: $e")

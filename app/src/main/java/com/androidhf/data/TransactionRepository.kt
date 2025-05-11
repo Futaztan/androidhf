@@ -1,6 +1,6 @@
 package com.androidhf.data
 
-import androidx.compose.ui.graphics.copy
+import android.util.Log
 import com.androidhf.data.dao.TransactionDao
 import com.androidhf.data.database.FirebaseDB
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -54,11 +54,13 @@ class TransactionRepository @Inject constructor(
 
             if(transaction.amount < 0 && updatedSaving.Type == SavingsType.EXPENSEGOAL_BYAMOUNT)
             {
+                Log.d("TransactionRepository", "Transaction amount: ${transaction.amount}")
                 updatedSaving.Start += transaction.amount
                 savingsToUpdate.add(updatedSaving)
             }
             else if(transaction.amount > 0 && updatedSaving.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {
+                Log.d("TransactionRepository", "Transaction amount: ${transaction.amount}")
                 updatedSaving.Start += transaction.amount
                 savingsToUpdate.add(updatedSaving)
             }

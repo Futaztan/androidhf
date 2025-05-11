@@ -138,7 +138,7 @@ fun SavingCard_Income2(
     }
 
     if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-        LaunchedEffect(saving.id) {
+        LaunchedEffect(saving.Id) {
             showPopup = true
         }
     }

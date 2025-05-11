@@ -1,5 +1,6 @@
 package com.androidhf.data
 
+import android.util.Log
 import com.androidhf.data.dao.SavingDao
 import com.androidhf.data.database.FirebaseDB
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -23,7 +24,7 @@ class SavingsRepository @Inject constructor(
 
     suspend fun addSaving(save: Savings) {
         val id = savingDao.insertSaving(save.toEntity())
-        val withId = save.copy(id = id)
+        val withId = save.copy(Id = id)
         if (AuthService.isLoggedIn())
         {
             firebaseDB.addSavingToFirebase(withId)
@@ -31,14 +32,25 @@ class SavingsRepository @Inject constructor(
     }
 
     suspend fun deleteSaving(save: Savings) {
-        savingDao.deleteSavingById(save.id)
+        savingDao.deleteSavingById(save.Id)
     }
 
     suspend fun updateSaving(save: Savings) {
-        savingDao.updateSaving(save.toEntity())
-        if (AuthService.isLoggedIn())
-        {
-            firebaseDB.updateSavingInFirebase(save)
+        Log.d("SavingsRepository", "Attempting to update saving with ID: ${save.Id}, amount: ${save.Start}")
+        Log.d("SavingsRepository", "ID being passed to DAO: ${save.toEntity().id}") // Extra ellenőrzés
+        try {
+            val rowsAffected = savingDao.updateSaving(save.toEntity())
+            if (rowsAffected > 0) {
+                Log.d("SavingsRepository", "Saving updated successfully. Rows affected: $rowsAffected")
+                if (AuthService.isLoggedIn()) {
+                    firebaseDB.updateSavingInFirebase(save)
+                }
+            } else {
+                // Ez a naplóüzenet kritikus, ha nem frissül az adatbázisban
+                Log.e("SavingsRepository", "Saving update did not affect any rows! Saving ID: ${save.Id}")
+            }
+        } catch (e: Exception) {
+            Log.e("SavingsRepository", "Error updating saving with ID: ${save.Id}", e)
         }
     }
 }

@@ -96,7 +96,6 @@ class MainActivity : ComponentActivity() {
 
         //TODO JELENLEGI HIBÁK:
         /*
-            savingek nem változnak
             a kiadás is növeli az értéket
             gráf mindig szar
          */

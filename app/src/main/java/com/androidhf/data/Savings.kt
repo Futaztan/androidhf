@@ -3,8 +3,6 @@ package com.androidhf.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDate
-import java.util.Date
-import java.util.UUID
 
 
 //ez a class kezeli a megtakarításokat meg ilyeneket
@@ -17,7 +15,7 @@ data class Savings(
     val Title: String,   //a megtakarítás neve
     val Description: String,  //rövid leírása, hogy mit szerettünk volna elérni
     var Start: Int,  //kezdő pénz mennyisége
-    val id : Long = -1
+    val Id : Long = -1
 ) {
 
 //    val id: String =
@@ -43,6 +41,7 @@ data class Savings(
             Completed = this.Completed,
             Failed = this.Failed,
             Closed = this.Closed,
+            id = this.Id
         )
     }
 
@@ -72,7 +71,7 @@ data class SavingsEntity(
             Title = this.Title,
             Description = this.Description,
             Start = this.Start,
-            id = this.id
+            Id = this.id
         )
     }
 }

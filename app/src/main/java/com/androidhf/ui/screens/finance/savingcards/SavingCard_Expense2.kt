@@ -118,7 +118,7 @@ fun SavingCard_Expense2(
     }
 
     if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-        LaunchedEffect(saving.id) {
+        LaunchedEffect(saving.Id) {
             showPopup=true
         }
     }
