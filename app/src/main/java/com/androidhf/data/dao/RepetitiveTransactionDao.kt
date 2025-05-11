@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.androidhf.data.RepetitiveTransactionEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RepetitiveTransactionDao {
@@ -12,9 +13,9 @@ interface RepetitiveTransactionDao {
     suspend fun insertRepTransaction(transaction: RepetitiveTransactionEntity) : Long
 
     @Query("SELECT * FROM repetitivetransactions WHERE type = :type")
-    suspend fun getRepTransactionsByType(type: String): List<RepetitiveTransactionEntity>
+    fun getRepTransactionsByType(type: String): Flow<List<RepetitiveTransactionEntity>>
 
 
     @Query("SELECT * FROM repetitivetransactions")
-    suspend fun getAllRepTransactions(): List<RepetitiveTransactionEntity>
+    fun getAllRepTransactions(): Flow<List<RepetitiveTransactionEntity>>
 }

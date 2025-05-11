@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,8 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.androidhf.data.Data
 import com.androidhf.data.Savings
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
@@ -47,7 +48,13 @@ import java.util.Calendar
 @Composable
 fun MoneySavingsScreen(navController: NavController)
 {
-    Data.topBarTitle = "Takarék felvétel"
+    UIVar.topBarTitle = "Takarék felvétel"
+
+    val tViewModel: TransactionViewModel = hiltViewModel()
+    val sViewModel: SavingViewModel = hiltViewModel()
+
+    val osszeg = tViewModel.balance.collectAsState().value
+
     var input by remember { mutableStateOf("") }
     var input_invalid by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf<LocalDate>(LocalDate.now().plusDays(14)) }
@@ -231,12 +238,10 @@ fun MoneySavingsScreen(navController: NavController)
                                         selectedType,
                                         title,
                                         description,
-                                        Data.osszpenz
+                                        osszeg
                                     )
                                 }
-                                CoroutineScope(Dispatchers.IO).launch{
-                                    Data.addSave(saving)
-                                }
+                                sViewModel.addSaving(saving)
                                 navController.popBackStack()
                             }
                         }

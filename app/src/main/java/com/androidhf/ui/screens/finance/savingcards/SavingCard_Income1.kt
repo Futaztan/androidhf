@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.androidhf.R
-import com.androidhf.data.Data.osszpenz
 import com.androidhf.data.Savings
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
@@ -54,6 +54,9 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.androidhf.data.Transaction
+import com.androidhf.ui.screens.finance.TransactionViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -154,6 +157,8 @@ fun SavingCard_Income1(
 @Composable
 private fun Content(saving: Savings)
 {
+    val tViewModel: TransactionViewModel = hiltViewModel()
+    val osszeg = tViewModel.balance.collectAsState().value
     if(!saving.Closed && LocalDate.now() < saving.EndDate)
     {
 
@@ -207,14 +212,14 @@ private fun Content(saving: Savings)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Balance:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
-                        progress = osszpenz.toFloat()/saving.Amount.toFloat(),
+                        progress = osszeg.toFloat()/saving.Amount.toFloat(),
                         modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f)
                     )
                 }
             }
         }
     }
-    else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszpenz && LocalDate.now() >= saving.EndDate)))
+    else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszeg && LocalDate.now() >= saving.EndDate)))
     {
         saving.Completed = true
         saving.Closed = true

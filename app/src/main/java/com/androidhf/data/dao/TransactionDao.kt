@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.androidhf.data.TransactionEntity
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -12,9 +13,10 @@ interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: TransactionEntity) : Long
 
+    //ezenek sem kell suspend mert Flow alapból háttérszálon megy
     @Query("SELECT * FROM transactions WHERE type = :type")
-    suspend fun getTransactionsByType(type: String): List<TransactionEntity>
+    fun getTransactionsByType(type: String): Flow<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions")
-    suspend fun getAllTransactions(): List<TransactionEntity>
+    fun getAllTransactions(): Flow<List<TransactionEntity>>
 }

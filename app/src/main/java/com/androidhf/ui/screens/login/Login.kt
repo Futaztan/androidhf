@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.NameField
 import com.androidhf.ui.reuseable.PasswordField
 import com.androidhf.ui.reuseable.UIVar
@@ -43,7 +42,7 @@ private fun onLogin(email: String, password : String, navController: NavControll
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    Data.topBarTitle = "Login"
+    UIVar.topBarTitle = "Login"
 
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

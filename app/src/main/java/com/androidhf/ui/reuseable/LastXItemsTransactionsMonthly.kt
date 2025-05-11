@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +21,7 @@ import com.androidhf.data.Transaction
 //Jelenleg kiírja a megadott tranzakció típusok között a countban megadott legújabbat egy panelen belül
 @Composable
 fun LastXItemsTransactionsMonthly(
-    items: SnapshotStateList<Transaction>, //melyik adatokat listázza
+    items: State<List<Transaction>>, //melyik adatokat listázza
     count: Int, //Mennyit adjon vissza
     _color : Color, //listázás színe
     _modifier : Modifier = Modifier, //modifierek
@@ -42,7 +43,7 @@ fun LastXItemsTransactionsMonthly(
             color = Color(185, 0, 0)
         }
     }
-    val firstItems = items.takeLast(count).asReversed()
+    val firstItems = items.value.takeLast(count).asReversed()
 
     if(firstItems.isNotEmpty())
     {

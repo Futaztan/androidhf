@@ -2,6 +2,9 @@ package com.androidhf.ui.reuseable
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -12,6 +15,8 @@ import androidx.compose.ui.unit.sp
 
 object UIVar
 {
+    var topBarTitle by mutableStateOf("Home")
+
     val Padding: Dp = 8.dp
     val Radius: Dp = 8.dp
     val BorderWidth: Dp = 4.dp

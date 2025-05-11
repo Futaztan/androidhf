@@ -20,6 +20,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,9 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.androidhf.data.Category
-import com.androidhf.data.Data
 import com.androidhf.data.Frequency
 import com.androidhf.data.RepetitiveTransaction
 import com.androidhf.data.SavingsType
@@ -47,7 +48,11 @@ import java.util.Calendar
 
 @Composable
 fun MoneyExpenseScreen(navController: NavController) {
-    Data.topBarTitle = "Kiadás felvétel"
+    UIVar.topBarTitle = "Kiadás felvétel"
+
+    val tViewModel: TransactionViewModel = hiltViewModel()
+    val sViewModel: SavingViewModel = hiltViewModel()
+
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.ELOFIZETES) }
@@ -110,17 +115,12 @@ fun MoneyExpenseScreen(navController: NavController) {
                 frequency
             )
             if (frequency == Frequency.EGYSZERI) {
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    Data.addTransaction(transaction)
-                }
+                tViewModel.addTransaction(transaction)
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    Data.addRepetitiveTransaction(repetitiveTransaction)
-                }
+                //TODO addRepetitiveTransaction(repetitiveTransaction)
             }
 
             navController.popBackStack() // visszalép az előző képernyőre
@@ -221,10 +221,11 @@ fun MoneyExpenseScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val savings = sViewModel.savings.collectAsState()
         Button(onClick = {
             val amount = input.toIntOrNull()
             if (amount != null) {
-                val found = Data.getSavingsList().filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
+                val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
                     item.Start - amount < item.Amount
                 }
                 if(found) showPopup = true

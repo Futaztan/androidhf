@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.NameField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.PasswordField
@@ -56,7 +54,7 @@ private fun onRegister(
 
 @Composable
 fun RegisterScreen(navController: NavController) {
-    Data.topBarTitle = "Register"
+    UIVar.topBarTitle = "Register"
 
     var name by remember { mutableStateOf("") }
     var password1 by remember { mutableStateOf("") }

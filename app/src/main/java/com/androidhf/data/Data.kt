@@ -30,8 +30,9 @@ ha kiadást akarunk hozzáadni akkor hozzá kell írni a paraméter Transaction 
 Az osszpenzt mindent tranzakció után újra számolja magától és lehet gettelni simán
 
  */
-
+/*
 object Data {
+
     private var incomesList = mutableStateListOf<Transaction>()
 
     private var expensesList = mutableStateListOf<Transaction>()
@@ -41,7 +42,6 @@ object Data {
         private set
 
     var repetitiveTransactions = mutableStateListOf<RepetitiveTransaction>()
-    var topBarTitle by mutableStateOf("Home")
 
     private lateinit var roomDB: RoomDB
     private val firebaseDB = FirebaseDB()
@@ -162,38 +162,5 @@ object Data {
     private fun calculateOsszpenz() {
         osszpenz = incomesList.sumOf { it.amount } + expensesList.sumOf { it.amount }
     }
-
-
-    //ez mi gyuri
-    //kell a finance graphhoz david
-    fun calculateBalanceChangesSimple(): List<Int> {
-        val allTransactions = mutableListOf<Pair<Transaction, Boolean>>()
-
-        incomesList.forEach { income ->
-            allTransactions.add(Pair(income, true))
-        }
-
-        expensesList.forEach { expense ->
-            allTransactions.add(Pair(expense, false))
-        }
-
-        allTransactions.sortBy { (transaction, _) ->
-            LocalDateTime.of(transaction.date, transaction.time)
-        }
-        var currentBalance = 0
-        val balanceChanges = mutableListOf<Pair<LocalDateTime, Int>>()
-
-        val balanceValues = mutableListOf<Int>()
-
-        allTransactions.forEach { (transaction, isIncome) ->
-            if (isIncome) {
-                currentBalance += transaction.amount
-            } else {
-                currentBalance = transaction.amount
-            }
-            balanceValues.add(currentBalance)
-        }
-
-        return balanceValues
-    }
 }
+*/

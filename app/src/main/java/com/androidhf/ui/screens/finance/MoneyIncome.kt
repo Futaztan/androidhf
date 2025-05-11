@@ -22,13 +22,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.androidhf.data.Category
-import com.androidhf.data.Data
 import com.androidhf.data.Frequency
 import com.androidhf.data.RepetitiveTransaction
 import com.androidhf.data.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
+import com.androidhf.ui.reuseable.UIVar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +40,10 @@ import java.util.Calendar
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewModel*/) {
-    Data.topBarTitle = "Bevétel felvétel"
+    UIVar.topBarTitle = "Bevétel felvétel"
+
+    val tViewModel: TransactionViewModel = hiltViewModel()
+
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.FIZETES) }
@@ -100,17 +104,11 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
                 frequency
             )
             if (frequency == Frequency.EGYSZERI) {
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    Data.addTransaction(transaction)
-                }
+                tViewModel.addTransaction(transaction)
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    Data.addRepetitiveTransaction(repetitiveTransaction)
-                }
+                //TODO addRepetitiveTransaction(repetitiveTransaction)
             }
 
             navController.popBackStack() // visszalép az előző képernyőre

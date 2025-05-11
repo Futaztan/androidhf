@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -20,7 +18,7 @@ import com.androidhf.ui.screens.login.auth.AuthService
 @Composable
 fun UserScreen(navHostController: NavHostController)
 {
-    Data.topBarTitle = "User"
+    UIVar.topBarTitle = "User"
     Box(modifier = Modifier.fillMaxSize().padding(UIVar.Padding))
     {
         BorderBox {

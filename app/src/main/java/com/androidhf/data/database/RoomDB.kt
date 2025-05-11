@@ -11,7 +11,12 @@ import com.androidhf.data.dao.RepetitiveTransactionDao
 import com.androidhf.data.dao.SavingDao
 import com.androidhf.data.dao.TransactionDao
 
-@Database(entities = [TransactionEntity::class, SavingsEntity::class, RepetitiveTransactionEntity::class], version = 4)
+@Database(entities = [
+    TransactionEntity::class,
+    SavingsEntity::class,
+    RepetitiveTransactionEntity::class],
+    version = 5)
+
 @TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
