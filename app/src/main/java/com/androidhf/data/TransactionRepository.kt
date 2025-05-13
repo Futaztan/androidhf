@@ -56,12 +56,22 @@ class TransactionRepository @Inject constructor(
             {
                 Log.d("TransactionRepository", "Transaction amount: ${transaction.amount}")
                 updatedSaving.Start += transaction.amount
+                if(!updatedSaving.Closed && updatedSaving.Amount >= updatedSaving.Start)
+                {
+                    updatedSaving.Failed = true
+                    updatedSaving.Closed = true
+                }
                 savingsToUpdate.add(updatedSaving)
             }
             else if(transaction.amount > 0 && updatedSaving.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {
                 Log.d("TransactionRepository", "Transaction amount: ${transaction.amount}")
                 updatedSaving.Start += transaction.amount
+                if(!updatedSaving.Closed && updatedSaving.Amount <= updatedSaving.Start)
+                {
+                    updatedSaving.Completed = true
+                    updatedSaving.Closed = true
+                }
                 savingsToUpdate.add(updatedSaving)
             }
         }

@@ -1,13 +1,23 @@
 package com.androidhf.ui.screens.finance
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.Savings
 import com.androidhf.data.SavingsRepository
+import com.androidhf.data.SavingsType
+import com.androidhf.data.Transaction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 
@@ -23,6 +33,10 @@ class SavingViewModel @Inject constructor(
      * elérés UI-ból -> val savings by viewModel.savings.collectAsState()
      */
     val savings: StateFlow<List<Savings>> = _savings //UI látja, csak olvasható
+
+
+    private val _messages = MutableSharedFlow<String>(replay = 0)
+    val messages = _messages.asSharedFlow()
 
     init
     {
@@ -54,6 +68,62 @@ class SavingViewModel @Inject constructor(
     fun updateSaving(save: Savings) {
         viewModelScope.launch {
             savingsRepository.updateSaving(save)
+        }
+    }
+
+    fun transactionAdded(osszeg: Int)
+    {
+        viewModelScope.launch {
+            _savings.value.forEach { item ->
+                if (osszeg < 0 && item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT && item.Amount >= (item.Start + osszeg)) {
+                    Log.d("transactionAdded", "Condition for failed met for saving ID: ${item.Id}. Emitting message.")
+                    _messages.emit("${item.Title} has been failed!")
+                } else if (item.Type == SavingsType.INCOMEGOAL_BYAMOUNT && item.Amount <= (item.Start + osszeg)) {
+                    Log.d("transactionAdded", "Condition for completed met for saving ID: ${item.Id}. Emitting message.")
+                    _messages.emit("${item.Title} has been completed!")
+                } else {
+                    Log.d("transactionAdded", "No condition met for saving ID: ${item.Id}")
+                }
+            }
+        }
+    }
+
+    fun dateChecker(balance: Int)
+    {
+        viewModelScope.launch {
+            _savings.value.forEach { item ->
+                Log.d("dateChecker", "Belepés")
+                if (!item.Closed)
+                {
+                    if (item.Type == SavingsType.INCOMEGOAL_BYTIME && item.EndDate < LocalDate.now() && item.Amount > balance) {
+                        item.Failed = true
+                        item.Closed = true
+                        _messages.emit("${item.Title} has been failed!")
+                        updateSaving(item)
+                    }
+                    else if (item.Type == SavingsType.INCOMEGOAL_BYTIME && item.EndDate < LocalDate.now() && item.Amount <= balance) {
+                        item.Completed = true
+                        item.Closed = true
+                        _messages.emit("${item.Title} has been successfully completed!")
+                        updateSaving(item)
+                    }
+                    else if (item.Type == SavingsType.INCOMEGOAL_BYAMOUNT && item.EndDate < LocalDate.now() && item.Amount > item.Start)
+                    {
+                        item.Failed = true
+                        item.Closed = true
+                        _messages.emit("${item.Title} has been failed!")
+                        updateSaving(item)
+                    }
+                    else if (item.Type == SavingsType.EXPENSEGOAL_BYAMOUNT && item.EndDate < LocalDate.now() && item.Amount < item.Start)
+                    {
+                        item.Completed = true
+                        item.Closed = true
+                        _messages.emit("${item.Title} has been completed!")
+                        Log.d("dateChecker", "${item.Id}, closed: ${item.Closed}")
+                        updateSaving(item)
+                    }
+                }
+            }
         }
     }
 }

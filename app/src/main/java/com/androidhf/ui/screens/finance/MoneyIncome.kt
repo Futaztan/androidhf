@@ -43,6 +43,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
     UIVar.topBarTitle = "Bevétel felvétel"
 
     val tViewModel: TransactionViewModel = hiltViewModel()
+    val sViewModel: SavingViewModel = hiltViewModel()
 
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
@@ -105,6 +106,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
             )
             if (frequency == Frequency.EGYSZERI) {
                 tViewModel.addTransaction(transaction)
+                sViewModel.transactionAdded(amount)
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)

@@ -2,7 +2,9 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,6 +26,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,12 +67,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.SavingViewModel
+import com.androidhf.ui.screens.finance.TransactionViewModel
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
 import com.androidhf.ui.screens.login.auth.AuthService
 import com.androidhf.ui.screens.user.UserScreen
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 //TODO import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 
@@ -96,8 +107,10 @@ class MainActivity : ComponentActivity() {
 
         //TODO JELENLEGI HIBÁK:
         /*
-            a kiadás is növeli az értéket
             gráf mindig szar
+            savingnél lehet kisebb időt választani mint a mai nap
+            MoneyExpense closed ellenőrzés hiányzik
+            SavingViewModel transactionAdded cucc még nem jó
          */
         setContent {
             AndroidhfTheme {
@@ -108,7 +121,8 @@ class MainActivity : ComponentActivity() {
                     listafeltoles()
                     elso = false
                 } */
-
+                val sViewModel: SavingViewModel = hiltViewModel()
+                val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
                 Scaffold(
@@ -141,6 +155,19 @@ class MainActivity : ComponentActivity() {
                         composable("money_expense") { MoneyExpenseScreen(navController) }
                         composable("money_saving") { MoneySavingsScreen(navController) }
 
+                    }
+                    //TODO adatbázis amiben utility adatok vannak, hány saving volt összesen, mennyi completed, mennyi failed stb
+                    val balance = tViewModel.balance
+                    LaunchedEffect(key1 = Unit) {
+                        delay(1250) //Idő amíg betölti az adatbázist
+                        sViewModel.dateChecker(balance.first())
+                    }
+
+                    lifecycleScope.launchWhenCreated {
+                        sViewModel.messages.collect { msg ->
+                            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+                            delay(2500)
+                        }
                     }
                 }
             }

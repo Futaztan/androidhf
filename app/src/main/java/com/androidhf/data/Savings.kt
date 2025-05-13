@@ -15,18 +15,14 @@ data class Savings(
     val Title: String,   //a megtakarítás neve
     val Description: String,  //rövid leírása, hogy mit szerettünk volna elérni
     var Start: Int,  //kezdő pénz mennyisége
-    val Id : Long = -1
+    val Id : Long = 0,
+    var Completed: Boolean = false,          //teljesített-e
+    var Failed: Boolean = false,             //elbukott
+    var Closed: Boolean =  false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 ) {
 
 //    val id: String =
 //        UUID.randomUUID().toString() //TODO: ez lehet hogy nem működik ha elmentjük majd
-
-
-
-
-    var Completed: Boolean = false          //teljesített-e
-    var Failed: Boolean = false             //elbukott
-    var Closed: Boolean =  false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 
     fun toEntity() : SavingsEntity
     {
@@ -56,9 +52,9 @@ data class SavingsEntity(
     val Title: String,
     val Description: String,
     var Start: Int,
-    var Completed: Boolean = false,
-    var Failed: Boolean = false,
-    var Closed: Boolean =  false
+    var Completed: Boolean,
+    var Failed: Boolean,
+    var Closed: Boolean
 )
 {
     fun toDomain() : Savings
@@ -71,7 +67,11 @@ data class SavingsEntity(
             Title = this.Title,
             Description = this.Description,
             Start = this.Start,
+            Completed = this.Completed,
+            Failed = this.Failed,
+            Closed = this.Closed,
             Id = this.id
+
         )
     }
 }

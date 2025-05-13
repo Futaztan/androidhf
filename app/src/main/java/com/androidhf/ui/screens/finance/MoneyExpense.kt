@@ -107,7 +107,7 @@ fun MoneyExpenseScreen(navController: NavController) {
         val amount = input.toIntOrNull()
         if (amount != null) {
             val transaction = Transaction(
-                amount,
+                -amount,
                 "TODO",
                 onDate,
                 LocalTime.now(),
@@ -116,6 +116,7 @@ fun MoneyExpenseScreen(navController: NavController) {
             )
             if (frequency == Frequency.EGYSZERI) {
                 tViewModel.addTransaction(transaction)
+                sViewModel.transactionAdded(-amount)
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
@@ -226,7 +227,7 @@ fun MoneyExpenseScreen(navController: NavController) {
             val amount = input.toIntOrNull()
             if (amount != null) {
                 val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
-                    item.Start - amount < item.Amount
+                    item.Start - amount < item.Amount //TODO ide valami Closed ellenőrzés
                 }
                 if(found) showPopup = true
                 else onSubmit()

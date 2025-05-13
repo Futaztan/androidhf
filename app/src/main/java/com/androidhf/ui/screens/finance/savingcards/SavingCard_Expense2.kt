@@ -154,7 +154,7 @@ fun SavingCard_Expense2(
 @Composable
 private fun Content(saving: Savings)
 {
-    if(!saving.Closed && saving.Amount.absoluteValue > saving.Start.absoluteValue && LocalDate.now() < saving.EndDate)
+    if(!saving.Closed)
     {
 
         BorderBox {
@@ -169,9 +169,11 @@ private fun Content(saving: Savings)
                         if(ChronoUnit.DAYS.between(LocalDate.now(), saving.EndDate) in 0..7)
                         {
                             Row(modifier = Modifier.background(MaterialTheme.colorScheme.error, RoundedCornerShape(UIVar.Radius)), verticalAlignment = Alignment.CenterVertically){
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
-                                Text("Deadline Inbound!", color = MaterialTheme.colorScheme.onError)
+                                Text(" Deadline Inbound! ", color = MaterialTheme.colorScheme.onError)
                                 Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
+                                Spacer(modifier = Modifier.width(4.dp))
                             }
                         }
                     }
@@ -214,10 +216,8 @@ private fun Content(saving: Savings)
             }
         }
     }
-    else if((!saving.Closed && (saving.Completed || (saving.Amount.absoluteValue <= saving.Start.absoluteValue && LocalDate.now() <= saving.EndDate))) || saving.Closed && saving.Completed)
+    else if(saving.Failed)
     {
-        saving.Failed = true
-        saving.Closed = true
         BorderBox {
             Box()
             {
@@ -241,8 +241,6 @@ private fun Content(saving: Savings)
         }
     }
     else{
-        saving.Completed = true
-        saving.Closed = true
         BorderBox {
             Box()
             {

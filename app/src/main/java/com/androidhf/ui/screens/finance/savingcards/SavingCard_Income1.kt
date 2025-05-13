@@ -158,7 +158,8 @@ private fun Content(saving: Savings)
 {
     val tViewModel: TransactionViewModel = hiltViewModel()
     val osszeg = tViewModel.balance.collectAsState().value
-    if(!saving.Closed && LocalDate.now() < saving.EndDate)
+    //if(!saving.Closed && LocalDate.now() < saving.EndDate)
+    if(!saving.Closed)
     {
 
         BorderBox {
@@ -173,9 +174,11 @@ private fun Content(saving: Savings)
                         if(ChronoUnit.DAYS.between(LocalDate.now(), saving.EndDate) in 0..7)
                         {
                             Row(modifier = Modifier.background(MaterialTheme.colorScheme.error, RoundedCornerShape(UIVar.Radius)), verticalAlignment = Alignment.CenterVertically){
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
-                                Text("Deadline Inbound!", color = MaterialTheme.colorScheme.onError)
+                                Text(" Deadline Inbound! ", color = MaterialTheme.colorScheme.onError)
                                 Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
+                                Spacer(modifier = Modifier.width(4.dp))
                             }
                         }
                     }
@@ -218,10 +221,11 @@ private fun Content(saving: Savings)
             }
         }
     }
-    else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszeg && LocalDate.now() >= saving.EndDate)))
+    //else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszeg && LocalDate.now() >= saving.EndDate)))
+    else if(saving.Completed)
     {
-        saving.Completed = true
-        saving.Closed = true
+        //saving.Completed = true
+        //saving.Closed = true
         BorderBox {
             Box()
             {
@@ -245,8 +249,8 @@ private fun Content(saving: Savings)
         }
     }
     else{
-        saving.Failed = true
-        saving.Closed = true
+        //saving.Failed = true
+        //saving.Closed = true
         BorderBox {
             Box()
             {
