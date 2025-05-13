@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,14 +22,14 @@ import com.androidhf.data.Transaction
 //Jelenleg kiírja a megadott tranzakció típusok között a countban megadott legrégebbit egy panelen belül
 @Composable
 fun FirstXItemsTransactions(
-    items: SnapshotStateList<Transaction>, //melyik adatokat listázza
+    items: State<List<Transaction>>, //melyik adatokat listázza
     count: Int, //Mennyit adjon vissza
     _color : Color, //listázás színe
     _modifier : Modifier = Modifier, //modifierek
     _fitMaxWidth: Boolean = false //kitöltse a rendelkezésre álló helyet, ha két panel kell egymás mellé akkor false és kívül kell megadni weightet
 )
 {
-    val firstItems = items.take(count)
+    val firstItems = items.value.take(count)
     var color: Color = _color
     if(color == Color.Green)
     {

@@ -13,27 +13,34 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
-import com.androidhf.data.Data
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
-
+import com.androidhf.ui.screens.finance.SavingViewModel
+import com.androidhf.ui.screens.finance.TransactionViewModel
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.androidhf.ui.screens.login.auth.AuthService
+import java.time.Duration
+import java.time.LocalDate
+
 
 @Composable
 fun HomeScreen() {
-    Data.topBarTitle = "Home"
+    UIVar.topBarTitle = "Home"
+
+    val sViewModel: SavingViewModel = hiltViewModel()
+    val tViewModel: TransactionViewModel = hiltViewModel()
+    val money = tViewModel.balance.collectAsState().value
 
     val scrollState = rememberScrollState()
     val haptic = LocalView.current
@@ -46,17 +53,18 @@ fun HomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Panel{
-            HeaderText("Szia Teszt!")
+            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
+            else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
 
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${Data.osszpenz}") }
+        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${money}") }
         Row (modifier = Modifier.fillMaxWidth()){
-            FirstXItemsTransactions(Data.getIncomesList(),10,Color.Green,Modifier.weight(1f))
+            FirstXItemsTransactions(tViewModel.incomeTransactions.collectAsState(),10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
-            FirstXItemsTransactions(Data.getExpensesList(),10,Color.Red,Modifier.weight(1f))
+            FirstXItemsTransactions(tViewModel.expenseTransactions.collectAsState(),10,Color.Red,Modifier.weight(1f))
         }
         Text("3 legújabb takarék")
-        Data.savingsList.takeLast(3).forEach { item ->
+        sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {
@@ -71,18 +79,25 @@ fun HomeScreen() {
                 SavingCard_Expense2(item, { }, false)
             }
         }
-        Button(onClick = {}) { Text("Stock market:") }
+
+        /* TODO ezt majd visszarakni
         Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.saveTransactions()
+            Data.repetitiveTransactions.forEach{
+                Log.d("repeater",it.toString())
             }
-        }) { Text("SAVE") }
+            val a = Duration.between(LocalDate.now().atStartOfDay(), LocalDate.now().minusDays(3).atStartOfDay()).toDays()
+            val b = a % 3
+            println(b)
+        }) { Text("Stock market:") } //TODO
+
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 Data.loadTransactions()
+                Data.loadSaves()
             }
 
         }) { Text("LOAD")}
+        */
     }
 }
 

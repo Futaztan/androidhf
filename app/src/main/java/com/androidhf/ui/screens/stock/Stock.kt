@@ -54,10 +54,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 import androidx.navigation.NavController
+
 import com.androidhf.R
-import com.androidhf.data.Data
+
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
+
 import com.androidhf.ui.reuseable.UIVar
 
 import com.androidhf.ui.screens.stock.query.stocksAggregatesBars
@@ -77,7 +79,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
-    Data.topBarTitle = "Stock"
+    UIVar.topBarTitle = "Stock"
     var showChart by remember { mutableStateOf(false) }
 
     val stockData = remember { mutableStateListOf<AggregateDTO>()  }

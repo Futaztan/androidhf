@@ -44,7 +44,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.androidhf.R
-import com.androidhf.data.Data.osszpenz
 import com.androidhf.data.Savings
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
@@ -69,21 +68,38 @@ fun SavingCard_Income2(
 
     if (showPopup) {
         Popup {
-            Box(modifier = Modifier.fillMaxSize().padding(bottom = 250.dp))
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 250.dp))
             {
                 Box(
                     modifier = Modifier
                         .padding(40.dp)
                         .fillMaxWidth()
                         .border(4.dp, UIVar.boxBorderColor(), RoundedCornerShape(UIVar.Radius))
-                        .background(MaterialTheme.colorScheme.onError, RoundedCornerShape(UIVar.Radius))
+                        .background(
+                            MaterialTheme.colorScheme.onError,
+                            RoundedCornerShape(UIVar.Radius)
+                        )
                         .padding(UIVar.Padding)
                         .align(Alignment.BottomCenter)
                 ) {
                     Column {
-                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                            Text("Biztosan törölni szeretné?", modifier = Modifier.align(Alignment.CenterVertically), color = MaterialTheme.colorScheme.error)
-                            Icon(painter = painterResource(id = R.drawable.ic_warning_48), contentDescription = "Warning", modifier = Modifier.align(Alignment.CenterVertically), tint = MaterialTheme.colorScheme.error)
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                "Biztosan törölni szeretné?",
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_warning_48),
+                                contentDescription = "Warning",
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                tint = MaterialTheme.colorScheme.error
+                            )
                         }
                         Row {
                             Button(
@@ -96,15 +112,19 @@ fun SavingCard_Income2(
                                 ),
                                 modifier = Modifier.weight(3f)
                             ) {
-                                Text("Igen", color = MaterialTheme.colorScheme.onError) // szöveg szín
+                                Text(
+                                    "Igen",
+                                    color = MaterialTheme.colorScheme.onError
+                                ) // szöveg szín
                             }
                             Spacer(modifier = Modifier.width(UIVar.Padding))
-                            Button(onClick = {
-                                showPopup=false
-                                coroutineScope.launch {
-                                    dismissState.snapTo(DismissValue.Default)
-                                }
-                            }, modifier = Modifier.weight(7f)
+                            Button(
+                                onClick = {
+                                    showPopup = false
+                                    coroutineScope.launch {
+                                        dismissState.snapTo(DismissValue.Default)
+                                    }
+                                }, modifier = Modifier.weight(7f)
                             ) {
                                 Text("Nem")
                             }
@@ -118,13 +138,12 @@ fun SavingCard_Income2(
     }
 
     if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-        LaunchedEffect(saving.id) {
-            showPopup=true
+        LaunchedEffect(saving.Id) {
+            showPopup = true
         }
     }
 
-    if (deleteAble)
-    {
+    if (deleteAble) {
         SwipeToDismiss(
             state = dismissState,
             background = {
@@ -143,42 +162,75 @@ fun SavingCard_Income2(
                 Content(saving)
             }
         )
-    }
-    else
-    {
+    } else {
         Content(saving)
     }
 
 }
 
 @Composable
-private fun Content(saving: Savings)
-{
-    if(!saving.Closed && saving.Amount > saving.Start && LocalDate.now() < saving.EndDate)
-    {
+private fun Content(saving: Savings) {
+    if (!saving.Closed) {
 
         BorderBox {
-            if(saving.Title == "Easter" || saving.Title == "easter" || saving.Title == "Húsvét" || saving.Title == "húsvét") {
-                Image(painter = painterResource(id = R.drawable.easter_background), contentDescription = "Easter", contentScale = Crop, colorFilter = ColorFilter.tint(color = Color.Black.copy(alpha = 0.4f), blendMode = BlendMode.Darken))
+            if (saving.Title == "Easter" || saving.Title == "easter" || saving.Title == "Húsvét" || saving.Title == "húsvét") {
+                Image(
+                    painter = painterResource(id = R.drawable.easter_background),
+                    contentDescription = "Easter",
+                    contentScale = Crop,
+                    colorFilter = ColorFilter.tint(
+                        color = Color.Black.copy(alpha = 0.4f),
+                        blendMode = BlendMode.Darken
+                    )
+                )
             }
             Column {
                 Row {
                     Column(modifier = Modifier.weight(6.5f)) {
                         HeaderText(saving.Title)
                         Text(saving.Description, color = UIVar.onBoxColor())
-                        if(ChronoUnit.DAYS.between(LocalDate.now(), saving.EndDate) in 0..7)
-                        {
-                            Row(modifier = Modifier.background(MaterialTheme.colorScheme.error, RoundedCornerShape(UIVar.Radius)), verticalAlignment = Alignment.CenterVertically){
-                                Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
-                                Text("Deadline Inbound!", color = MaterialTheme.colorScheme.onError)
-                                Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
+                        if (ChronoUnit.DAYS.between(LocalDate.now(), saving.EndDate) in 0..7) {
+                            Row(
+                                modifier = Modifier.background(
+                                    MaterialTheme.colorScheme.error,
+                                    RoundedCornerShape(UIVar.Radius)
+                                ), verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_warning_16),
+                                    contentDescription = "Warning",
+                                    tint = MaterialTheme.colorScheme.onError
+                                )
+                                Text(" Deadline Inbound! ", color = MaterialTheme.colorScheme.onError)
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_warning_16),
+                                    contentDescription = "Warning",
+                                    tint = MaterialTheme.colorScheme.onError
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
                             }
                         }
                     }
-                    Box(modifier = Modifier.fillMaxHeight().weight(3.5f)) {
-                        Column( modifier = Modifier.align(Alignment.CenterEnd)) {
-                            Text("${saving.Amount} Ft", fontWeight = FontWeight.ExtraBold, color = UIVar.onBoxColor(),modifier = Modifier.align(Alignment.End))
-                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 3.dp, end = 3.dp).align(Alignment.End))
+                    Box(modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(3.5f)) {
+                        Column(modifier = Modifier.align(Alignment.CenterEnd)) {
+                            Text(
+                                "${saving.Amount} Ft",
+                                fontWeight = FontWeight.ExtraBold,
+                                color = UIVar.onBoxColor(),
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        UIVar.onBoxColor(),
+                                        RoundedCornerShape(UIVar.Radius)
+                                    )
+                                    .padding(start = 3.dp, end = 3.dp)
+                                    .align(Alignment.End)
+                            )
                             {
                                 Text("Type: Collect", color = UIVar.boxColor())
                             }
@@ -189,9 +241,17 @@ private fun Content(saving: Savings)
                 {
                     Row {
                         Spacer(modifier = Modifier.weight(2f))
-                        Box(modifier = Modifier.weight(8f)){
-                            Text("${saving.StartDate}", modifier = Modifier.align(Alignment.CenterStart), color = UIVar.onBoxColor())
-                            Text("${saving.EndDate}", modifier = Modifier.align(Alignment.CenterEnd), color = UIVar.onBoxColor())
+                        Box(modifier = Modifier.weight(8f)) {
+                            Text(
+                                "${saving.StartDate}",
+                                modifier = Modifier.align(Alignment.CenterStart),
+                                color = UIVar.onBoxColor()
+                            )
+                            Text(
+                                "${saving.EndDate}",
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                color = UIVar.onBoxColor()
+                            )
                         }
                     }
 
@@ -200,24 +260,27 @@ private fun Content(saving: Savings)
                     Text("Date:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
                         progress = DateProgressBar(saving).coerceIn(0f, 1f),
-                        modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f), color = Color.Green
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                            .weight(8f),
+                        color = Color.Green
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Balance:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
-                        progress = saving.Start/saving.Amount.toFloat(),
-                        modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f)
+                        progress = saving.Start / saving.Amount.toFloat(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                            .weight(8f)
                     )
                 }
             }
         }
-    }
-    else if((!saving.Closed && (saving.Completed || (saving.Amount <= saving.Start && LocalDate.now() <= saving.EndDate))) || saving.Closed && saving.Completed)
-    {
-        saving.Completed = true
-        saving.Closed = true
+    } else if (saving.Completed) {
         BorderBox {
             Box()
             {
@@ -227,22 +290,34 @@ private fun Content(saving: Savings)
                             HeaderText(saving.Title)
                             Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
                             Text("Successfully achieved!", color = UIVar.onBoxColor())
-                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        UIVar.onBoxColor(),
+                                        RoundedCornerShape(UIVar.Radius)
+                                    )
+                                    .padding(start = 4.dp, end = 4.dp)
+                            )
                             {
                                 Text("Type: Collect", color = UIVar.boxColor())
                             }
                         }
-                        Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
-                            Icon(painter = painterResource(id = R.drawable.ic_check_48dp), contentDescription = "Tick Icon")
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(2f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_check_48dp),
+                                contentDescription = "Tick Icon"
+                            )
                         }
                     }
                 }
             }
         }
-    }
-    else{
-        saving.Failed = true
-        saving.Closed = true
+    } else {
         BorderBox {
             Box()
             {
@@ -252,13 +327,28 @@ private fun Content(saving: Savings)
                             HeaderText(saving.Title)
                             Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
                             Text("Failed to achieve!", color = UIVar.onBoxColor())
-                            Box(modifier = Modifier.background(UIVar.onBoxColor(), RoundedCornerShape(UIVar.Radius)).padding(start = 4.dp, end = 4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        UIVar.onBoxColor(),
+                                        RoundedCornerShape(UIVar.Radius)
+                                    )
+                                    .padding(start = 4.dp, end = 4.dp)
+                            )
                             {
                                 Text("Type: Collect", color = UIVar.boxColor())
                             }
                         }
-                        Box(modifier = Modifier.fillMaxHeight().weight(2f).align(Alignment.CenterVertically)) {
-                            Icon(painter = painterResource(id = R.drawable.ic_cross_48dp), contentDescription = "Cross Icon")
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(2f)
+                                .align(Alignment.CenterVertically)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_cross_48dp),
+                                contentDescription = "Cross Icon"
+                            )
                         }
                     }
                 }
@@ -267,8 +357,7 @@ private fun Content(saving: Savings)
     }
 }
 
-private fun DateProgressBar(saving: Savings): Float
-{
+private fun DateProgressBar(saving: Savings): Float {
     val startDate = saving.StartDate
     val endDate = saving.EndDate
 

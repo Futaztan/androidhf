@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +39,6 @@ import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
 import co.yml.charts.ui.wavechart.model.WaveFillColor
 import co.yml.charts.ui.wavechart.model.WavePlotData
-import com.androidhf.data.Data
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.UIVar
@@ -47,6 +47,7 @@ import kotlin.math.min
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -58,13 +59,17 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.delay
-
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @ExperimentalMaterialApi
 fun FinanceScreen(navHostController: NavHostController) {
-    Data.topBarTitle = "Finance"
+    UIVar.topBarTitle = "Finance"
+
+    //ezekkel érhetők el az adatok
+    val sViewModel: SavingViewModel = hiltViewModel()
+    val tViewModel: TransactionViewModel = hiltViewModel()
 
     //alsó gombok eltüntetése
     val listState = rememberLazyListState()
@@ -96,6 +101,7 @@ fun FinanceScreen(navHostController: NavHostController) {
         .fillMaxSize()
     )
     {
+        val savings = sViewModel.savings.collectAsState()
         LazyColumn(modifier = Modifier
             .fillMaxWidth(),
             state = listState) {
@@ -114,22 +120,22 @@ fun FinanceScreen(navHostController: NavHostController) {
                     BorderBox(modifier = Modifier.weight(1f)) {
                         Column {
                             HeaderText("Bevétel")
-                            LastXItemsTransactionsMonthly(Data.getIncomesList(), 40, Color.Green)
+                            LastXItemsTransactionsMonthly(tViewModel.incomeTransactions.collectAsState(), 40, Color.Green)
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f)) {
                         Column {
                             HeaderText("Kiadás")
-                            LastXItemsTransactionsMonthly(Data.getExpensesList(), 40, Color.Red)
+                            LastXItemsTransactionsMonthly(tViewModel.expenseTransactions.collectAsState(), 40, Color.Red)
                         }
                     }
                 }
             }
-            if (Data.savingsList.isNotEmpty()) {
+            if (savings.value.isNotEmpty()) {
                 this@LazyColumn.items(
-                    items = Data.savingsList,
-                    key = { it.id }
+                    items = savings.value,
+                    key = { it.Id }
                 ) { saving ->
                     var visible by remember { mutableStateOf(true) }
 
@@ -145,6 +151,8 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
+                                    sViewModel.deleteSaving(saving)
+                                    Log.d("delete","torles")
                                 }
                             )
                         }
@@ -170,7 +178,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                         if (!visible) {
                             haptic.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             delay(300)
-                            Data.savingsList.remove(saving)
+                            sViewModel.deleteSaving(saving)
                         }
                     }
                 }
@@ -206,7 +214,8 @@ fun FinanceScreen(navHostController: NavHostController) {
 @Composable
 fun Finance_ui_egyenleg(navHostController: NavHostController)
 {
-    val money = Data.osszpenz
+    val viewmodel: TransactionViewModel = hiltViewModel()
+    val money = viewmodel.balance.collectAsState().value
     Column(
         modifier = Modifier
     )
@@ -226,42 +235,10 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
 }
 
 @Composable
-fun Finance_ui_bevetel(navHostController: NavHostController)
-{
-    val bevetellist = Data.getIncomesList()
-    Column(modifier = Modifier.fillMaxWidth()) {
-        HeaderText("Bevetelek")
-        if(bevetellist.size >= 1)
-        {
-            for (i in bevetellist.size-1 downTo maxOf(0, bevetellist.size-6))
-            {
-                Text("+${bevetellist[i].amount} Ft", color = Color.Green)
-            }
-        }
-    }
-}
-
-@Composable
-fun Finance_ui_kiadas(navHostController: NavHostController)
-{
-    val kiadaslist = Data.getExpensesList()
-    Column(modifier = Modifier.fillMaxWidth()) {
-        HeaderText("Kiadas")
-        if(kiadaslist.size >= 1)
-        {
-            for (i in kiadaslist.size-1 downTo maxOf(0, kiadaslist.size-6))
-            {
-                Text("-${kiadaslist[i].amount} Ft", color = Color.Red)
-            }
-        }
-
-    }
-}
-
-@Composable
 fun Grafikon_init()
 {
-    val balance = Data.calculateBalanceChangesSimple()
+    val viewmodel: TransactionViewModel = hiltViewModel()
+    val balance = viewmodel.getSortedMoney()
     val pointsData = balance.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
 
 

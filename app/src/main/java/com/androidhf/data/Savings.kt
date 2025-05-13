@@ -1,24 +1,78 @@
 package com.androidhf.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDate
-import java.util.Date
-import java.util.UUID
 
 
 //ez a class kezeli a megtakarításokat meg ilyeneket
-class Savings(
-    amount: Int, startdate: LocalDate, enddate: LocalDate, type: SavingsType, title: String, description: String, start: Int
+data class Savings(
+    val Amount: Int,               //a megtakarítási cél
+    val StartDate: LocalDate, //mikor hoztuk létre
+    val EndDate: LocalDate,  //mikorra szeretnénk elérni
+    val Type: SavingsType,    //milyen típusú megtakarítást szeretnénk
+                             // incomegoal_bytime, incomegoal_byamount, expensegoal_bytime, expensegoal_byamount
+    val Title: String,   //a megtakarítás neve
+    val Description: String,  //rövid leírása, hogy mit szerettünk volna elérni
+    var Start: Int,  //kezdő pénz mennyisége
+    val Id : Long = 0,
+    var Completed: Boolean = false,          //teljesített-e
+    var Failed: Boolean = false,             //elbukott
+    var Closed: Boolean =  false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 ) {
-    val id: String = UUID.randomUUID().toString() //TODO: ez lehet hogy nem működik ha elmentjük majd
-    var Amount: Int = amount                //a megtakarítási cél
-    var StartDate: LocalDate = startdate         //mikor hoztuk létre
-    var EndDate: LocalDate = enddate             //mikorra szeretnénk elérni
-    var Type: SavingsType = type            //milyen típusú megtakarítást szeretnénk
-                                            //incomegoal_bytime, incomegoal_byamount, expensegoal_bytime, expensegoal_byamount
-    var Title: String = title               //a megtakarítás neve
-    var Description: String = description   //rövid leírása, hogy mit szerettünk volna elérni
-    var Start: Int = start                  //kezdő pénz mennyisége
-    var Completed: Boolean = false          //teljesített-e
-    var Failed: Boolean = false             //elbukott
-    var Closed: Boolean = false             //módosítható-e a Completed és Failed, ha closed true akkor nem
+
+//    val id: String =
+//        UUID.randomUUID().toString() //TODO: ez lehet hogy nem működik ha elmentjük majd
+
+    fun toEntity() : SavingsEntity
+    {
+        return SavingsEntity(
+            Amount = this.Amount,
+            StartDate = this.StartDate,
+            EndDate = this.EndDate,
+            Type = this.Type,
+            Title = this.Title,
+            Description = this.Description,
+            Start = this.Start,
+            Completed = this.Completed,
+            Failed = this.Failed,
+            Closed = this.Closed,
+            id = this.Id
+        )
+    }
+
 }
+@Entity(tableName = "savings")
+data class SavingsEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val Amount: Int,
+    val StartDate: LocalDate,
+    val EndDate: LocalDate,
+    val Type: SavingsType,
+    val Title: String,
+    val Description: String,
+    var Start: Int,
+    var Completed: Boolean,
+    var Failed: Boolean,
+    var Closed: Boolean
+)
+{
+    fun toDomain() : Savings
+    {
+        return Savings(
+            Amount = this.Amount,
+            StartDate = this.StartDate,
+            EndDate = this.EndDate,
+            Type = this.Type,
+            Title = this.Title,
+            Description = this.Description,
+            Start = this.Start,
+            Completed = this.Completed,
+            Failed = this.Failed,
+            Closed = this.Closed,
+            Id = this.id
+
+        )
+    }
+}
+

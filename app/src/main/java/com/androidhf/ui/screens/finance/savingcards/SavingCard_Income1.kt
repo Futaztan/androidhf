@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.androidhf.R
-import com.androidhf.data.Data.osszpenz
 import com.androidhf.data.Savings
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
@@ -54,6 +54,8 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.androidhf.ui.screens.finance.TransactionViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -118,7 +120,7 @@ fun SavingCard_Income1(
     }
 
     if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-        LaunchedEffect(saving.id) {
+        LaunchedEffect(saving.Id) {
             showPopup=true
         }
     }
@@ -154,7 +156,10 @@ fun SavingCard_Income1(
 @Composable
 private fun Content(saving: Savings)
 {
-    if(!saving.Closed && LocalDate.now() < saving.EndDate)
+    val tViewModel: TransactionViewModel = hiltViewModel()
+    val osszeg = tViewModel.balance.collectAsState().value
+    //if(!saving.Closed && LocalDate.now() < saving.EndDate)
+    if(!saving.Closed)
     {
 
         BorderBox {
@@ -169,9 +174,11 @@ private fun Content(saving: Savings)
                         if(ChronoUnit.DAYS.between(LocalDate.now(), saving.EndDate) in 0..7)
                         {
                             Row(modifier = Modifier.background(MaterialTheme.colorScheme.error, RoundedCornerShape(UIVar.Radius)), verticalAlignment = Alignment.CenterVertically){
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
-                                Text("Deadline Inbound!", color = MaterialTheme.colorScheme.onError)
+                                Text(" Deadline Inbound! ", color = MaterialTheme.colorScheme.onError)
                                 Icon(painter = painterResource(id = R.drawable.ic_warning_16), contentDescription = "Warning", tint = MaterialTheme.colorScheme.onError)
+                                Spacer(modifier = Modifier.width(4.dp))
                             }
                         }
                     }
@@ -207,17 +214,18 @@ private fun Content(saving: Savings)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Balance:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
-                        progress = osszpenz.toFloat()/saving.Amount.toFloat(),
+                        progress = osszeg.toFloat()/saving.Amount.toFloat(),
                         modifier = Modifier.fillMaxWidth().height(8.dp).weight(8f)
                     )
                 }
             }
         }
     }
-    else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszpenz && LocalDate.now() >= saving.EndDate)))
+    //else if(!saving.Closed && (saving.Completed || (saving.Amount <= osszeg && LocalDate.now() >= saving.EndDate)))
+    else if(saving.Completed)
     {
-        saving.Completed = true
-        saving.Closed = true
+        //saving.Completed = true
+        //saving.Closed = true
         BorderBox {
             Box()
             {
@@ -241,8 +249,8 @@ private fun Content(saving: Savings)
         }
     }
     else{
-        saving.Failed = true
-        saving.Closed = true
+        //saving.Failed = true
+        //saving.Closed = true
         BorderBox {
             Box()
             {

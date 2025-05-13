@@ -2,7 +2,9 @@ package com.androidhf
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +15,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,8 +27,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,13 +47,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.androidhf.data.Category
-import com.androidhf.data.Data
 
-import com.androidhf.data.Frequency
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsType
-import com.androidhf.data.Transaction
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.ai.AIViewModel
 import com.androidhf.ui.screens.finance.FinanceScreen
@@ -54,7 +55,6 @@ import com.androidhf.ui.screens.finance.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.finance.MoneySavingsScreen
 
-import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.stock.StockScreen
@@ -62,22 +62,37 @@ import com.androidhf.ui.screens.stock.StockScreen
 import com.androidhf.ui.screens.stock.StockViewModel
 
 import com.androidhf.ui.theme.AndroidhfTheme
-import java.time.LocalDate
-import java.time.LocalTime
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
+import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.SavingViewModel
+import com.androidhf.ui.screens.finance.TransactionViewModel
+import com.androidhf.ui.screens.login.LoginScreen
+import com.androidhf.ui.screens.login.RegisterScreen
+import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.screens.user.UserScreen
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
+//TODO import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
-    @RequiresApi(Build.VERSION_CODES.O)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        //TODO ezt visszarakni majd ha jó lesz
+        /*
         val uploadWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<DailyWorker>(24, TimeUnit.HOURS)
                 .build()
@@ -88,11 +103,15 @@ class MainActivity : ComponentActivity() {
                 ExistingPeriodicWorkPolicy.KEEP,
                 uploadWorkRequest
             )
+            */
 
-        Data.init(this)
-
-
-
+        //TODO JELENLEGI HIBÁK:
+        /*
+            gráf mindig szar
+            savingnél lehet kisebb időt választani mint a mai nap
+            MoneyExpense closed ellenőrzés hiányzik
+            SavingViewModel transactionAdded cucc még nem jó
+         */
         setContent {
             AndroidhfTheme {
                 /*
@@ -102,10 +121,10 @@ class MainActivity : ComponentActivity() {
                     listafeltoles()
                     elso = false
                 } */
-
+                val sViewModel: SavingViewModel = hiltViewModel()
+                val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = viewModel()
-                val aIViewModel: AIViewModel = viewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -113,25 +132,42 @@ class MainActivity : ComponentActivity() {
                     },
                     topBar =
                         {
-                            CustomTopAppBar()
+                            CustomTopAppBar(navController)
                         }
                 ) { innerPadding ->
+
 
                     NavHost(
                         navController = navController,
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("home") { HomeScreen(/*financeViewModel*/) }
-                        composable("penzugy") { FinanceScreen(navController /*financeViewModel*/) }
+                        composable("login") { LoginScreen(navController) }
+                        composable("register") { RegisterScreen(navController) }
+                        composable("user") { UserScreen(navController)}
+                        composable("home") { HomeScreen() }
+                        composable("penzugy") { FinanceScreen(navController) }
                         composable("stock") { StockScreen(navController, stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
 
-                        composable("ai") { AIScreen(aIViewModel) }
-                        composable("money_income") { MoneyIncomeScreen(navController/*, financeViewModel*/) }
-                        composable("money_expense") { MoneyExpenseScreen(navController/*, financeViewModel*/) }
-                        composable("money_saving") { MoneySavingsScreen(navController /*financeViewModel*/) }
+                        composable("ai") { AIScreen() }
+                        composable("money_income") { MoneyIncomeScreen(navController) }
+                        composable("money_expense") { MoneyExpenseScreen(navController) }
+                        composable("money_saving") { MoneySavingsScreen(navController) }
 
+                    }
+                    //TODO adatbázis amiben utility adatok vannak, hány saving volt összesen, mennyi completed, mennyi failed stb
+                    val balance = tViewModel.balance
+                    LaunchedEffect(key1 = Unit) {
+                        delay(1250) //Idő amíg betölti az adatbázist
+                        sViewModel.dateChecker(balance.first())
+                    }
+
+                    lifecycleScope.launchWhenCreated {
+                        sViewModel.messages.collect { msg ->
+                            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+                            delay(2500)
+                        }
                     }
                 }
             }
@@ -201,21 +237,87 @@ fun BottomNavBar(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar() {
+fun CustomTopAppBar(navController: NavHostController) {
+    val haptic = LocalView.current
+    var showDropdown by remember { mutableStateOf(false) }
+
     TopAppBar(
-        title = { Text(Data.topBarTitle) },
+        title = { Text(UIVar.topBarTitle) },
         actions = {
-            IconButton(onClick = { /* TODO */ }) {
+            IconButton(
+                onClick =
+                    {
+                        haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        showDropdown = !showDropdown
+                        /*
+                        if(AuthService.isLoggedIn()) navController.navigate("user")
+                        else navController.navigate("login")
+                        */
+                    })
+            {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_account),
                     contentDescription = "Account icon"
                 )
             }
+            ProfileDropdown(
+                navController = navController,
+                visible = showDropdown,
+                onDismissRequest = { showDropdown = false }
+            )
         }
     )
 }
 
+@Composable
+fun ProfileDropdown(
+    navController: NavHostController,
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    DropdownMenu(
+        expanded = visible,
+        onDismissRequest = onDismissRequest,
+        offset = DpOffset(x = 0.dp, y = 8.dp),
+        properties = PopupProperties(focusable = true)
+    ) {
+        if (AuthService.isLoggedIn()) {
+            DropdownMenuItem(
+                text = { Text("Profile") },
+                onClick = {
+                    navController.navigate("user")
+                    onDismissRequest()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Logout") },
+                onClick = {
+                    AuthService.logOut()
+                    navController.navigate("home")
+                    onDismissRequest()
+                }
+            )
+        } else {
+            DropdownMenuItem(
+                text = { Text("Login") },
+                onClick = {
+                    navController.navigate("login")
+                    onDismissRequest()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Register") },
+                onClick = {
+                    navController.navigate("register")
+                    onDismissRequest()
+                }
+            )
+        }
+    }
+}
+
 fun listafeltoles() {
+    /*
     for (i in 1..25) {
         var random = Random.Default
         val transactionplus = Transaction(
@@ -234,10 +336,11 @@ fun listafeltoles() {
             Category.ELOFIZETES,
             Frequency.EGYSZERI
         )
-        Data.addTransaction(transactionplus)
-        Data.addTransaction(transactionminus)
+        CoroutineScope(Dispatchers.IO).launch {
+            Data.addTransaction(transactionplus)
+            Data.addTransaction(transactionminus)
+        }
     }
-    /*
     val alma = Savings(
         50000,
         LocalDate.of(2025, 4, 12),
