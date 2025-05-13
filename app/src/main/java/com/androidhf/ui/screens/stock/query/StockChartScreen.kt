@@ -26,13 +26,13 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun StockChartScreen(stockViewModel: StockViewModel)
 {
-    LineChartSample(stockViewModel.stockData!!)
+    LineChartSample(stockViewModel.stockData!!, "")
 }
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun LineChartSample( results : List<AggregateDTO>) {
+fun LineChartSample( results : List<AggregateDTO>, label : String) {
 
 
 
@@ -53,7 +53,7 @@ fun LineChartSample( results : List<AggregateDTO>) {
 
     val Lines: List<LineParameters> = listOf(
         LineParameters(
-            label = "apple stock",
+            label = label,
             data = values,
             lineColor = Color.Red,
             lineType = LineType.CURVED_LINE,
