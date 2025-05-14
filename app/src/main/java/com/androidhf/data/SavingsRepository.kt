@@ -46,7 +46,6 @@ class SavingsRepository @Inject constructor(
                     firebaseDB.updateSavingInFirebase(save)
                 }
             } else {
-                // Ez a naplóüzenet kritikus, ha nem frissül az adatbázisban
                 Log.e("SavingsRepository", "Saving update did not affect any rows! Saving ID: ${save.Id}")
             }
         } catch (e: Exception) {

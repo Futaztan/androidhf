@@ -2,6 +2,7 @@ package com.androidhf.ui.screens.finance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.androidhf.data.Category
 import com.androidhf.data.Transaction
 import com.androidhf.data.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 //viewmodel létrehozása, ott ahol kell: val viewModel: TransactionViewModel = hiltViewModel()
@@ -48,6 +50,34 @@ class TransactionViewModel @Inject constructor(
 
     init {
         loadTransactions()
+    }
+
+    fun get30DaysIncome(): Int {
+        val date = LocalDate.now().minusDays(30)
+        return _incomeTransactions.value.filter { it.date >= date }.sumOf { it.amount }
+    }
+
+    fun get30DaysExpense(): Int {
+        val date = LocalDate.now().minusDays(30)
+        return _expenseTransactions.value.filter { it.date >= date }.sumOf { it.amount }
+    }
+
+    fun get30DaysIncomeByType(): String {
+        val date = LocalDate.now().minusDays(30)
+        val list = _incomeTransactions.value.filter { it.date >= date }
+        return list
+            .groupBy { it.category.displayName }
+            .mapValues { item -> item.value.sumOf { it.amount } }
+            .maxByOrNull { it.value }?.key ?: ""
+    }
+
+    fun get30DaysExpenseByType(): String {
+        val date = LocalDate.now().minusDays(30)
+        val list = _expenseTransactions.value.filter { it.date >= date }
+        return list
+            .groupBy { it.category.displayName }
+            .mapValues { item -> item.value.sumOf { it.amount } }
+            .minByOrNull { it.value }?.key ?: ""
     }
 
     private fun loadTransactions() {

@@ -33,16 +33,13 @@ fun LastXItemsTransactions(
     var color: Color = _color
     if(color == Color.Green)
     {
-        if(!isSystemInDarkTheme())
-        {
-            color = Color(0, 165, 0)
-        }
+        color = UIVar.colorGreen()
     }
     else if(color == Color.Red)
     {
         if(!isSystemInDarkTheme())
         {
-            color = Color(185, 0, 0)
+            color = UIVar.colorRed()
         }
     }
     Panel(fitMaxWidth = false, modifier = _modifier) {

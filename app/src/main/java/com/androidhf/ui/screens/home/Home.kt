@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +24,7 @@ import com.androidhf.data.SavingsType
 import com.androidhf.ui.reuseable.FirstXItemsTransactions
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.Panel
+import com.androidhf.ui.reuseable.Report
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.finance.SavingViewModel
 import com.androidhf.ui.screens.finance.TransactionViewModel
@@ -49,7 +51,8 @@ fun HomeScreen() {
 
     Column(
         modifier = Modifier.fillMaxWidth()
-                            .verticalScroll(scrollState),
+                            .verticalScroll(scrollState)
+                            .padding(UIVar.Padding),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Panel{
@@ -79,7 +82,8 @@ fun HomeScreen() {
                 SavingCard_Expense2(item, { }, false)
             }
         }
-
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Report()
         /* TODO ezt majd visszarakni
         Button(onClick = {
             Data.repetitiveTransactions.forEach{

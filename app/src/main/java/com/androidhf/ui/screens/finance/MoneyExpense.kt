@@ -227,7 +227,7 @@ fun MoneyExpenseScreen(navController: NavController) {
             val amount = input.toIntOrNull()
             if (amount != null) {
                 val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
-                    item.Start - amount < item.Amount //TODO ide valami Closed ellenőrzés
+                    !item.Closed && item.Start - amount <= item.Amount //TODO ide valami Closed ellenőrzés
                 }
                 if(found) showPopup = true
                 else onSubmit()

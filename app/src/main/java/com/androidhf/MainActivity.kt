@@ -108,8 +108,6 @@ class MainActivity : ComponentActivity() {
         //TODO JELENLEGI HIBÁK:
         /*
             gráf mindig szar
-            savingnél lehet kisebb időt választani mint a mai nap
-            MoneyExpense closed ellenőrzés hiányzik
             SavingViewModel transactionAdded cucc még nem jó
          */
         setContent {

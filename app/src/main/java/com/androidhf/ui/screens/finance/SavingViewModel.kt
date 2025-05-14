@@ -126,4 +126,34 @@ class SavingViewModel @Inject constructor(
             }
         }
     }
+
+    fun savingsCount(): Int
+    {
+        return _savings.value.size
+    }
+
+    fun savingsCountByCollect(): Int
+    {
+        return _savings.value.filter { it.Type == SavingsType.INCOMEGOAL_BYAMOUNT }.size
+    }
+
+    fun savingsCountByLimit(): Int
+    {
+        return _savings.value.filter { it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT }.size
+    }
+
+    fun savingsCountByHold(): Int
+    {
+        return _savings.value.filter { it.Type == SavingsType.INCOMEGOAL_BYTIME }.size
+    }
+
+    fun savingsCountCompleted(): Int
+    {
+        return _savings.value.filter { it.Completed }.size
+    }
+
+    fun savingsCountFailed(): Int
+    {
+        return _savings.value.filter { it.Failed }.size
+    }
 }
