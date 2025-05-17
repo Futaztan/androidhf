@@ -90,4 +90,10 @@ dependencies {
 
     // Hilt Compose integráció (ez már 1.2.0, ami valószínűleg jó)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // Maradhat, ha ez a legújabb
+
+    implementation ("io.ktor:ktor-client-core:2.3.0")
+    implementation ("io.ktor:ktor-client-android:2.3.0")
+    implementation ("io.ktor:ktor-client-content-negotiation:2.3.0")
+    implementation ("io.ktor:ktor-serialization-kotlinx-json:2.3.0")
+    implementation ("io.ktor:ktor-client-logging:2.3.0")
 }
