@@ -1,10 +1,10 @@
 package com.androidhf.ui.screens.finance
 
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androidhf.data.Category
-import com.androidhf.data.Transaction
-import com.androidhf.data.TransactionRepository
+import com.androidhf.data.datatypes.Transaction
+import com.androidhf.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -78,6 +78,54 @@ class TransactionViewModel @Inject constructor(
             .groupBy { it.category.displayName }
             .mapValues { item -> item.value.sumOf { it.amount } }
             .minByOrNull { it.value }?.key ?: ""
+    }
+
+    fun sortIncomeTransactionsByAmount(asc: Boolean = false): List<Transaction> {
+        return if (asc) {
+            _incomeTransactions.value.sortedBy { it.amount }
+        }
+        else return _incomeTransactions.value.sortedByDescending { it.amount }
+    }
+
+    fun sortExpenseTransactionsByAmount(asc: Boolean = false): List<Transaction> {
+        return if (asc) {
+            _expenseTransactions.value.sortedBy { it.amount }
+        }
+        else return _expenseTransactions.value.sortedByDescending { it.amount }
+    }
+
+    fun sortIncomeTransactionsByDate(asc: Boolean = false): List<Transaction> {
+        return if (asc) {
+            _incomeTransactions.value.sortedWith(
+                compareBy<Transaction> { it.date }
+                    .thenBy { it.time }
+            )
+        }
+        else return _incomeTransactions.value.sortedWith(
+            compareByDescending<Transaction> { it.date }
+                .thenByDescending { it.time }
+        )
+    }
+
+    fun sortExpenseTransactionsByDate(asc: Boolean = false): List<Transaction> {
+        return if (asc) {
+            _expenseTransactions.value.sortedWith(
+                compareBy<Transaction> { it.date }
+                    .thenBy { it.time }
+            )
+        }
+        else return _expenseTransactions.value.sortedWith(
+            compareByDescending<Transaction> { it.date }
+                .thenByDescending { it.time }
+        )
+    }
+
+    fun sortIncomeByCategory(): List<Transaction> {
+        return _incomeTransactions.value.sortedBy { it.category.displayName }
+    }
+
+    fun sortExpenseByCategory(): List<Transaction> {
+        return _expenseTransactions.value.sortedBy { it.category.displayName }
     }
 
     private fun loadTransactions() {

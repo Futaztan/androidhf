@@ -1,6 +1,5 @@
 package com.androidhf.ui.screens.home
 
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.androidhf.data.SavingsType
-import com.androidhf.ui.reuseable.FirstXItemsTransactions
+import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.HeaderText
+import com.androidhf.ui.reuseable.ListXItemsTransactions
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.Report
 import com.androidhf.ui.reuseable.UIVar
@@ -32,8 +31,6 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import com.androidhf.ui.screens.login.auth.AuthService
-import java.time.Duration
-import java.time.LocalDate
 
 
 @Composable
@@ -62,9 +59,9 @@ fun HomeScreen() {
 
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${money}") }
         Row (modifier = Modifier.fillMaxWidth()){
-            FirstXItemsTransactions(tViewModel.incomeTransactions.collectAsState(),10,Color.Green,Modifier.weight(1f))
+            ListXItemsTransactions(tViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
-            FirstXItemsTransactions(tViewModel.expenseTransactions.collectAsState(),10,Color.Red,Modifier.weight(1f))
+            ListXItemsTransactions(tViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
         }
         Text("3 legújabb takarék")
         sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->

@@ -1,17 +1,12 @@
 package com.androidhf.ui.screens.finance
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsRepository
-import com.androidhf.data.SavingsType
-import com.androidhf.data.Transaction
+import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.repository.SavingsRepository
+import com.androidhf.data.datatypes.SavingsType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

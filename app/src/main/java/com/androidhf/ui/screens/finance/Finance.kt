@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,8 +54,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalView
-import com.androidhf.data.SavingsType
-import com.androidhf.ui.reuseable.LastXItemsTransactionsMonthly
+import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.ui.reuseable.ListXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
@@ -118,16 +119,16 @@ fun FinanceScreen(navHostController: NavHostController) {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     BorderBox(modifier = Modifier.weight(1f)) {
-                        Column {
+                        Column(modifier = Modifier.clickable { navHostController.navigate("FinanceIncome") }) {
                             HeaderText("Bevétel")
-                            LastXItemsTransactionsMonthly(tViewModel.incomeTransactions.collectAsState(), 40, Color.Green)
+                            ListXItemsTransactionsMonthly(tViewModel.incomeTransactions.collectAsState(), 40, Color.Green)
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f)) {
-                        Column {
+                        Column(modifier = Modifier.clickable { navHostController.navigate("FinanceExpense") }) {
                             HeaderText("Kiadás")
-                            LastXItemsTransactionsMonthly(tViewModel.expenseTransactions.collectAsState(), 40, Color.Red)
+                            ListXItemsTransactionsMonthly(tViewModel.expenseTransactions.collectAsState(), 40, Color.Red)
                         }
                     }
                 }

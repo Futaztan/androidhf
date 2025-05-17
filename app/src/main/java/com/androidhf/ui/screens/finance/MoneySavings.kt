@@ -33,15 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsType
+import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 

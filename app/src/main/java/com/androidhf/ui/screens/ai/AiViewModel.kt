@@ -1,12 +1,11 @@
 package com.androidhf.ui.screens.ai
 
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.AiMessages
-import com.androidhf.data.SavingsRepository
-import com.androidhf.data.SavingsType
-import com.androidhf.data.TransactionRepository
+import com.androidhf.data.repository.SavingsRepository
+import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.repository.TransactionRepository
 import com.androidhf.data.gemini.GeminiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

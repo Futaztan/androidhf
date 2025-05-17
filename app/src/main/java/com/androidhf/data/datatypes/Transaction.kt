@@ -1,8 +1,5 @@
-package com.androidhf.data
+package com.androidhf.data.datatypes
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDate
@@ -70,7 +67,7 @@ data class TransactionEntity(
     val type : Category.Type,
     val frequency: Frequency,
 
-){
+    ){
     fun toDomain() : Transaction
     {
         return Transaction(
