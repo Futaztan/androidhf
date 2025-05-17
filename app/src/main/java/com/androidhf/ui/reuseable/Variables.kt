@@ -20,7 +20,7 @@ object UIVar
 
     val Padding: Dp = 8.dp
     val Radius: Dp = 8.dp
-    val BorderWidth: Dp = 4.dp
+    val BorderWidth: Dp = 3.dp
     val BoxBackgroundColor: Color = Color.DarkGray
     val HeaderText: TextUnit = 24.sp
     val AccentColor: Color = Color.Yellow

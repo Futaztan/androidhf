@@ -252,11 +252,14 @@ fun InvestmentBox(
             ) {
                 // Ticker kód
                 Text(
-                    text = company.companyCode,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)) {
+                            append(stock.companyCode + " ")
+                        }
+                        withStyle(style = SpanStyle(fontSize = 8.sp)) {
+                            append(company.companyName)
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 Text(

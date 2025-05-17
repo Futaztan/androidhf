@@ -1,31 +1,23 @@
 package com.androidhf.ui.screens.stock
 
-
-import android.os.Build
 import android.util.Log
 
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 
 import androidx.compose.material3.Button
@@ -47,18 +39,11 @@ import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.navigation.NavController
@@ -66,7 +51,6 @@ import androidx.navigation.NavController
 import com.androidhf.R
 import com.androidhf.data.Company
 import com.androidhf.data.Stock
-import com.androidhf.ui.reuseable.BorderBox
 
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.NumberTextField
@@ -84,17 +68,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import com.androidhf.ui.screens.stock.query.LineChartSample
-import com.androidhf.ui.screens.stock.query.searchStocks
 import com.androidhf.ui.screens.stock.query.searchStocksREST
 import com.androidhf.ui.screens.stock.uielements.FavoriteCompanyBox
 import com.androidhf.ui.screens.stock.uielements.InvestmentBox
-import com.androidhf.ui.screens.stock.uielements.MiniStockChart
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StockScreen(navController: NavController) {
 
@@ -213,13 +194,10 @@ fun StockScreen(navController: NavController) {
         }
     }
 
-
-
-
     val intensity =
     if(showBottomWindow.value)
     {
-        4.dp
+        8.dp
     }
     else{
         0.dp
@@ -231,16 +209,17 @@ fun StockScreen(navController: NavController) {
     }
 */
 
-    Box(modifier = Modifier.fillMaxSize().blur(intensity)){
+    Box(modifier = Modifier.fillMaxSize().blur(intensity).padding(UIVar.Padding)){
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 120.dp) // Helyet hagyunk az alsó kereső sávnak
+                .padding(bottom = 106.dp) // Helyet hagyunk az alsó kereső sávnak
         ) {
             // Fejléc
             item {
                 HeaderText("Jelenlegi befektetések:")
+                Spacer(modifier = Modifier.height(UIVar.Padding))
             }
 
             if (stocks.isEmpty()) {
@@ -312,6 +291,7 @@ fun StockScreen(navController: NavController) {
             // Kedvencek fejléc
             item {
                 HeaderText("Kedvencek:")
+                Spacer(modifier = Modifier.height(UIVar.Padding))
             }
 
             if(companies.isEmpty()){
@@ -369,7 +349,6 @@ fun StockScreen(navController: NavController) {
         //alsó kereső
         Box(modifier = Modifier.align(Alignment.BottomCenter)){
             Column(modifier = Modifier.fillMaxWidth()){
-
                 LazyRow {
                     itemsIndexed(displayedList, key = { index, _ -> UUID.randomUUID().toString() }) { index, item ->
                         if (index == 0) {
@@ -471,10 +450,13 @@ fun bottomwindow(
 ) {
     var stockInput by remember { mutableStateOf("") }
     val stockViewModel: StockViewModel = hiltViewModel()
-    Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures {} }) {
+    Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures {} }
+    ) {
         Panel(modifier = Modifier
             .align(Alignment.BottomCenter)
-            .fillMaxWidth(), centerItems = false) {
+            .fillMaxWidth()
+            .shadow(elevation = 10.dp, shape = RoundedCornerShape(UIVar.Radius))
+            , centerItems = false) {
             Box(modifier = Modifier.align(Alignment.TopEnd)) {
                 Row {
                     if(stockData.isEmpty() && !isLoading){

@@ -53,7 +53,7 @@ fun ListXItemsTransactionsMonthly(
 
     if(firstItems.isNotEmpty())
     {
-        Panel(fitMaxWidth = false, modifier = _modifier) {
+        Panel(fitMaxWidth = false, modifier = _modifier, shadow = 0.dp) {
             Column(modifier = _modifier) {
                 var prevYear = firstItems[0].date.year
                 var prevMonth = firstItems[0].date.month

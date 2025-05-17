@@ -19,6 +19,11 @@ fun BorderBox(modifier: Modifier = Modifier, backgroundColor: Color = UIVar.boxC
 {
     Box(modifier = modifier
         .border(borderSize, UIVar.boxBorderColor(), RoundedCornerShape(UIVar.Radius))
+        .shadow(
+            elevation = 6.dp,
+            shape = RoundedCornerShape(UIVar.Padding),
+            clip = false
+        )
         .background(backgroundColor, RoundedCornerShape(UIVar.Radius))
         .padding(UIVar.Padding)
     )

@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.androidhf.data.StockEntity
-import com.androidhf.data.TransactionEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

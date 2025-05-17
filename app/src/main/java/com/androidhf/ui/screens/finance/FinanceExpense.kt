@@ -169,6 +169,7 @@ fun FinanceExpense(navController: NavHostController) {
             Log.d("bug1", "List size: ${list.size}")
             ListXItemsTransactions(null, list, -1, UIVar.colorRed(), reversed = true)
         }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
     }
 
     Box(modifier = Modifier.fillMaxSize())
