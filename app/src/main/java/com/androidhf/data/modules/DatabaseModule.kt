@@ -2,8 +2,10 @@ package com.androidhf.data.modules
 
 import android.content.Context
 import androidx.room.Room
+import com.androidhf.data.dao.CompanyDao
 import com.androidhf.data.dao.RepetitiveTransactionDao
 import com.androidhf.data.dao.SavingDao
+import com.androidhf.data.dao.StockDao
 import com.androidhf.data.dao.TransactionDao
 import com.androidhf.data.database.RoomDB
 import dagger.Module
@@ -44,4 +46,15 @@ object DatabaseModule {
     fun provideTransactionDao(database: RoomDB): TransactionDao {
         return database.transactionDao()
     }
+
+    @Provides
+    fun provideStockDao(database: RoomDB): StockDao {
+        return database.stockDao()
+    }
+
+    @Provides
+    fun provideCompanyDao(database: RoomDB): CompanyDao {
+        return database.companyDao()
+    }
+
 }

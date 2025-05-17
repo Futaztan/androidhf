@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
                 val sViewModel: SavingViewModel = hiltViewModel()
                 val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
-                val stockViewModel: StockViewModel = viewModel()
+                val stockViewModel: StockViewModel = hiltViewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -147,8 +147,8 @@ class MainActivity : ComponentActivity() {
                         composable("user") { UserScreen(navController)}
                         composable("home") { HomeScreen() }
                         composable("penzugy") { FinanceScreen(navController) }
-                        composable("stock") { StockScreen(navController, stockViewModel) }
-                        composable("stock_detail") { StockChartScreen(stockViewModel) }
+                        composable("stock") { StockScreen(navController) }
+                        composable("stock_detail") { StockChartScreen() }
 
                         composable("ai") { AIScreen() }
                         composable("money_income") { MoneyIncomeScreen(navController) }

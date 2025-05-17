@@ -1,41 +1,42 @@
 package com.androidhf.ui.screens.stock
 
 
-import android.icu.text.CaseMap.Title
 import android.os.Build
+import android.util.Log
 
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material3.BottomSheetScaffold
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,19 +46,30 @@ import androidx.compose.ui.Alignment
 
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.navigation.NavController
 
 import com.androidhf.R
+import com.androidhf.data.Company
+import com.androidhf.data.Stock
+import com.androidhf.ui.reuseable.BorderBox
 
 import com.androidhf.ui.reuseable.HeaderText
+import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 
 import com.androidhf.ui.reuseable.UIVar
@@ -72,44 +84,125 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import com.androidhf.ui.screens.stock.query.LineChartSample
+import com.androidhf.ui.screens.stock.query.searchStocks
+import com.androidhf.ui.screens.stock.query.searchStocksREST
+import com.androidhf.ui.screens.stock.uielements.FavoriteCompanyBox
+import com.androidhf.ui.screens.stock.uielements.InvestmentBox
+import com.androidhf.ui.screens.stock.uielements.MiniStockChart
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
+fun StockScreen(navController: NavController) {
+
+    val stockViewModel: StockViewModel = hiltViewModel()
+
     UIVar.topBarTitle = "Stock"
     var showChart by remember { mutableStateOf(false) }
 
     val stockData = remember { mutableStateListOf<AggregateDTO>()  }
     var isLoading by remember { mutableStateOf(false) }
+    var isLoadingSearch by remember { mutableStateOf(false) }
 
     var searchQuery by remember { mutableStateOf("") }
 
     val list = mutableListOf("Apple", "Google", "Tesla", "Amazon", "Microsoft", "Meta", "Netflix", "Nvidia", "Blackrock")
     val codes = mutableListOf("AAPL", "GOOGL", "TSLA", "AMZN", "MSFT", "META", "NFLX", "NVDA", "BLK")
+
+    var searchResults by remember { mutableStateOf<List<Pair<String,String>>>(emptyList()) }
+
+    val newlist = mutableListOf<String>()
+    val newcodes = mutableListOf<String>()
+
+    val displayedList = if(searchResults.isEmpty()) list else searchResults.map { it.first }
+    val displayedCodes = if(searchResults.isEmpty()) codes else searchResults.map { it.second }
+/*
+    val valamilist = remember ( newlist ) {
+        if(newlist.isEmpty())
+        {
+            list
+        }else{
+            newlist
+        }
+    }
+
+    val valamicodes = remember ( newcodes ) {
+        if(newcodes.isEmpty())
+        {
+            codes
+        }else{
+            newcodes
+        }
+    }
+*/
+    var currentCompanyCode by remember { mutableStateOf("") }
     var currentCompanyName by remember { mutableStateOf("") }
 
     var showBottomWindow = remember { mutableStateOf(false) }
+
+
+    val companies by stockViewModel.company.collectAsState()
+    val stocks by stockViewModel.stock.collectAsState()
+
+
+    LaunchedEffect(searchQuery) {
+        if(searchQuery.isEmpty()){
+            searchResults = emptyList()
+        }
+    }
+
 
     fun stockQuery(company: String) {
         isLoading = true
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val POLYGON_API_KEY = PolygonRestClient("j69KmsF2J_JJn1KWl2f_1drc6HT9Cech")
-                val now: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                val old: String = LocalDate.now().minusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                val data = stocksAggregatesBars(POLYGON_API_KEY, company, old, now)
-                withContext(Dispatchers.Main) {
-                    stockData.clear() // Clear before adding new data
-                    stockData.addAll(data.results)
-                    showChart = true
+                val POLYGON_API_KEY = PolygonRestClient("kwQO2EZ6YFWcSA0Vkx4pCXyE6Guf2HJg")
 
-                    // Set company name based on code
-                    val index = codes.indexOf(company)
-                    if (index != -1) {
-                        currentCompanyName = list[index]
+                // Kezdeti paraméterek
+                val now = LocalDate.now()
+                var endDate = now
+                var startDate = now.minusDays(8) // Kezdjük 20 nappal ezelőttről
+
+                var attempts = 0
+                var foundData = false
+
+                // Maximum 3 próbálkozás (60 napra visszamenőleg)
+                while (!foundData && attempts < 40) {
+                    Log.d("StockQuery", "Attempt ${attempts + 1}: Querying from ${startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))} to ${endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}")
+
+                    try {
+                        val data = stocksAggregatesBars(
+                            POLYGON_API_KEY,
+                            company,
+                            startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                            endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                        )
+
+                        withContext(Dispatchers.Main) {
+                            // Ellenőrizzük, hogy kaptunk-e értelmes adatot
+                            if (data.results != null && data.results.isNotEmpty()) {
+                                Log.d("StockQuery", "Data found for ${company}! ${data.results.size} data points.")
+                                stockData.clear()
+                                stockData.addAll(data.results)
+                                showChart = true
+                                currentCompanyCode = data.ticker?.toString() ?: company
+                                currentCompanyName = currentCompanyCode
+                                foundData = true
+                            } else {
+                                Log.e("StockQuery", "No data: trying attempt " + attempts)
+                                // Ha nem találtunk adatot, megnöveljük az időtartamot
+                                attempts++
+                                delay(5000)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("StockQuery", "Error fetching data: ${e.message}")
+                        attempts++
+                        delay(3000)
+                        // Kivétel esetén szintén növeljük az időtartamot
                     }
                 }
             } finally {
@@ -123,14 +216,162 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
 
 
 
+    val intensity =
+    if(showBottomWindow.value)
+    {
+        4.dp
+    }
+    else{
+        0.dp
+    }
+/*
+    if(searchQuery == ""){
+        newlist.clear()
+        newcodes.clear()
+    }
+*/
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize().blur(intensity)){
 
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 120.dp) // Helyet hagyunk az alsó kereső sávnak
+        ) {
+            // Fejléc
+            item {
+                HeaderText("Jelenlegi befektetések:")
+            }
+
+            if (stocks.isEmpty()) {
+                item {
+                    Text(
+                        "Még nincs befektetés",
+                        modifier = Modifier.padding(start = UIVar.Padding, bottom = UIVar.Padding)
+                    )
+                }
+            } else {
+                // Befektetéseket 2-es csoportokba rendezzük, mint a kedvenceknél
+                items(stocks.chunked(2)) { stockRow ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = UIVar.Padding / 2)
+                    ) {
+                        // Első befektetés a sorban (mindig létezik)
+                        val stock1 = stockRow[0]
+                        // Megkeressük a hozzá tartozó céget
+                        val company1 = companies.find { it.companyCode == stock1.companyCode }
+                            ?: Company(companyName = stock1.companyName, companyCode = stock1.companyCode)
+
+                        InvestmentBox(
+                            stock = stock1,
+                            company = company1,
+                            amount = stock1.stockAmount.toInt(),
+                            buyprice = stock1.price,
+                            onDelete = { stockViewModel.deleteStock(stock1) },
+                            onClick = {
+                                stockQuery(stock1.companyCode)
+                                showBottomWindow.value = true
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = UIVar.Padding / 2)
+                        )
+
+                        // Második befektetés a sorban (ha létezik)
+                        if (stockRow.size > 1) {
+                            val stock2 = stockRow[1]
+                            // Megkeressük a második cég adatait is
+                            val company2 = companies.find { it.companyCode == stock2.companyCode }
+                                ?: Company(companyName = stock2.companyName, companyCode = stock2.companyCode)
+
+                            InvestmentBox(
+                                stock = stock2,
+                                company = company2,
+                                amount = stock2.stockAmount.toInt(),
+                                buyprice = stock2.price,
+                                onDelete = { stockViewModel.deleteStock(stock2) },
+                                onClick = {
+                                    stockQuery(stock2.companyCode)
+                                    showBottomWindow.value = true
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = UIVar.Padding / 2)
+                            )
+                        } else {
+                            // Ha nincs második elem, akkor üres helyet hagyunk
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(UIVar.Padding))
+                }
+            }
+
+            // Kedvencek fejléc
+            item {
+                HeaderText("Kedvencek:")
+            }
+
+            if(companies.isEmpty()){
+                item{
+                    Text("Még nincs kedvenc cég")
+                }
+            }
+            // Kedvencek listája
+            items(companies.chunked(2)) { companyRow ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = UIVar.Padding / 2)
+                ) {
+                    // Első elem a sorban (mindig létezik)
+                    FavoriteCompanyBox(
+                        company = companyRow[0],
+                        onDelete = { stockViewModel.deleteCompany(companyRow[0]) },
+                        onClick = {
+                            stockQuery(companyRow[0].companyCode)
+                            showBottomWindow.value = true
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = UIVar.Padding / 2)
+                    )
+
+                    // Második elem a sorban (ha létezik)
+                    if (companyRow.size > 1) {
+                        FavoriteCompanyBox(
+                            company = companyRow[1],
+                            onDelete = { stockViewModel.deleteCompany(companyRow[1]) },
+                            onClick = {
+                                stockQuery(companyRow[1].companyCode)
+                                showBottomWindow.value = true
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = UIVar.Padding / 2)
+                        )
+                    } else {
+                        // Ha nincs második elem, akkor üres helyet hagyunk
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+            }
+
+            // Extra tér az alján, hogy a görgethető tartalom alján is legyen hely
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+
+        //alsó kereső
         Box(modifier = Modifier.align(Alignment.BottomCenter)){
             Column(modifier = Modifier.fillMaxWidth()){
 
                 LazyRow {
-                    itemsIndexed(list, key = { index, _ -> UUID.randomUUID().toString() }) { index, item ->
+                    itemsIndexed(displayedList, key = { index, _ -> UUID.randomUUID().toString() }) { index, item ->
                         if (index == 0) {
                             Spacer(modifier = Modifier.width(UIVar.Padding))
                         }
@@ -140,11 +381,11 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
                             stockData.clear()
 
                             // Query the stock data for the selected company
-                            stockQuery(codes[index])
+                            stockQuery(displayedCodes[index])
 
                             // Show the bottom window
                             showBottomWindow.value = true
-                        }, enabled = !isLoading) {
+                        }, enabled = /*!isLoading*/ true) {
                             Text(item)
                         }
 
@@ -164,7 +405,24 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
                     )
                     Spacer(modifier = Modifier.width(UIVar.Padding) )
                     Button(
-                        onClick = {},
+
+                        onClick = {
+                            isLoadingSearch = true;
+                            searchStocksREST("kwQO2EZ6YFWcSA0Vkx4pCXyE6Guf2HJg",searchQuery) { results ->
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    isLoadingSearch = false;
+                                    Log.e("search","search started with ${searchQuery}")
+                                    if(results.isNotEmpty())
+                                    {
+                                        searchResults = results
+                                    }else{
+                                        searchResults = emptyList()
+                                    }
+                                }
+                            }
+
+                        },
+                        enabled = searchQuery.length >= 2 && !isLoading,
                         modifier = Modifier
                             .weight(2f)
                             .align(Alignment.CenterVertically)
@@ -180,18 +438,15 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
         showBottom = showBottomWindow,
         stockData = stockData,
         companyName = currentCompanyName,
-        isLoading = isLoading
+        isLoading = isLoading,
+        currentCompanyCode = currentCompanyCode
     )
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        HeaderText("Jelenlegi befektetések:")
 
 
 
 
-
-    }
 
     if (showChart && stockData != null) {
         stockViewModel.setData(stockData)
@@ -199,33 +454,33 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
     }
 }
 
-@Composable
-fun investbox(stockData: List<AggregateDTO>){
-    Box(modifier = Modifier
-        .fillMaxWidth()
-    ){
-        Row(modifier = Modifier.fillMaxWidth()){
-            Text("Apple - AAPL")
 
-        }
 
-    }
-}
+
+
+
+
 
 @Composable
 fun bottomwindow(
     showBottom: MutableState<Boolean>,
     stockData: List<AggregateDTO>,
     companyName: String,
-    isLoading: Boolean
+    isLoading: Boolean,
+    currentCompanyCode: String
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    var stockInput by remember { mutableStateOf("") }
+    val stockViewModel: StockViewModel = hiltViewModel()
+    Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures {} }) {
         Panel(modifier = Modifier
             .align(Alignment.BottomCenter)
             .fillMaxWidth(), centerItems = false) {
             Box(modifier = Modifier.align(Alignment.TopEnd)) {
                 Row {
-                    if(!isLoading){
+                    if(stockData.isEmpty() && !isLoading){
+                        Text("Próbáld újra később!",color = Color.Red)
+                    }
+                    if(!isLoading && stockData.isNotEmpty()){
                         Text("%.2f USD".format(stockData.last().close ?: 0.0)) //TODO: ÁT KELL VÁLTANI FORINTRA
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                         val prev = stockData.first().close;
@@ -238,7 +493,7 @@ fun bottomwindow(
                 }
             }
             Column {
-                HeaderText(companyName)
+                HeaderText(if(companyName == "null") "Nincs adat" else companyName)
 
                 // Show loading or chart
                 if (isLoading) {
@@ -248,86 +503,61 @@ fun bottomwindow(
                             .height(200.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Hold on...")
+                        }
+
+
                     }
                 } else if (stockData.isNotEmpty()) {
                     LineChartSample(stockData, companyName + " stock")
+                    NumberTextField(
+                        input = stockInput,
+                        onInputChange = { stockInput = it },
+                        placeholder = "Stock amount"
+                    )
                 }
 
-                Button(onClick = {}) { Text("button1") }
+
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Button(onClick = { showBottom.value = false }, modifier = Modifier
                         .weight(3f)
                         .align(Alignment.CenterVertically)) { Text("Mégse") }
-                    Spacer(modifier = Modifier.width(UIVar.Padding))
-                    Button(onClick = {}, modifier = Modifier
-                        .weight(3f)
-                        .align(Alignment.CenterVertically),
-                        enabled = !isLoading ) { // Disable during loading
-                        Text("Vásárlás")
-                    }
-                    Spacer(modifier = Modifier.width(UIVar.Padding))
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_notfav_48),
-                            contentDescription = "Not favourite icon",
-                            modifier = Modifier.weight(1f)
-                                .align(Alignment.CenterVertically)
-                        )
+                    if(stockData.isNotEmpty()){
+                        Spacer(modifier = Modifier.width(UIVar.Padding))
+                        Button(onClick = {
+                            if(stockInput.toFloatOrNull() != null){
+                                stockViewModel.addStock(Stock(companyName = companyName, companyCode = currentCompanyCode, stockAmount = stockInput.toFloat(), price = stockData.last().close?.toFloat()
+                                    ?: -1f))
+                            }
+
+                        }, modifier = Modifier
+                            .weight(3f)
+                            .align(Alignment.CenterVertically),
+                            enabled = !isLoading ) { // Disable during loading
+                            Text("Megjelölés")
+                        }
+                        Spacer(modifier = Modifier.width(UIVar.Padding))
+                        IconButton(onClick = {
+                            stockViewModel.addCompany(Company(companyName = companyName, companyCode = currentCompanyCode))
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_notfav_48),
+                                contentDescription = "Not favourite icon",
+                                modifier = Modifier.weight(1f)
+                                    .align(Alignment.CenterVertically)
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
-
-@Composable
-fun MiniStockChart(stockData: List<AggregateDTO>) {
-    if (stockData.isEmpty()) return
-
-    Canvas(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val width = size.width
-        val height = size.height
-        val values = stockData.mapNotNull { it.close }
-
-        if (values.isNotEmpty()) {
-            val minValue = values.minOrNull() ?: 0.0
-            val maxValue = values.maxOrNull() ?: 1.0
-            val valueRange = maxValue - minValue
-
-            val path = Path()
-            values.forEachIndexed { index, value ->
-                val x = width * index / (values.size - 1)
-                val y = height * (1 - (value - minValue) / valueRange)
-
-                if (index == 0) {
-                    path.moveTo(x.toFloat(), y.toFloat())
-                } else {
-                    path.lineTo(x.toFloat(), y.toFloat())
-                }
-            }
-
-            // Színezés a változás alapján
-            val firstValue = values.first()
-            val lastValue = values.last()
-            val lineColor = if (lastValue >= firstValue) Color(0xFF4CAF50) else Color(0xFFFF5252)
-
-            drawPath(
-                path = path,
-                color = lineColor,
-                style = Stroke(
-                    width = 2.dp.toPx(),
-                    cap = StrokeCap.Round
-                )
-            )
-        }
-    }
-}
-
-
-
-
 
