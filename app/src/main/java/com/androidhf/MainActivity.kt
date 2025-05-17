@@ -71,6 +71,8 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.FinanceExpense
+import com.androidhf.ui.screens.finance.FinanceIncome
 import com.androidhf.ui.screens.finance.SavingViewModel
 import com.androidhf.ui.screens.finance.TransactionViewModel
 import com.androidhf.ui.screens.login.LoginScreen
@@ -108,8 +110,6 @@ class MainActivity : ComponentActivity() {
         //TODO JELENLEGI HIBÁK:
         /*
             gráf mindig szar
-            savingnél lehet kisebb időt választani mint a mai nap
-            MoneyExpense closed ellenőrzés hiányzik
             SavingViewModel transactionAdded cucc még nem jó
          */
         setContent {
@@ -155,8 +155,9 @@ class MainActivity : ComponentActivity() {
                         composable("money_expense") { MoneyExpenseScreen(navController) }
                         composable("money_saving") { MoneySavingsScreen(navController) }
 
+                        composable("FinanceIncome") { FinanceIncome(navController) }
+                        composable("FinanceExpense") { FinanceExpense(navController) }
                     }
-                    //TODO adatbázis amiben utility adatok vannak, hány saving volt összesen, mennyi completed, mennyi failed stb
                     val balance = tViewModel.balance
                     LaunchedEffect(key1 = Unit) {
                         delay(1250) //Idő amíg betölti az adatbázist

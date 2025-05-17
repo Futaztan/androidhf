@@ -1,4 +1,4 @@
-package com.androidhf.data
+package com.androidhf.data.datatypes
 
 enum class Frequency(val displayName : String) {
     EGYSZERI("Egyszeri"),

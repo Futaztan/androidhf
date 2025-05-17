@@ -1,9 +1,9 @@
 package com.androidhf.data.database
 
 import android.util.Log
-import com.androidhf.data.RepetitiveTransaction
-import com.androidhf.data.Savings
-import com.androidhf.data.Transaction
+import com.androidhf.data.datatypes.RepetitiveTransaction
+import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.screens.login.auth.AuthService
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions

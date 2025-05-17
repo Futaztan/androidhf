@@ -1,5 +1,8 @@
-package com.androidhf.data
+package com.androidhf.data.repository
 
+import com.androidhf.data.datatypes.RepetitiveTransaction
+import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.data.dao.RepetitiveTransactionDao
 import com.androidhf.data.database.FirebaseDB
 import com.androidhf.ui.screens.login.auth.AuthService

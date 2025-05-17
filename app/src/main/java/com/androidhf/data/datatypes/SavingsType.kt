@@ -1,4 +1,4 @@
-package com.androidhf.data
+package com.androidhf.data.datatypes
 
 enum class SavingsType(val displayName: String) {
     INCOMEGOAL_BYTIME("Legyen több az adott összegnél, az idő végére"),         //egy értéket szeretnénk elérni, úgyhogy meg is tartsuk az adott ideig (Legyen legalább ennyi pénzünk az idő végén)

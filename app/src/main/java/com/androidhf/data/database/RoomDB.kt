@@ -4,10 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.androidhf.data.CompanyEntity
-import com.androidhf.data.RepetitiveTransactionEntity
-import com.androidhf.data.SavingsEntity
 import com.androidhf.data.StockEntity
-import com.androidhf.data.TransactionEntity
+import com.androidhf.data.datatypes.RepetitiveTransactionEntity
+import com.androidhf.data.datatypes.SavingsEntity
+import com.androidhf.data.datatypes.TransactionEntity
 import com.androidhf.data.converters.Converters
 import com.androidhf.data.dao.CompanyDao
 import com.androidhf.data.dao.RepetitiveTransactionDao

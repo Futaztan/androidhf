@@ -1,4 +1,4 @@
-package com.androidhf.data
+package com.androidhf.data.datatypes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.androidhf.data.Data
-import com.androidhf.data.Frequency
+import com.androidhf.data.datatypes.Frequency
 import com.androidhf.data.RepetitiveTransaction
 import com.androidhf.data.Transaction
 import java.time.Duration

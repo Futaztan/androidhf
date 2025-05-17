@@ -1,5 +1,6 @@
 package com.androidhf.ui.reuseable
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,12 +30,43 @@ object UIVar
     //Használat pl ... Modifier.background(UIVar.boxColor())
     //Minden elemhez két szín és két függvény tartozik az első az maga a háttér vagyis a fő szín pl: boxColor() és ehhez tartozik egy másik szín
     //ami meg a rajta lévő elemeket színezi, többnyire a szöveget ez meg egy "on"-al kezdődik pl onBoxColor()
+
+    @Composable
+    fun colorGreen(): Color
+    {
+        return if(!isSystemInDarkTheme()) {
+            Color(0, 165, 0)
+        } else Color.Green
+    }
+
+    @Composable
+    fun colorRed(): Color
+    {
+        return if(!isSystemInDarkTheme()) {
+            Color(185, 0, 0)
+        } else Color.Red
+    }
+
     @Composable
     fun boxColor(): Color = MaterialTheme.colorScheme.primaryContainer
     @Composable
     fun onBoxColor(): Color = MaterialTheme.colorScheme.onPrimaryContainer
     @Composable
     fun boxBorderColor(): Color = MaterialTheme.colorScheme.onPrimaryContainer
+
+    @Composable
+    fun secondColor(): Color = MaterialTheme.colorScheme.secondaryContainer
+    @Composable
+    fun onSecondColor(): Color = MaterialTheme.colorScheme.onSecondaryContainer
+    @Composable
+    fun secondBorderColor(): Color = MaterialTheme.colorScheme.onSecondaryContainer
+
+    @Composable
+    fun tertColor(): Color = MaterialTheme.colorScheme.tertiaryContainer
+    @Composable
+    fun onTertColor(): Color = MaterialTheme.colorScheme.onTertiaryContainer
+    @Composable
+    fun tertBorderColor(): Color = MaterialTheme.colorScheme.onTertiaryContainer
 
 
     @Composable

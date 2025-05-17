@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.androidhf.data.RepetitiveTransactionEntity
+import com.androidhf.data.datatypes.RepetitiveTransactionEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

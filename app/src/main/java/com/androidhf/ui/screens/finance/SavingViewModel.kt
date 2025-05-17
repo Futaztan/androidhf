@@ -1,17 +1,12 @@
 package com.androidhf.ui.screens.finance
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsRepository
-import com.androidhf.data.SavingsType
-import com.androidhf.data.Transaction
+import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.repository.SavingsRepository
+import com.androidhf.data.datatypes.SavingsType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -125,5 +120,35 @@ class SavingViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun savingsCount(): Int
+    {
+        return _savings.value.size
+    }
+
+    fun savingsCountByCollect(): Int
+    {
+        return _savings.value.filter { it.Type == SavingsType.INCOMEGOAL_BYAMOUNT }.size
+    }
+
+    fun savingsCountByLimit(): Int
+    {
+        return _savings.value.filter { it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT }.size
+    }
+
+    fun savingsCountByHold(): Int
+    {
+        return _savings.value.filter { it.Type == SavingsType.INCOMEGOAL_BYTIME }.size
+    }
+
+    fun savingsCountCompleted(): Int
+    {
+        return _savings.value.filter { it.Completed }.size
+    }
+
+    fun savingsCountFailed(): Int
+    {
+        return _savings.value.filter { it.Failed }.size
     }
 }

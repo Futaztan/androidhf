@@ -45,7 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.androidhf.R
-import com.androidhf.data.Savings
+import com.androidhf.data.datatypes.Savings
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.UIVar

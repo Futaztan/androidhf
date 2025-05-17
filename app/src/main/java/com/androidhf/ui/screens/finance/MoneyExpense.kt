@@ -32,16 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.androidhf.data.Category
-import com.androidhf.data.Frequency
-import com.androidhf.data.RepetitiveTransaction
-import com.androidhf.data.SavingsType
-import com.androidhf.data.Transaction
+import com.androidhf.data.datatypes.Category
+import com.androidhf.data.datatypes.Frequency
+import com.androidhf.data.datatypes.RepetitiveTransaction
+import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.UIVar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Calendar
@@ -191,7 +188,7 @@ fun MoneyExpenseScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        if(frequency==Frequency.EGYSZERI)
+        if(frequency== Frequency.EGYSZERI)
         {
             Text("Melyik napon történt a tranzakció:", color = MaterialTheme.colorScheme.onPrimaryContainer)
             Button(onClick = { onDatePickerDialog.show() }) {
@@ -227,7 +224,7 @@ fun MoneyExpenseScreen(navController: NavController) {
             val amount = input.toIntOrNull()
             if (amount != null) {
                 val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
-                    item.Start - amount < item.Amount //TODO ide valami Closed ellenőrzés
+                    !item.Closed && item.Start - amount <= item.Amount //TODO ide valami Closed ellenőrzés
                 }
                 if(found) showPopup = true
                 else onSubmit()

@@ -33,15 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.androidhf.data.Savings
-import com.androidhf.data.SavingsType
+import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -63,6 +60,7 @@ fun MoneySavingsScreen(navController: NavController)
     var description_invalid by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var title_invalid by remember { mutableStateOf(false) }
+    var date_invalid by remember { mutableStateOf(false) }
     var showPopup by remember { mutableStateOf(false) }
 
     if (showPopup) {
@@ -111,6 +109,8 @@ fun MoneySavingsScreen(navController: NavController)
     var desc_text_color: Color
     var title_background_color: Color
     var title_text_color: Color
+    var date_background_color: Color
+    var date_text_color: Color
     Column(modifier = Modifier.padding(UIVar.Padding)) {
         if (input_invalid)
         {
@@ -142,6 +142,16 @@ fun MoneySavingsScreen(navController: NavController)
             title_background_color = MaterialTheme.colorScheme.primaryContainer
             title_text_color = MaterialTheme.colorScheme.onPrimaryContainer
         }
+        if (date_invalid)
+        {
+            date_background_color = MaterialTheme.colorScheme.error
+            date_text_color = MaterialTheme.colorScheme.onError
+        }
+        else
+        {
+            date_background_color = MaterialTheme.colorScheme.primaryContainer
+            date_text_color = MaterialTheme.colorScheme.onPrimaryContainer
+        }
         Panel(centerItems = false, backgroundColor = input_background_color){
             Column{
                 Text("Adja meg az összeget:", color = input_text_color)
@@ -154,10 +164,10 @@ fun MoneySavingsScreen(navController: NavController)
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        Panel(centerItems = false, backgroundColor = MaterialTheme.colorScheme.primaryContainer)
+        Panel(centerItems = false, backgroundColor = date_background_color)
         {
             Column{
-                Text("Válasszon egy dátumot:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text("Válasszon egy dátumot:", color = date_text_color)
                 Button(onClick = { datePickerDialog.show() }) {
                     Text(text = selectedDate.toString() ?: "Dátum kiválasztása")
                 }
@@ -201,7 +211,7 @@ fun MoneySavingsScreen(navController: NavController)
             Row {
                 Button(
                     onClick = {
-                        if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && input.toInt() > 0) {
+                        if (input.isNotBlank() && description.isNotBlank() && title.isNotBlank() && input.toInt() > 0 && selectedDate >= LocalDate.now()) {
                             selectedDate.let { date ->
 
                                 var saving: Savings
@@ -261,6 +271,12 @@ fun MoneySavingsScreen(navController: NavController)
                                 title_invalid = true
                             }
                             else title_invalid = false
+
+                            if(selectedDate < LocalDate.now())
+                            {
+                                date_invalid = true
+                            }
+                            else date_invalid = false
                             //showPopup = true
                         }
                     }

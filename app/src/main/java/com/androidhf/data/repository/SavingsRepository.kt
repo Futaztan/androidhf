@@ -1,6 +1,7 @@
-package com.androidhf.data
+package com.androidhf.data.repository
 
 import android.util.Log
+import com.androidhf.data.datatypes.Savings
 import com.androidhf.data.dao.SavingDao
 import com.androidhf.data.database.FirebaseDB
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -46,7 +47,6 @@ class SavingsRepository @Inject constructor(
                     firebaseDB.updateSavingInFirebase(save)
                 }
             } else {
-                // Ez a naplóüzenet kritikus, ha nem frissül az adatbázisban
                 Log.e("SavingsRepository", "Saving update did not affect any rows! Saving ID: ${save.Id}")
             }
         } catch (e: Exception) {
