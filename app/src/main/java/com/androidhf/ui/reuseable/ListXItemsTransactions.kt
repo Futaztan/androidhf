@@ -109,7 +109,7 @@ fun ListXItemsTransactions(
                             {
                                 append("${item.amount} Ft ")
                             }
-                            append("${item.category} ${item.frequency} ${item.description} ${item.date} ${item.time}")
+                            append("${item.category.displayName} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
                         },
                         modifier = Modifier.padding(8.dp),
                         color = color

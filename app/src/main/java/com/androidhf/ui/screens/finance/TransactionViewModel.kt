@@ -87,6 +87,13 @@ class TransactionViewModel @Inject constructor(
         else return _incomeTransactions.value.sortedByDescending { it.amount }
     }
 
+    fun sortTransactionsByAmount(asc: Boolean = false, list: List<Transaction>): List<Transaction> {
+        return if (asc) {
+            list.sortedBy { it.amount }
+        }
+        else return list.sortedByDescending { it.amount }
+    }
+
     fun sortExpenseTransactionsByAmount(asc: Boolean = false): List<Transaction> {
         return if (asc) {
             _expenseTransactions.value.sortedBy { it.amount }
@@ -102,6 +109,19 @@ class TransactionViewModel @Inject constructor(
             )
         }
         else return _incomeTransactions.value.sortedWith(
+            compareByDescending<Transaction> { it.date }
+                .thenByDescending { it.time }
+        )
+    }
+
+    fun sortTransactionsByDate(asc: Boolean = false, list: List<Transaction>): List<Transaction> {
+        return if (asc) {
+            list.sortedWith(
+                compareBy<Transaction> { it.date }
+                    .thenBy { it.time }
+            )
+        }
+        else return list.sortedWith(
             compareByDescending<Transaction> { it.date }
                 .thenByDescending { it.time }
         )
@@ -124,6 +144,10 @@ class TransactionViewModel @Inject constructor(
         return _incomeTransactions.value.sortedBy { it.category.displayName }
     }
 
+    fun sortByCategory(list: List<Transaction>): List<Transaction> {
+        return list.sortedBy { it.category.displayName }
+    }
+
     fun sortExpenseByCategory(): List<Transaction> {
         return _expenseTransactions.value.sortedBy { it.category.displayName }
     }
@@ -144,6 +168,24 @@ class TransactionViewModel @Inject constructor(
                 _expenseTransactions.value = expenseList
             }
         }
+    }
+
+    fun expenseContainsList(value: String): List<Transaction>
+    {
+        return _incomeTransactions.value.filter {
+            it.amount.toString().contains(value) ||
+                    it.category.displayName.contains(value) ||
+                    it.date.toString().contains(value) ||
+                    it.time.toString().contains(value)}
+    }
+
+    fun incomeContainsList(value: String): List<Transaction>
+    {
+        return _incomeTransactions.value.filter {
+            it.amount.toString().contains(value) ||
+            it.category.displayName.contains(value) ||
+            it.date.toString().contains(value) ||
+            it.time.toString().contains(value)}
     }
 
     fun addTransaction(transaction: Transaction) {
