@@ -106,21 +106,8 @@ class MainActivity : ComponentActivity() {
                 uploadWorkRequest
             )
             */
-
-        //TODO JELENLEGI HIBÁK:
-        /*
-            gráf mindig szar
-            SavingViewModel transactionAdded cucc még nem jó
-         */
         setContent {
             AndroidhfTheme {
-                /*
-                var elso by remember { mutableStateOf(true) }
-
-                if (elso) {
-                    listafeltoles()
-                    elso = false
-                } */
                 val sViewModel: SavingViewModel = hiltViewModel()
                 val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
@@ -131,9 +118,9 @@ class MainActivity : ComponentActivity() {
                         BottomNavBar(navController)
                     },
                     topBar =
-                        {
-                            CustomTopAppBar(navController)
-                        }
+                    {
+                        CustomTopAppBar(navController)
+                    }
                 ) { innerPadding ->
 
 

@@ -80,16 +80,15 @@ dependencies {
     implementation(libs.compose.markdown)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-    val daggerVersion = "2.51.1" // Vagy a legújabb
+    val daggerVersion = "2.51.1"
     implementation("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
-    val hiltVersion = "2.51.1" // Vagy a legújabb
+    val hiltVersion = "2.51.1"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
-    // Hilt Compose integráció (ez már 1.2.0, ami valószínűleg jó)
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // Maradhat, ha ez a legújabb
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     implementation ("io.ktor:ktor-client-core:2.3.0")
     implementation ("io.ktor:ktor-client-android:2.3.0")
