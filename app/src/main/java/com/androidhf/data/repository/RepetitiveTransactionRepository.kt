@@ -25,6 +25,11 @@ class RepetitiveTransactionRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteRepetitiveTransaction(repTransaction: RepetitiveTransaction)
+    {
+        repTransactionDao.deleteRepTransactionById(repTransaction.transaction.id)
+    }
+
     fun getRepetitiveTransactionsByType(type: String): Flow<List<RepetitiveTransaction>> {
         return repTransactionDao.getRepTransactionsByType(type).map { entities ->
             entities.map { it.toDomain() }

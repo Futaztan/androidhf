@@ -1,25 +1,37 @@
 package com.androidhf.ui.screens.finance.everyXtime
 
-/*
+
 import android.content.Context
 import android.util.Log
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.androidhf.data.Data
 import com.androidhf.data.datatypes.Frequency
-import com.androidhf.data.RepetitiveTransaction
-import com.androidhf.data.Transaction
+import com.androidhf.data.datatypes.RepetitiveTransaction
+import com.androidhf.data.datatypes.Transaction
+import com.androidhf.data.repository.RepetitiveTransactionRepository
+import com.androidhf.data.repository.TransactionRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.first
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 
-class DailyWorker(appContext: Context, workerParams: WorkerParameters) :
-    CoroutineWorker(appContext, workerParams) {
+@HiltWorker
+class DailyWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
+    private val repTransactionRepo: RepetitiveTransactionRepository,
+    private val transactionRepo: TransactionRepository
+) : CoroutineWorker(appContext, workerParams) {
+
     override suspend fun doWork(): Result {
 
 
         Log.d("DailyWorker", "Munka fut: ${System.currentTimeMillis()}")
-        for (repTransaction in Data.repetitiveTransactions.toList()) {
+
+        for (repTransaction in repTransactionRepo.getAllRepetitiveTransactions().first()) {
             val newTransaction = Transaction(
                 repTransaction.transaction.amount,
                 repTransaction.transaction.description,
@@ -28,29 +40,32 @@ class DailyWorker(appContext: Context, workerParams: WorkerParameters) :
                 repTransaction.transaction.category,
                 repTransaction.transaction.frequency
             )
-            val differenceInDays = Duration.between(repTransaction.fromDate.atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()
-            if(differenceInDays<0) continue
+            val differenceInDays = Duration.between(
+                repTransaction.fromDate.atStartOfDay(),
+                LocalDate.now().atStartOfDay()
+            ).toDays()
+            if (differenceInDays < 0) continue
             when (repTransaction.transaction.frequency) {
                 Frequency.NAPI -> {
-                    Data.addTransaction(newTransaction)
-                    isStillActive(1, repTransaction)
+                    transactionRepo.addTransaction(newTransaction)
+                    isStillActive(1, repTransaction,repTransactionRepo)
                 }
 
 
                 Frequency.HETI -> {
 
                     if ((differenceInDays % 7).toInt() == 0) {
-                        Data.addTransaction(newTransaction)
+                        transactionRepo.addTransaction(newTransaction)
                     }
-                    isStillActive(7, repTransaction)
+                    isStillActive(7, repTransaction,repTransactionRepo)
                 }
 
                 Frequency.HAVI -> {
 
                     if ((differenceInDays % 30).toInt() == 0) {
-                        Data.addTransaction(newTransaction)
+                        transactionRepo.addTransaction(newTransaction)
                     }
-                    isStillActive(30, repTransaction)
+                    isStillActive(30, repTransaction,repTransactionRepo)
                 }
 
                 else -> {
@@ -63,10 +78,11 @@ class DailyWorker(appContext: Context, workerParams: WorkerParameters) :
         return Result.success()
     }
 
-    private fun isStillActive(days: Long, repTransaction: RepetitiveTransaction) {
+    private suspend fun isStillActive(days: Long, repTransaction: RepetitiveTransaction, repTransactionRepo : RepetitiveTransactionRepository) {
         if (LocalDate.now().plusDays(days).isAfter(repTransaction.untilDate)) {
-            Data.repetitiveTransactions.remove(repTransaction)
+
+            repTransactionRepo.deleteRepetitiveTransaction(repTransaction)
+
         }
     }
 }
-*/

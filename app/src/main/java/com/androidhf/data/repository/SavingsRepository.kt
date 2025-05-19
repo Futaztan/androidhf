@@ -18,6 +18,7 @@ class SavingsRepository @Inject constructor(
 ) {
     fun getAllSavings(): Flow<List<Savings>>
     {
+
         return savingDao.getAllSavings().map { entities ->
             entities.map { it.toDomain() }
         }

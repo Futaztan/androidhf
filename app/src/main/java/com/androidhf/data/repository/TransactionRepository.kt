@@ -21,6 +21,13 @@ class TransactionRepository @Inject constructor(
 ) {
 
     fun getAllTransactions(): Flow<List<Transaction>> {
+
+        var transactionList = ArrayList<Transaction>()
+        if(AuthService.isLoggedIn())
+        {
+            transactionList = firebaseDB.getTransactionsFromFirebase()
+
+        }
         return transactionDao.getAllTransactions().map { entities ->
             entities.map { it.toDomain() }
         }
