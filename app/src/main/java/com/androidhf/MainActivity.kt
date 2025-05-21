@@ -48,8 +48,8 @@ import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.finance.detail.FinanceExpense
 import com.androidhf.ui.screens.finance.detail.FinanceIncome
 import com.androidhf.ui.screens.finance.FinanceScreen
-import com.androidhf.ui.screens.finance.money.MoneyExpenseScreen
-import com.androidhf.ui.screens.finance.money.MoneyIncomeScreen
+import com.androidhf.ui.screens.finance.MoneyExpenseScreen
+import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.finance.money.MoneySavingsScreen
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel

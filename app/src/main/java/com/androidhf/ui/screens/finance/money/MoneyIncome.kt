@@ -17,7 +17,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,11 +25,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.androidhf.data.datatypes.Category
-import com.androidhf.data.datatypes.Frequency
+import com.androidhf.data.enums.Category
+import com.androidhf.data.enums.Frequency
 import com.androidhf.data.datatypes.RepetitiveTransaction
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField

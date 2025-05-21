@@ -53,18 +53,19 @@ fun HomeScreen() {
                             .padding(UIVar.Padding),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
-
-
         Panel{
             if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég")
             else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Row (modifier = Modifier.fillMaxWidth()){
             ListXItemsTransactions(tViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
             ListXItemsTransactions(tViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
         }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Text("3 legújabb takarék")
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
