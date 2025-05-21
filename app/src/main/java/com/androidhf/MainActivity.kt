@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -31,48 +30,53 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-
-import com.androidhf.ui.screens.ai.AIScreen
-import com.androidhf.ui.screens.ai.AIViewModel
-import com.androidhf.ui.screens.finance.FinanceScreen
-import com.androidhf.ui.screens.finance.MoneyExpenseScreen
-import com.androidhf.ui.screens.finance.MoneyIncomeScreen
-import com.androidhf.ui.screens.finance.MoneySavingsScreen
-
-import com.androidhf.ui.screens.home.HomeScreen
-import com.androidhf.ui.screens.stock.query.StockChartScreen
-import com.androidhf.ui.screens.stock.StockScreen
-
-import com.androidhf.ui.screens.stock.StockViewModel
-
-import com.androidhf.ui.theme.AndroidhfTheme
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.androidhf.ui.reuseable.UIVar
-import com.androidhf.ui.screens.finance.FinanceExpense
-import com.androidhf.ui.screens.finance.FinanceIncome
-import com.androidhf.ui.screens.finance.SavingViewModel
-import com.androidhf.ui.screens.finance.TransactionViewModel
+import com.androidhf.ui.screens.ai.AIScreen
+import com.androidhf.ui.screens.finance.detail.FinanceExpense
+import com.androidhf.ui.screens.finance.detail.FinanceIncome
+import com.androidhf.ui.screens.finance.FinanceScreen
+import com.androidhf.ui.screens.finance.MoneyExpenseScreen
+import com.androidhf.ui.screens.finance.MoneyIncomeScreen
+import com.androidhf.ui.screens.finance.money.MoneySavingsScreen
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
+import com.androidhf.ui.screens.finance.dailycheck.DailyWorker
+import com.androidhf.ui.screens.home.HomeScreen
+import com.androidhf.ui.screens.stock.query.StockChartScreen
+import com.androidhf.ui.screens.stock.StockScreen
+
+
+import com.androidhf.ui.theme.AndroidhfTheme
+import androidx.compose.ui.res.stringResource
+import com.androidhf.ui.screens.ai.AIViewModel
+
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
 import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.screens.stock.StockViewModel
+
 import com.androidhf.ui.screens.user.UserScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import java.util.concurrent.TimeUnit
 
-//TODO import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -82,8 +86,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        //TODO ezt visszarakni majd ha jó lesz
-        /*
+
         val uploadWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<DailyWorker>(24, TimeUnit.HOURS)
                 .build()
@@ -94,22 +97,10 @@ class MainActivity : ComponentActivity() {
                 ExistingPeriodicWorkPolicy.KEEP,
                 uploadWorkRequest
             )
-            */
 
-        //TODO JELENLEGI HIBÁK:
-        /*
-            gráf mindig szar
-            SavingViewModel transactionAdded cucc még nem jó
-         */
         setContent {
-            AndroidhfTheme {
-                /*
-                var elso by remember { mutableStateOf(true) }
 
-                if (elso) {
-                    listafeltoles()
-                    elso = false
-                } */
+            AndroidhfTheme {
                 val sViewModel: SavingViewModel = hiltViewModel()
                 val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
@@ -121,9 +112,9 @@ class MainActivity : ComponentActivity() {
                         BottomNavBar(navController)
                     },
                     topBar =
-                        {
-                            CustomTopAppBar(navController)
-                        }
+                    {
+                        CustomTopAppBar(navController)
+                    }
                 ) { innerPadding ->
 
 

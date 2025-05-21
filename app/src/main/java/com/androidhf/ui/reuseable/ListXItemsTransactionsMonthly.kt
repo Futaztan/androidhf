@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -70,7 +71,7 @@ fun ListXItemsTransactionsMonthly(
                                 {
                                     append("${item.amount} Ft ")
                                 }
-                                append("${item.category.displayName} ${item.description} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                                append("${item.category.getDisplayName(LocalContext.current)} ${item.description} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
                             },
                             modifier = Modifier.padding(8.dp),
                             color = color
@@ -84,7 +85,7 @@ fun ListXItemsTransactionsMonthly(
                                 {
                                     append("${item.amount} Ft ")
                                 }
-                                append("${item.category.displayName} ${item.description} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                                append("${item.category.getDisplayName(LocalContext.current)} ${item.description} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
                             },
                             modifier = Modifier.padding(8.dp),
                             color = color

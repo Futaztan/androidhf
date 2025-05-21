@@ -7,32 +7,39 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+
 import java.text.SimpleDateFormat
 import java.util.*
 import com.androidhf.data.AiMessages
-import androidx.compose.ui.unit.sp
+
 import androidx.lifecycle.viewModelScope
 import com.androidhf.ui.reuseable.UIVar
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import com.androidhf.R
 import kotlinx.coroutines.launch
 
-
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 import kotlin.text.isNotBlank
@@ -44,61 +51,61 @@ data class ChatMessage(
     var isVisible: Boolean = true
 )
 
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-@androidx.compose.runtime.Composable
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun AIScreen(viewModel: AIViewModel) {
     UIVar.topBarTitle = "AI"
 
 
     val messages = AiMessages.messages
-    var inputText by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
+    var inputText by androidx.compose.runtime.remember { mutableStateOf("") }
     val isLoading by viewModel.isLoading.collectAsState()
-    var showDeleteConfirmation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    var showDeleteConfirmation by androidx.compose.runtime.remember { mutableStateOf(false) }
 
-    androidx.compose.runtime.LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = Unit) {
         viewModel.defaultPrompt()
     }
 
     if (showDeleteConfirmation) {
-        androidx.compose.material3.AlertDialog(
+        AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
-            title = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.ai_delete)) },
-            text = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.ai_areyousuredelete)) },
+            title = { Text(stringResource(id = R.string.ai_delete)) },
+            text = { Text(stringResource(id = R.string.ai_areyousuredelete)) },
             confirmButton = {
-                androidx.compose.material3.TextButton(
+                TextButton(
                     onClick = {
                         messages.clear()
                         viewModel.defaultPrompt()
                         showDeleteConfirmation = false
                     }
                 ) {
-                    androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.general_yes))
+                    Text(stringResource(id = R.string.general_yes))
                 }
             },
             dismissButton = {
-                androidx.compose.material3.TextButton(
+                TextButton(
                     onClick = { showDeleteConfirmation = false }
                 ) {
-                    androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.general_cancel))
+                    Text(stringResource(id = R.string.general_cancel))
                 }
             }
         )
     }
 
-    androidx.compose.material3.Scaffold(
+    Scaffold(
         bottomBar = { // Használd a bottomBar slotot az input mezőhöz
-            androidx.compose.foundation.layout.Column( // Column, hogy a gomb és az input mező egymás alatt legyen, vagy Row ha egymás mellett szeretnéd őket strukturálni
-                modifier = androidx.compose.ui.Modifier
+            Column( // Column, hogy a gomb és az input mező egymás alatt legyen, vagy Row ha egymás mellett szeretnéd őket strukturálni
+                modifier = Modifier
                     .fillMaxWidth() // Fontos, hogy kitöltse a szélességet
                     .background(UIVar.panelColor())
                     .padding(UIVar.Padding)
             ) {
-                androidx.compose.foundation.layout.Row(
-                    modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween, // Elrendezi a gombokat
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween, // Elrendezi a gombokat
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = {
                             viewModel.viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                                 val message = ChatMessage(
@@ -119,27 +126,27 @@ fun AIScreen(viewModel: AIViewModel) {
                             }
                         }
                     ) {
-                        androidx.compose.material3.Text("30 napos report küldése")
+                        Text("30 napos report küldése")
                     }
-                    androidx.compose.material3.IconButton(onClick = { showDeleteConfirmation = true }) {
-                        androidx.compose.material3.Icon(Icons.Default.Delete, contentDescription = "Törlés")
+                    IconButton(onClick = { showDeleteConfirmation = true }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Törlés")
                     }
                 }
-                androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.height(UIVar.Padding))
-                androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                    androidx.compose.material3.TextField(
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextField(
                         value = inputText,
                         onValueChange = { inputText = it },
-                        modifier = androidx.compose.ui.Modifier.weight(1f),
-                        placeholder = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.ai_messageai)) },
-                        colors = androidx.compose.material3.TextFieldDefaults.colors(
-                            unfocusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-                            focusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text(stringResource(id = R.string.ai_messageai)) },
+                        colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedContainerColor = MaterialTheme.colorScheme.surface
                         ),
                         enabled = !isLoading,
                     )
-                    androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.width(UIVar.Padding))
-                    androidx.compose.material3.IconButton(
+                    Spacer(modifier = Modifier.width(UIVar.Padding))
+                    IconButton(
                         onClick = {
                             if (inputText.isNotBlank() && !isLoading) {
                                 val userMessage =
@@ -152,15 +159,15 @@ fun AIScreen(viewModel: AIViewModel) {
                         enabled = !isLoading && inputText.isNotBlank()
                     ) {
                         if (isLoading) {
-                            androidx.compose.material3.CircularProgressIndicator(
-                                modifier = androidx.compose.ui.Modifier.size(24.dp),
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            androidx.compose.material3.Icon(
+                            Icon(
                                 imageVector = Icons.Default.Send,
                                 contentDescription = "Küldés",
-                                tint = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -170,33 +177,33 @@ fun AIScreen(viewModel: AIViewModel) {
     ) { innerPadding -> // Ez az innerPadding automatikusan figyelembe veszi a bottomBar magasságát
 
         if (messages.isEmpty()) {
-            androidx.compose.foundation.layout.Box(
-                modifier = androidx.compose.ui.Modifier
+            Box(
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding), // Alkalmazd az innerPadding-et
-                contentAlignment = androidx.compose.ui.Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
-                androidx.compose.material3.Text(
-                    text = androidx.compose.ui.res.stringResource(id = R.string.ai_startchat),
-                    style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
+                Text(
+                    text = stringResource(id = R.string.ai_startchat),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
             androidx.compose.foundation.lazy.LazyColumn(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding), // Alkalmazd az innerPadding-et itt is
                 reverseLayout = true,
                 // A contentPadding-et itt is használhatod további belső térközökhöz,
                 // de a Scaffold innerPadding-je a legfontosabb az átfedések elkerülésére.
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                contentPadding = PaddingValues(
                     start = 16.dp,
                     end = 16.dp,
                     top = 16.dp,
                     bottom = 16.dp
                 ), // Vagy csak bottom = 16.dp, ha a többi már jó
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(messages.reversed()) { message ->
                     if (message.isVisible) {

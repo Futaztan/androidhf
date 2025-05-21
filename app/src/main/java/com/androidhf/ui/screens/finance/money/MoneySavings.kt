@@ -1,8 +1,9 @@
-package com.androidhf.ui.screens.finance
+package com.androidhf.ui.screens.finance.money
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,10 +37,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.androidhf.R
 import com.androidhf.data.datatypes.Savings
-import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.enums.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.util.Calendar
@@ -113,7 +116,7 @@ fun MoneySavingsScreen(navController: NavController)
     var title_text_color: Color
     var date_background_color: Color
     var date_text_color: Color
-    Column(modifier = Modifier.padding(UIVar.Padding)) {
+    Column(modifier = Modifier.padding(UIVar.Padding).fillMaxSize(), verticalArrangement = Arrangement.Center) {
         if (input_invalid)
         {
             input_background_color = MaterialTheme.colorScheme.error

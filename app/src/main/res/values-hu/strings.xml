@@ -54,8 +54,11 @@
     <string name="moneyincome_fromwhen">Mikortól?</string>
     <string name="moneyincome_howlong">Meddig?</string>
     <string name="moneyincome_submit">Mentés és bezárás</string>
+    <string name="moneyincome_xyosztondij">XY Ösztöndíj</string>
+
 
     <string name="moneyexpense_title">Új kiadás</string>
+    <string name="moneyexpense_weeklyshop">Heti bevásárlás</string>
     <string name="moneyexpense_overflow">Ha elmenti ezt a tranzakciót, akkor az egyik megtakarításban túl fog csordulni a limit! Biztos szeretné folytatni?</string>
 
     <string name="financeincome_title">Bevételek listája</string>
@@ -76,7 +79,7 @@
     <string name="finance_newincome">Új bevétel</string>
     <string name="finance_newexpense">Új kiadás</string>
     <string name="finance_newsaving">Új megtakarítás</string>
-    <string name="finance_balance">Egyenleg</string>
+    <string name="finance_balance">Egyenleg: </string>
 
     <string name="savingcard_areyousuredelete">Biztos szeretné törölni?</string>
     <string name="savingcard_deadlineinbound"> Határidő közeleg! </string>
@@ -84,7 +87,7 @@
     <string name="savingcard_typehold">Type: Tartás</string>
     <string name="savingcard_typelimit">Type: Limit</string>
     <string name="savingcard_date">Dátum:</string>
-    <string name="savingcard_balance">Egyenleg:</string>
+    <string name="savingcard_balance">Egyenleg: </string>
     <string name="savingcard_successful">Sikeresen teljesítve!</string>
     <string name="savingcard_failed">Nem sikerült teljesíteni!</string>
 
@@ -93,7 +96,7 @@
     <string name="ai_messageai">Írj az AI-nak!</string>
     <string name="ai_startchat">Kezdjük a beszélgetést!</string>
 
-    <string name="report_balance">Egyenleg:</string>
+    <string name="report_balance">Egyenleg: </string>
     <string name="report_30day">30 napos statisztika</string>
     <string name="report_income">Bevétel</string>
     <string name="report_expense">Kiadás</string>
@@ -119,6 +122,19 @@
     <string name="savingstype_incamount">Bevételi cél</string>
     <string name="savingstype_expamount">Költés limitálás</string>
 
+    <string name="frequency_once">Egyszeri</string>
+    <string name="frequency_daily">Napi</string>
+    <string name="frequency_weekly">Heti</string>
+    <string name="frequency_monthly">Havi</string>
+
+    <string name="category_salary">Fizetés</string>
+    <string name="category_scholarship">Ösztöndíj</string>
+    <string name="category_bonus">Bónusz</string>
+    <string name="category_otherincome">Egyéb bevételek</string>
+    <string name="category_subscription">Előfizetés</string>
+    <string name="category_food">Élelmiszer</string>
+    <string name="category_entertainment">Szórakozás</string>
+    <string name="category_otherexpense">Egyéb kiadások</string>
 
     <string name="general_yes">Igen</string>
     <string name="general_no">Nem</string>

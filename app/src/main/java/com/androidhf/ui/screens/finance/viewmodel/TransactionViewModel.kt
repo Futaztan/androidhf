@@ -1,6 +1,7 @@
-package com.androidhf.ui.screens.finance
+package com.androidhf.ui.screens.finance.viewmodel
 
-import androidx.compose.runtime.State
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.datatypes.Transaction
@@ -62,20 +63,20 @@ class TransactionViewModel @Inject constructor(
         return _expenseTransactions.value.filter { it.date >= date }.sumOf { it.amount }
     }
 
-    fun get30DaysIncomeByType(): String {
+    fun get30DaysIncomeByType(context: Context): String {
         val date = LocalDate.now().minusDays(30)
         val list = _incomeTransactions.value.filter { it.date >= date }
         return list
-            .groupBy { it.category.displayName }
+            .groupBy { it.category.getDisplayName(context) }
             .mapValues { item -> item.value.sumOf { it.amount } }
             .maxByOrNull { it.value }?.key ?: ""
     }
 
-    fun get30DaysExpenseByType(): String {
+    fun get30DaysExpenseByType(context: Context): String {
         val date = LocalDate.now().minusDays(30)
         val list = _expenseTransactions.value.filter { it.date >= date }
         return list
-            .groupBy { it.category.displayName }
+            .groupBy { it.category.getDisplayName(context) }
             .mapValues { item -> item.value.sumOf { it.amount } }
             .minByOrNull { it.value }?.key ?: ""
     }
@@ -140,19 +141,20 @@ class TransactionViewModel @Inject constructor(
         )
     }
 
-    fun sortIncomeByCategory(): List<Transaction> {
-        return _incomeTransactions.value.sortedBy { it.category.displayName }
+    fun sortIncomeByCategory(context: Context): List<Transaction> {
+        return _incomeTransactions.value.sortedBy { it.category.getDisplayName(context) }
     }
 
-    fun sortByCategory(list: List<Transaction>): List<Transaction> {
-        return list.sortedBy { it.category.displayName }
+    fun sortByCategory(list: List<Transaction>, context: Context): List<Transaction> {
+        return list.sortedBy { it.category.getDisplayName(context) }
     }
 
-    fun sortExpenseByCategory(): List<Transaction> {
-        return _expenseTransactions.value.sortedBy { it.category.displayName }
+    fun sortExpenseByCategory(context: Context): List<Transaction> {
+        return _expenseTransactions.value.sortedBy { it.category.getDisplayName(context) }
     }
 
     private fun loadTransactions() {
+
         viewModelScope.launch {
             transactionRepository.getAllTransactions().collect { transactionList ->
                 _allTransactions.value = transactionList
@@ -170,20 +172,20 @@ class TransactionViewModel @Inject constructor(
         }
     }
 
-    fun expenseContainsList(value: String): List<Transaction>
+    fun expenseContainsList(value: String, context: Context): List<Transaction>
     {
         return _incomeTransactions.value.filter {
             it.amount.toString().contains(value) ||
-                    it.category.displayName.contains(value) ||
+                    it.category.getDisplayName(context).contains(value) ||
                     it.date.toString().contains(value) ||
                     it.time.toString().contains(value)}
     }
 
-    fun incomeContainsList(value: String): List<Transaction>
+    fun incomeContainsList(value: String, context: Context): List<Transaction>
     {
         return _incomeTransactions.value.filter {
             it.amount.toString().contains(value) ||
-            it.category.displayName.contains(value) ||
+            it.category.getDisplayName(context).contains(value) ||
             it.date.toString().contains(value) ||
             it.time.toString().contains(value)}
     }

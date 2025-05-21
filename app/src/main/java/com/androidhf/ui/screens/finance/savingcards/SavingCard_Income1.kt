@@ -56,7 +56,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.androidhf.ui.screens.finance.TransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

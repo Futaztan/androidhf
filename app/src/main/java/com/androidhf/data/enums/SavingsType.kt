@@ -1,4 +1,4 @@
-package com.androidhf.data.datatypes
+package com.androidhf.data.enums
 
 import android.content.Context
 import androidx.annotation.StringRes

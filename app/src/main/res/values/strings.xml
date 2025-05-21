@@ -54,8 +54,10 @@
     <string name="moneyincome_fromwhen">Enter start date:</string>
     <string name="moneyincome_howlong">Enter end date:</string>
     <string name="moneyincome_submit">Submit and close</string>
+    <string name="moneyincome_xyosztondij">XY scholarship</string>
 
     <string name="moneyexpense_title">New expense</string>
+    <string name="moneyexpense_weeklyshop">Weekly shopping</string>
     <string name="moneyexpense_overflow">If you submit this transaction, one of your savings will overflow its limit! Are you sure you want to continue?</string>
 
     <string name="financeincome_title">Incomes List</string>
@@ -76,7 +78,7 @@
     <string name="finance_newincome">New income</string>
     <string name="finance_newexpense">New expense</string>
     <string name="finance_newsaving">New saving</string>
-    <string name="finance_balance">Balance</string>
+    <string name="finance_balance">Balance: </string>
 
     <string name="savingcard_areyousuredelete">Are you sure you want to delete?</string>
     <string name="savingcard_deadlineinbound"> Deadline Inbound! </string>
@@ -84,7 +86,7 @@
     <string name="savingcard_typehold">Type: Hold</string>
     <string name="savingcard_typelimit">Type: Limit</string>
     <string name="savingcard_date">Date:</string>
-    <string name="savingcard_balance">Balance:</string>
+    <string name="savingcard_balance">Balance: </string>
     <string name="savingcard_successful">Successfully achieved!</string>
     <string name="savingcard_failed">Failed to achieve!</string>
 
@@ -93,7 +95,7 @@
     <string name="ai_messageai">Send a message to the AI!</string>
     <string name="ai_startchat">Start to chat!</string>
 
-    <string name="report_balance">Balance:</string>
+    <string name="report_balance">Balance: </string>
     <string name="report_30day">30 Day Statistics</string>
     <string name="report_income">Income</string>
     <string name="report_expense">Expense</string>
@@ -119,6 +121,21 @@
     <string name="savingstype_incamount">Income goal</string>
     <string name="savingstype_expamount">Spending limit</string>
 
+
+
+    <string name="frequency_once">Once</string>
+    <string name="frequency_daily">Daily</string>
+    <string name="frequency_weekly">Weekly</string>
+    <string name="frequency_monthly">Monthly</string>
+
+    <string name="category_salary">Salary</string>
+    <string name="category_scholarship">Scholarship</string>
+    <string name="category_bonus">Bonus</string>
+    <string name="category_otherincome">Other incomes</string>
+    <string name="category_subscription">Subscriptions</string>
+    <string name="category_food">Food</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_otherexpense">Other expenses</string>
 
 
 

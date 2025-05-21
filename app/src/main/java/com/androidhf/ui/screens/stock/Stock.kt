@@ -2,6 +2,12 @@ package com.androidhf.ui.screens.stock
 
 import android.util.Log
 import android.widget.Toast
+import android.view.HapticFeedbackConstants
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +21,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 
@@ -30,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,10 +48,12 @@ import androidx.compose.ui.Alignment
 
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -103,25 +114,27 @@ fun StockScreen(navController: NavController) {
 
     val displayedList = if(searchResults.isEmpty()) list else searchResults.map { it.first }
     val displayedCodes = if(searchResults.isEmpty()) codes else searchResults.map { it.second }
-/*
-    val valamilist = remember ( newlist ) {
-        if(newlist.isEmpty())
-        {
-            list
-        }else{
-            newlist
-        }
-    }
 
-    val valamicodes = remember ( newcodes ) {
-        if(newcodes.isEmpty())
-        {
-            codes
-        }else{
-            newcodes
+    val listState = rememberLazyListState()
+    val haptic = LocalView.current
+    val isScrolledToBottom by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+            val isLastItemFullyVisible = lastVisibleItem?.let {
+                it.index == layoutInfo.totalItemsCount - 1 &&
+                        it.offset + it.size <= layoutInfo.viewportEndOffset
+            } ?: false
+
+            val contentLargerThanViewport =
+                layoutInfo.totalItemsCount > 0 &&
+                        layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount
+
+            isLastItemFullyVisible && contentLargerThanViewport
         }
     }
-*/
+    if(isScrolledToBottom)      haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
     var currentCompanyCode by remember { mutableStateOf("") }
     var currentCompanyName by remember { mutableStateOf("") }
 
@@ -145,15 +158,13 @@ fun StockScreen(navController: NavController) {
             try {
                 val POLYGON_API_KEY = PolygonRestClient("kwQO2EZ6YFWcSA0Vkx4pCXyE6Guf2HJg")
 
-                // Kezdeti paraméterek
                 val now = LocalDate.now()
                 var endDate = now
-                var startDate = now.minusDays(8) // Kezdjük 20 nappal ezelőttről
+                var startDate = now.minusDays(8)
 
                 var attempts = 0
                 var foundData = false
 
-                // Maximum 3 próbálkozás (60 napra visszamenőleg)
                 while (!foundData && attempts < 40) {
                     Log.d("StockQuery", "Attempt ${attempts + 1}: Querying from ${startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))} to ${endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}")
 
@@ -166,7 +177,6 @@ fun StockScreen(navController: NavController) {
                         )
 
                         withContext(Dispatchers.Main) {
-                            // Ellenőrizzük, hogy kaptunk-e értelmes adatot
                             if (data.results != null && data.results.isNotEmpty()) {
                                 Log.d("StockQuery", "Data found for ${company}! ${data.results.size} data points.")
                                 stockData.clear()
@@ -177,7 +187,6 @@ fun StockScreen(navController: NavController) {
                                 foundData = true
                             } else {
                                 Log.e("StockQuery", "No data: trying attempt " + attempts)
-                                // Ha nem találtunk adatot, megnöveljük az időtartamot
                                 attempts++
                                 delay(5000)
                             }
@@ -186,7 +195,6 @@ fun StockScreen(navController: NavController) {
                         Log.e("StockQuery", "Error fetching data: ${e.message}")
                         attempts++
                         delay(3000)
-                        // Kivétel esetén szintén növeljük az időtartamot
                     }
                 }
             } finally {
@@ -205,19 +213,13 @@ fun StockScreen(navController: NavController) {
     else{
         0.dp
     }
-/*
-    if(searchQuery == ""){
-        newlist.clear()
-        newcodes.clear()
-    }
-*/
 
-    Box(modifier = Modifier.fillMaxSize().blur(intensity)){
 
+    Box(modifier = Modifier.fillMaxSize().blur(intensity).padding(UIVar.Padding)){
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 106.dp) // Helyet hagyunk az alsó kereső sávnak
+                .padding(bottom = 104.dp)
         ) {
             // Fejléc
             item {
@@ -233,16 +235,16 @@ fun StockScreen(navController: NavController) {
                     )
                 }
             } else {
-                // Befektetéseket 2-es csoportokba rendezzük, mint a kedvenceknél
+
                 items(stocks.chunked(2)) { stockRow ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = UIVar.Padding / 2)
                     ) {
-                        // Első befektetés a sorban (mindig létezik)
+
                         val stock1 = stockRow[0]
-                        // Megkeressük a hozzá tartozó céget
+
                         val company1 = companies.find { it.companyCode == stock1.companyCode }
                             ?: Company(companyName = stock1.companyName, companyCode = stock1.companyCode)
 
@@ -263,10 +265,11 @@ fun StockScreen(navController: NavController) {
                                 .padding(horizontal = UIVar.Padding / 2)
                         )
 
-                        // Második befektetés a sorban (ha létezik)
+
+
                         if (stockRow.size > 1) {
                             val stock2 = stockRow[1]
-                            // Megkeressük a második cég adatait is
+
                             val company2 = companies.find { it.companyCode == stock2.companyCode }
                                 ?: Company(companyName = stock2.companyName, companyCode = stock2.companyCode)
 
@@ -287,15 +290,16 @@ fun StockScreen(navController: NavController) {
                                     .padding(horizontal = UIVar.Padding / 2)
                             )
                         } else {
-                            // Ha nincs második elem, akkor üres helyet hagyunk
+
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                     Spacer(modifier = Modifier.height(UIVar.Padding))
+
                 }
             }
 
-            // Kedvencek fejléc
+
             item {
                 HeaderText(stringResource(id = R.string.stock_favorites),modifier = Modifier.padding(start = UIVar.Padding))
                 Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -303,17 +307,20 @@ fun StockScreen(navController: NavController) {
 
             if(companies.isEmpty()){
                 item{
-                    Text(stringResource(id = R.string.stock_nocompanies))
+                    Text(stringResource(id = R.string.stock_nocompanies),
+                        modifier = Modifier.padding(start = UIVar.Padding, bottom = UIVar.Padding)
+                    )
+
                 }
             }
-            // Kedvencek listája
+
             items(companies.chunked(2)) { companyRow ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = UIVar.Padding / 2)
                 ) {
-                    // Első elem a sorban (mindig létezik)
+
                     FavoriteCompanyBox(
                         company = companyRow[0],
                         onDelete = { stockViewModel.deleteCompany(companyRow[0]) },
@@ -328,7 +335,7 @@ fun StockScreen(navController: NavController) {
                             .padding(horizontal = UIVar.Padding / 2)
                     )
 
-                    // Második elem a sorban (ha létezik)
+
                     if (companyRow.size > 1) {
                         FavoriteCompanyBox(
                             company = companyRow[1],
@@ -350,17 +357,12 @@ fun StockScreen(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.height(UIVar.Padding))
             }
-
-            // Extra tér az alján, hogy a görgethető tartalom alján is legyen hely
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
         }
 
         //alsó kereső
         Box(modifier = Modifier.align(Alignment.BottomCenter)){
             Column(modifier = Modifier.fillMaxWidth()){
-                LazyRow {
+                LazyRow(state = listState) {
                     itemsIndexed(displayedList, key = { index, _ -> UUID.randomUUID().toString() }) { index, item ->
                         if (index == 0) {
                             Spacer(modifier = Modifier.width(UIVar.Padding))
@@ -391,7 +393,7 @@ fun StockScreen(navController: NavController) {
                         placeholder = { Text(stringResource(id = R.string.stock_search1))},
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(6f)
+                            .weight(5f)
                     )
                     Spacer(modifier = Modifier.width(UIVar.Padding) )
                     Button(
@@ -539,21 +541,19 @@ fun bottomwindow(
                             .weight(3f)
                             .align(Alignment.CenterVertically),
                             enabled = !isLoading && stockInput.isNotEmpty()
-                        ) { // Disable during loading
+                        ) {
                             Text(stringResource(id = R.string.stock_mark))
                         }
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                         val context = LocalContext.current
                         IconButton(onClick = {
                             if (isFavorite) {
-                                // Meg kell találnunk a megfelelő céget a listában
                                 val companyToDelete = companies.find { it.companyCode == currentCompanyCode }
                                 if (companyToDelete != null) {
                                     stockViewModel.deleteCompany(companyToDelete)
                                     Toast.makeText(context, context.getString(R.string.stock_favoritesremoved), Toast.LENGTH_SHORT).show()
                                 }
                             } else {
-                                // Ha még nem kedvenc, akkor hozzáadjuk a kedvencekhez
                                 stockViewModel.addCompany(Company(companyName = companyName, companyCode = currentCompanyCode))
                                 Toast.makeText(context, context.getString(R.string.stock_favoritesadded), Toast.LENGTH_SHORT).show()
                             }

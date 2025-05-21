@@ -1,10 +1,6 @@
-package com.androidhf.ui.screens.finance
+package com.androidhf.ui.screens.finance.detail
 
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -30,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,10 +34,11 @@ import com.androidhf.R
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.ListXItemsTransactions
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @Composable
-fun FinanceExpense(navController: NavHostController) {
-    UIVar.topBarTitle = stringResource(id = R.string.financeexpenses_title)
+fun FinanceIncome(navController: NavHostController) {
+    UIVar.topBarTitle = stringResource(id = R.string.financeincome_title)
     val tViewModel: TransactionViewModel = hiltViewModel()
 
     var amount by remember { mutableStateOf(false)}
@@ -69,14 +66,15 @@ fun FinanceExpense(navController: NavHostController) {
     else
         ButtonDefaults.buttonColors()
 
-    val transactions = tViewModel.expenseTransactions.collectAsState()
+    val transactions = tViewModel.incomeTransactions.collectAsState()
     val currentTransactions = transactions.value
 
+    val context = LocalContext.current
     val list: List<Transaction> = remember(input, currentTransactions) {
         if (input.isEmpty()) {
             currentTransactions
         } else {
-            val filteredList = tViewModel.incomeContainsList(input)
+            val filteredList = tViewModel.incomeContainsList(input,context)
             filteredList
         }
     }
@@ -132,7 +130,7 @@ fun FinanceExpense(navController: NavHostController) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (!date && !category && !amount)
             {
-                ListXItemsTransactions(null, list, -1, UIVar.colorRed())
+                ListXItemsTransactions(null, list, -1, UIVar.colorGreen())
             }
         }
         if (amount) {
@@ -144,13 +142,13 @@ fun FinanceExpense(navController: NavHostController) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (asc)
             {
-                ListXItemsTransactions(null, tViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed())
+                ListXItemsTransactions(null, tViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorGreen())
             }
-            else ListXItemsTransactions(null,tViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), reversed = true)
+            else ListXItemsTransactions(null,tViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorGreen(), reversed = true)
         }
         else if (category) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
-            ListXItemsTransactions(null, tViewModel.sortByCategory(list = list), -1, UIVar.colorRed())
+            ListXItemsTransactions(null, tViewModel.sortByCategory(list = list, context), -1, UIVar.colorGreen())
         }
         else if (date) {
             Button(onClick = {
@@ -161,15 +159,15 @@ fun FinanceExpense(navController: NavHostController) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (asc)
             {
-                ListXItemsTransactions(null, tViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorRed())
+                ListXItemsTransactions(null, tViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorGreen())
             }
-            else ListXItemsTransactions(null,tViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorRed())
+            else ListXItemsTransactions(null,tViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorGreen())
         }
         else if (!search)
         {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Log.d("bug1", "List size: ${list.size}")
-            ListXItemsTransactions(null, list, -1, UIVar.colorRed(), reversed = true)
+            ListXItemsTransactions(null, list, -1, UIVar.colorGreen(), reversed = true)
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
     }
@@ -181,11 +179,11 @@ fun FinanceExpense(navController: NavHostController) {
             Row(modifier = Modifier, Arrangement.SpaceAround) {
                 Spacer(modifier = Modifier.width(UIVar.Padding))
                 Button(onClick = { navController.popBackStack() }, modifier = Modifier.weight(1f)) {
-                    Text(text = stringResource(id = R.string.general_back))
+                    Text(stringResource(id = R.string.general_back))
                 }
                 Spacer(modifier = Modifier.width(UIVar.Padding))
-                Button(onClick = { navController.navigate("FinanceIncome") }, modifier = Modifier.weight(1f)) {
-                    Text(text = stringResource(id = R.string.financeexpenses_toincome))
+                Button(onClick = { navController.navigate("FinanceExpense") }, modifier = Modifier.weight(1f)) {
+                    Text(text = stringResource(id = R.string.financeincome_toexpenses))
                 }
                 Spacer(modifier = Modifier.width(UIVar.Padding))
             }

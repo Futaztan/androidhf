@@ -1,14 +1,15 @@
 package com.androidhf.ui.screens.finance
 
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import android.util.Log
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,15 +19,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
@@ -40,8 +53,10 @@ import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
 import co.yml.charts.ui.wavechart.model.WaveFillColor
 import co.yml.charts.ui.wavechart.model.WavePlotData
+import com.androidhf.data.enums.SavingsType
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
+import com.androidhf.ui.reuseable.ListXItemsTransactionsMonthly
 import com.androidhf.ui.reuseable.UIVar
 import kotlin.math.max
 import kotlin.math.min
@@ -56,11 +71,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.ListXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidhf.R
@@ -80,6 +97,7 @@ fun FinanceScreen(navHostController: NavHostController) {
     //ezekkel érhetők el az adatok
     val sViewModel: SavingViewModel = hiltViewModel()
     val tViewModel: TransactionViewModel = hiltViewModel()
+    val reptransactionViewModel : RepetitiveTransactionViewModel = hiltViewModel()
 
     //alsó gombok eltüntetése
     val listState = rememberLazyListState()
@@ -119,6 +137,7 @@ fun FinanceScreen(navHostController: NavHostController) {
         .fillMaxSize()
     )
     {
+
         val savings = sViewModel.savings.collectAsState()
         LazyColumn(modifier = Modifier
             .fillMaxWidth(),
@@ -252,13 +271,14 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
     {
         Row ( modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         )
         {
             HeaderText(stringResource(id = R.string.finance_balance))
-            if(money < 0) Text("$money Ft", color = Color.Red)
-            else if(money > 0) Text("$money Ft", color = Color.Green)
-            else Text("$money Ft", color = Color.Black)
+            if(money < 0) Text("$money Ft", color = Color.Red, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
+            else if(money > 0) Text("$money Ft", color = Color.Green, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
+            else Text("0 Ft", color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
 
         }
     }
@@ -267,29 +287,40 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
 @Composable
 fun Grafikon_init(balance : List<Int>)
 {
+
+    val list = mutableListOf<Float>()
+    var osszeg: Float = 0f
+    list.add(0f)
+    balance.forEach { item ->
+        osszeg += item
+        list.add(osszeg)
+    }
     val pointsData = balance.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
-
-
     val xAxisData = AxisData.Builder()
         .axisStepSize(20.dp)
-        .steps(balance.size-1)
+        .steps((list.size - 1).coerceAtLeast(1))
         .bottomPadding(40.dp)
         .labelData { index -> index.toString() }
         .build()
 
-    val yStepSize = 8
-    val rawMin = balance.minOrNull() ?: 0
-    val rawMax = balance.maxOrNull() ?: 0
-    val minRange = min(0, rawMin)
-    val maxRange = max(0, rawMax)
+    val dataMinValue = list.minOrNull() ?: 0f
+    val dataMaxValue = list.maxOrNull() ?: 0f
 
-    val range = maxRange - minRange
-    val step = range / yStepSize
+    val yAxisDisplayMin = if (dataMinValue == 0f && dataMaxValue == 0f) -10f else dataMinValue
+    val yAxisDisplayMax = if (dataMinValue == 0f && dataMaxValue == 0f) 10f else dataMaxValue
+
+
+    val yAxisDisplayRange = yAxisDisplayMax - yAxisDisplayMin
 
     val yAxisData = AxisData.Builder()
-        .steps(yStepSize)
+        .steps(8)
         .labelData { index ->
-            String.format("%d", minRange + (index * step))
+            val value = if (yAxisDisplayRange == 0f) {
+                yAxisDisplayMin
+            } else {
+                yAxisDisplayMin + (index.toFloat() / 8.0f) * yAxisDisplayRange
+            }
+            Math.round(value).toString()
         }
         .build()
 
@@ -302,19 +333,22 @@ fun Grafikon_init(balance : List<Int>)
                     selectionHighlightPoint = SelectionHighlightPoint(),
                     shadowUnderLine = ShadowUnderLine(),
                     selectionHighlightPopUp = SelectionHighlightPopUp(),
-                    waveFillColor = WaveFillColor(topColor = Color.Green, bottomColor = Color.Red),
+                    waveFillColor = WaveFillColor(topColor = UIVar.colorGreen(), bottomColor = UIVar.colorRed()),
                 )
             )
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        gridLines = GridLines()
+        gridLines = GridLines(),
+        paddingTop = 20.dp,
+        bottomPadding = 0.dp
     )
 
     WaveChart(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp),
+            .height(300.dp)
+            .border(3.dp, UIVar.boxBorderColor()),
         waveChartData = waveChartData
     )
 }
