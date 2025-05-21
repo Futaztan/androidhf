@@ -81,9 +81,9 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun StockScreen(navController: NavController) {
+fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
 
-    val stockViewModel: StockViewModel = hiltViewModel()
+
 
     UIVar.topBarTitle = "Stock"
     var showChart by remember { mutableStateOf(false) }
@@ -438,7 +438,8 @@ fun StockScreen(navController: NavController) {
         stockData = stockData,
         companyName = currentCompanyName,
         isLoading = isLoading,
-        currentCompanyCode = currentCompanyCode
+        currentCompanyCode = currentCompanyCode,
+        stockViewModel
     )
 
 
@@ -466,10 +467,11 @@ fun bottomwindow(
     stockData: List<AggregateDTO>,
     companyName: String,
     isLoading: Boolean,
-    currentCompanyCode: String
+    currentCompanyCode: String,
+    stockViewModel: StockViewModel
 ) {
     var stockInput by remember { mutableStateOf("") }
-    val stockViewModel: StockViewModel = hiltViewModel()
+
     Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures {} }
     ) {
         Panel(modifier = Modifier

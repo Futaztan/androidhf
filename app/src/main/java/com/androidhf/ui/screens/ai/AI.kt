@@ -31,18 +31,18 @@ data class ChatMessage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AIScreen() {
+fun AIScreen(aiViewModel: AIViewModel) {
     UIVar.topBarTitle = "AI"
 
-    val viewModel: AIViewModel = hiltViewModel()
+
 
     val messages = AiMessages.messages
     var inputText by remember { mutableStateOf("") }
-    val isLoading by viewModel.isLoading.collectAsState()
+    val isLoading by aiViewModel.isLoading.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.defaultPrompt()
+        aiViewModel.defaultPrompt()
     }
 
     if (showDeleteConfirmation) {
@@ -54,7 +54,7 @@ fun AIScreen() {
                 TextButton(
                     onClick = {
                         messages.clear()
-                        viewModel.defaultPrompt()
+                        aiViewModel.defaultPrompt()
                         showDeleteConfirmation = false
                     }
                 ) {
@@ -115,7 +115,7 @@ fun AIScreen() {
                             if (inputText.isNotBlank() && !isLoading) {
                                 val userMessage = ChatMessage("user", inputText, System.currentTimeMillis())
                                 messages.add(userMessage)
-                                viewModel.sendMessage(inputText, messages,true)
+                                aiViewModel.sendMessage(inputText, messages,true)
                                 inputText = ""
                             }
                         },

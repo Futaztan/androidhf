@@ -36,6 +36,7 @@ class SavingViewModel @Inject constructor(
     init
     {
         loadSavings()
+        Log.e("tag-init","saving")
     }
 
     //betölti a tárolt adatokat

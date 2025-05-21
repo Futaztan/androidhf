@@ -1,5 +1,6 @@
 package com.androidhf.ui.screens.stock
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -38,6 +39,7 @@ class StockViewModel @Inject constructor(
     init {
         loadStock()
         loadCompany()
+        Log.e("tag-init","stock")
     }
 
     private fun loadStock(){

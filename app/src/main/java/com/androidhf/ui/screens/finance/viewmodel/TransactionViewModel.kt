@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Singleton
 
 //viewmodel létrehozása, ott ahol kell: val viewModel: TransactionViewModel = hiltViewModel()
 //biztosítja az adathozzáférést
@@ -50,7 +51,7 @@ class TransactionViewModel @Inject constructor(
 
     init {
         loadTransactions()
-        Log.e("tag-init","fasz")
+        Log.e("tag-init","transaction")
     }
 
     fun get30DaysIncome(): Int {

@@ -1,5 +1,6 @@
 package com.androidhf.ui.screens.finance.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.datatypes.RepetitiveTransaction
@@ -22,6 +23,7 @@ class RepetitiveTransactionViewModel @Inject constructor(
 
     init {
         loadRepTransactions()
+        Log.e("tag-init","rep")
     }
 
     private fun loadRepTransactions() {

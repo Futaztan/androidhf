@@ -22,9 +22,8 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun StockChartScreen()
+fun StockChartScreen(stockViewModel : StockViewModel)
 {
-    val stockViewModel : StockViewModel = hiltViewModel()
     LineChartSample(stockViewModel.stockData!!, "")
 }
 

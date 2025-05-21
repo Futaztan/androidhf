@@ -54,7 +54,7 @@ fun FavoriteCompanyBox(
     modifier: Modifier = Modifier
 ) {
     // StockViewModel hozzáadása, hogy hozzáférjünk az adatokhoz
-    val stockViewModel: StockViewModel = hiltViewModel()
+    //val stockViewModel: StockViewModel = hiltViewModel()
 
     // Állapot változók a chart adatokhoz
     var stockData by remember { mutableStateOf<List<AggregateDTO>>(emptyList()) }
