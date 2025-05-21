@@ -26,11 +26,11 @@ import com.androidhf.ui.reuseable.ListXItemsTransactions
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.Report
 import com.androidhf.ui.reuseable.UIVar
-import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
-import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import com.androidhf.ui.screens.login.auth.AuthService
 
 
@@ -56,7 +56,7 @@ fun HomeScreen() {
 
 
         Panel{
-            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
+            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég")
             else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
 
@@ -86,24 +86,7 @@ fun HomeScreen() {
         Report()
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        /* TODO ezt majd visszarakni
-        Button(onClick = {
-            Data.repetitiveTransactions.forEach{
-                Log.d("repeater",it.toString())
-            }
-            val a = Duration.between(LocalDate.now().atStartOfDay(), LocalDate.now().minusDays(3).atStartOfDay()).toDays()
-            val b = a % 3
-            println(b)
-        }) { Text("Stock market:") } //TODO
 
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Data.loadTransactions()
-                Data.loadSaves()
-            }
-
-        }) { Text("LOAD")}
-        */
     }
 
 
