@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.androidhf.ui.reuseable.NameField
@@ -25,6 +26,7 @@ import com.androidhf.ui.reuseable.PasswordField
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.login.auth.AuthService
 import com.androidhf.ui.reuseable.Panel
+import com.androidhf.R
 
 
 private fun onLogin(email: String, password : String, navController: NavController, context: Context)
@@ -57,7 +59,7 @@ fun LoginScreen(navController: NavController) {
             NameField(
                 value = name,
                 onChange = { name = it },
-                label = "Login",
+                label = stringResource(id = R.string.login_user),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.padding(UIVar.Padding))
@@ -65,17 +67,18 @@ fun LoginScreen(navController: NavController) {
                 value = password,
                 onChange = { password=it },
                 submit = {onLogin(name,password,navController, context)},
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(id = R.string.login_pass)
             )
             Spacer(Modifier.padding(UIVar.Padding))
             Button(onClick = {
                 onLogin(name,password,navController,context)},
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("LOGIN") }
+            ) { Text(stringResource(id = R.string.login_user)) }
             Button(onClick ={
                 navController.navigate("register")},
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("REGISTER")}
+            ) { Text(stringResource(id = R.string.login_register))}
 
         }
 

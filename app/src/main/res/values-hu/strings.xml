@@ -1,0 +1,129 @@
+<resources>
+    <string name="app_name">AndroidHF</string>
+    <string name="stock_topbartitle">Részvények</string>
+    <string name="stock_currentinvestments">Jelenlegi befektetések</string>
+    <string name="stock_noinvestments">Nincs még befektetés</string>
+    <string name="stock_favorites">Kedvencek</string>
+    <string name="stock_nocompanies">Nincs még kedvenc cég</string>
+    <string name="stock_search1">Keresés…</string>
+    <string name="stock_search2">Keresés</string>
+    <string name="stock_tryagainlater">Próbálja újra később!</string>
+    <string name="stock_nodata">Nincs adat</string>
+    <string name="stock_holdon">Pillanat…</string>
+    <string name="stock_stock"> részvény</string>
+    <string name="stock_stockamount">Vett mennyiség:</string>
+
+    <string name="stock_mark">Bejelölés</string>
+    <string name="stock_loading">Betöltés…</string>
+    <string name="stock_boughtfor">Ennyiért vett</string>
+    <string name="stock_currently">Jelenleg</string>
+    <string name="stock_chartdataunav">Gráf nem elérhető</string>
+    <string name="stock_favoritesadded">Kedvencekhez hozzáaadva</string>
+    <string name="stock_favoritesremoved">Kedvencektől eltávolítva</string>
+    <string name="stock_marked">Részvény bejelölve</string>
+    <string name="stock_unmarked">Részvény jelölés törölve</string>
+
+
+    <string name="login_user">Felhasználónév</string>
+    <string name="login_pass">Jelszó</string>
+    <string name="login_register">Regisztrálás</string>
+    <string name="login_passmismatch">Jelszavak nem egyeznek</string>
+    <string name="login_registration">Regisztráció</string>
+
+    <string name="popup_areyousuredelete">Biztosan törölni szeretné?</string>
+
+    <string name="home_home">Kezdőlap</string>
+    <string name="home_hello">Helló!</string>
+    <string name="home_hi">Szia </string>
+    <string name="home_3newestsavings">3 legújabb megtakarítás</string>
+
+    <string name="moneysavings_title">Új megtakarítás</string>
+    <string name="moneysavings_missing">Kérlek töltse ki az összes mezőt</string>
+    <string name="moneysavings_enteramount">Mekkora összeget szeretne beállítani?</string>
+    <string name="moneysavings_chooseadate">Válasszon egy dátumot:</string>
+    <string name="moneysavings_choosedate">Dátum kiválasztása:</string>
+    <string name="moneysavings_chooseatype">Válasszon egy típust:</string>
+    <string name="moneysavings_chooseaname">Név megadása:</string>
+    <string name="moneysavings_name">Cím</string>
+    <string name="moneysavings_shortdescdialog">Írjon egy rövid leírást:</string>
+    <string name="moneysavings_shortdesc">Rövid leírás</string>
+    <string name="moneysavings_save">Mentés</string>
+
+    <string name="moneyincome_title">Új bevétel</string>
+    <string name="moneyincome_whichday">Mikor történt a tranzakció?</string>
+    <string name="moneyincome_fromwhen">Mikortól?</string>
+    <string name="moneyincome_howlong">Meddig?</string>
+    <string name="moneyincome_submit">Mentés és bezárás</string>
+
+    <string name="moneyexpense_title">Új kiadás</string>
+    <string name="moneyexpense_overflow">Ha elmenti ezt a tranzakciót, akkor az egyik megtakarításban túl fog csordulni a limit! Biztos szeretné folytatni?</string>
+
+    <string name="financeincome_title">Bevételek listája</string>
+    <string name="financeincome_sortby">Rendezés típusa</string>
+    <string name="financeincome_amount">Mennyiség</string>
+    <string name="financeincome_category">Kategória</string>
+    <string name="financeincome_date">Dátum</string>
+    <string name="financeincome_ascdesc">Növekvő/Csökkenő</string>
+    <string name="financeincome_toexpenses">Kiadások ➤</string>
+
+    <string name="financeexpenses_title">Kiadások listája</string>
+    <string name="financeexpenses_toincome">Bevételek ➤</string>
+
+    <string name="finance_title">Pénzügyek</string>
+    <string name="finance_income">Bevétel</string>
+    <string name="finance_expense">Kiadás</string>
+    <string name="finance_saving">Megtakarítás</string>
+    <string name="finance_newincome">Új bevétel</string>
+    <string name="finance_newexpense">Új kiadás</string>
+    <string name="finance_newsaving">Új megtakarítás</string>
+    <string name="finance_balance">Egyenleg</string>
+
+    <string name="savingcard_areyousuredelete">Biztos szeretné törölni?</string>
+    <string name="savingcard_deadlineinbound"> Határidő közeleg! </string>
+    <string name="savingcard_typecollect">Típus: Megtakarítás</string>
+    <string name="savingcard_typehold">Type: Tartás</string>
+    <string name="savingcard_typelimit">Type: Limit</string>
+    <string name="savingcard_date">Dátum:</string>
+    <string name="savingcard_balance">Egyenleg:</string>
+    <string name="savingcard_successful">Sikeresen teljesítve!</string>
+    <string name="savingcard_failed">Nem sikerült teljesíteni!</string>
+
+    <string name="ai_delete">Beszélgetés törlése</string>
+    <string name="ai_areyousuredelete">Biztos törölni szeretné a teljes beszélgetést?</string>
+    <string name="ai_messageai">Írj az AI-nak!</string>
+    <string name="ai_startchat">Kezdjük a beszélgetést!</string>
+
+    <string name="report_balance">Egyenleg:</string>
+    <string name="report_30day">30 napos statisztika</string>
+    <string name="report_income">Bevétel</string>
+    <string name="report_expense">Kiadás</string>
+    <string name="report_mostincome">Legtöbb bevétel:</string>
+    <string name="report_mostexpense">Legtöbb kiadás:</string>
+    <string name="report_currsavings">Összes jelenlegi megtakarítás:</string>
+    <string name="report_savingnum">Megtakarítások száma:</string>
+    <string name="report_collect">Megtakarítás:</string>
+    <string name="report_limit">Limit:</string>
+    <string name="report_hold">Tartás:</string>
+    <string name="report_completed">Sikeres:</string>
+    <string name="report_failed">Sikertelen:</string>
+
+    <string name="passwordfield_pass">Jelszó:</string>
+
+    <string name="namefield_email">Írja be az email címét</string>
+
+    <string name="mainactivity_home">Kezdőlap</string>
+    <string name="mainactivity_finance">Pénzügyek</string>
+    <string name="mainactivity_stock">Részvények</string>
+
+    <string name="savingstype_time">Legyen több az adott összegnél, az idő végére</string>
+    <string name="savingstype_incamount">Bevételi cél</string>
+    <string name="savingstype_expamount">Költés limitálás</string>
+
+
+    <string name="general_yes">Igen</string>
+    <string name="general_no">Nem</string>
+    <string name="general_cancel">Mégse</string>
+    <string name="general_back">Vissza</string>
+
+    <!-- stringResource(id = R.string.passwordfield_) -->
+</resources>

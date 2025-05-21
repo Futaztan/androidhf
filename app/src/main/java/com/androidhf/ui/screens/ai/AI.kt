@@ -1,7 +1,7 @@
 package com.androidhf.ui.screens.ai
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,151 +17,189 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.androidhf.data.AiMessages
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.androidhf.ui.reuseable.UIVar
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import com.androidhf.R
+import kotlinx.coroutines.launch
 
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
+
+import kotlin.text.isNotBlank
 
 data class ChatMessage(
     val sender: String,
     val content: String,
     val timestamp: Long,
-    val isVisible: Boolean = true
+    var isVisible: Boolean = true
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AIScreen() {
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@androidx.compose.runtime.Composable
+fun AIScreen(viewModel: AIViewModel) {
     UIVar.topBarTitle = "AI"
 
-    val viewModel: AIViewModel = hiltViewModel()
 
     val messages = AiMessages.messages
-    var inputText by remember { mutableStateOf("") }
+    var inputText by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
     val isLoading by viewModel.isLoading.collectAsState()
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
-    LaunchedEffect(key1 = Unit) {
+    androidx.compose.runtime.LaunchedEffect(key1 = Unit) {
         viewModel.defaultPrompt()
     }
 
     if (showDeleteConfirmation) {
-        AlertDialog(
+        androidx.compose.material3.AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
-            title = { Text("Beszélgetés törlése") },
-            text = { Text("Biztosan törölni szeretnéd a teljes beszélgetést?") },
+            title = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.ai_delete)) },
+            text = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.ai_areyousuredelete)) },
             confirmButton = {
-                TextButton(
+                androidx.compose.material3.TextButton(
                     onClick = {
                         messages.clear()
                         viewModel.defaultPrompt()
                         showDeleteConfirmation = false
                     }
                 ) {
-                    Text("Igen")
+                    androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.general_yes))
                 }
             },
             dismissButton = {
-                TextButton(
+                androidx.compose.material3.TextButton(
                     onClick = { showDeleteConfirmation = false }
                 ) {
-                    Text("Mégsem")
+                    androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.general_cancel))
                 }
             }
         )
     }
 
+    androidx.compose.material3.Scaffold(
+        bottomBar = { // Használd a bottomBar slotot az input mezőhöz
+            androidx.compose.foundation.layout.Column( // Column, hogy a gomb és az input mező egymás alatt legyen, vagy Row ha egymás mellett szeretnéd őket strukturálni
+                modifier = androidx.compose.ui.Modifier
+                    .fillMaxWidth() // Fontos, hogy kitöltse a szélességet
+                    .background(UIVar.panelColor())
+                    .padding(UIVar.Padding)
+            ) {
+                androidx.compose.foundation.layout.Row(
+                    modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween, // Elrendezi a gombokat
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    androidx.compose.material3.Button(
+                        onClick = {
+                            viewModel.viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                                val message = ChatMessage(
+                                    "user",
+                                    viewModel.dataToAIPrompt(),
+                                    System.currentTimeMillis()
+                                )
+                                message.isVisible = false
+                                messages.add(message)
+                                viewModel.sendMessage(inputText, messages, true)
 
-
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("AI Chat") },
-                actions = {
-                    IconButton(onClick = { showDeleteConfirmation = true }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Törlés")
+                                val message2 = ChatMessage(
+                                    "user",
+                                    "30 napos rekord beküldve",
+                                    System.currentTimeMillis()
+                                )
+                                messages.add(message2)
+                            }
+                        }
+                    ) {
+                        androidx.compose.material3.Text("30 napos report küldése")
+                    }
+                    androidx.compose.material3.IconButton(onClick = { showDeleteConfirmation = true }) {
+                        androidx.compose.material3.Icon(Icons.Default.Delete, contentDescription = "Törlés")
                     }
                 }
-            )
-        },
-        bottomBar = {
-            BottomAppBar {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextField(
+                androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.height(UIVar.Padding))
+                androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    androidx.compose.material3.TextField(
                         value = inputText,
                         onValueChange = { inputText = it },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp),
-                        placeholder = { Text("Üzenj az AI-nak!") },
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            focusedContainerColor = MaterialTheme.colorScheme.surface
+                        modifier = androidx.compose.ui.Modifier.weight(1f),
+                        placeholder = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(id = R.string.ai_messageai)) },
+                        colors = androidx.compose.material3.TextFieldDefaults.colors(
+                            unfocusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+                            focusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface
                         ),
                         enabled = !isLoading,
-
                     )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    IconButton(
+                    androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.width(UIVar.Padding))
+                    androidx.compose.material3.IconButton(
                         onClick = {
                             if (inputText.isNotBlank() && !isLoading) {
-                                val userMessage = ChatMessage("user", inputText, System.currentTimeMillis())
+                                val userMessage =
+                                    ChatMessage("user", inputText, System.currentTimeMillis())
                                 messages.add(userMessage)
-                                viewModel.sendMessage(inputText, messages,true)
+                                viewModel.sendMessage(inputText, messages, true)
                                 inputText = ""
                             }
                         },
                         enabled = !isLoading && inputText.isNotBlank()
                     ) {
                         if (isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
+                            androidx.compose.material3.CircularProgressIndicator(
+                                modifier = androidx.compose.ui.Modifier.size(24.dp),
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Icon(
+                            androidx.compose.material3.Icon(
                                 imageVector = Icons.Default.Send,
                                 contentDescription = "Küldés",
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = androidx.compose.material3.MaterialTheme.colorScheme.primary
                             )
                         }
                     }
                 }
             }
         }
-    ) { innerPadding ->
+    ) { innerPadding -> // Ez az innerPadding automatikusan figyelembe veszi a bottomBar magasságát
+
         if (messages.isEmpty()) {
-            Box(
-                modifier = Modifier
+            androidx.compose.foundation.layout.Box(
+                modifier = androidx.compose.ui.Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
+                    .padding(innerPadding), // Alkalmazd az innerPadding-et
+                contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
-                Text(
-                    text = "Kezdj el chattelni!",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                androidx.compose.material3.Text(
+                    text = androidx.compose.ui.res.stringResource(id = R.string.ai_startchat),
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
-            LazyColumn(
-                modifier = Modifier
+            androidx.compose.foundation.lazy.LazyColumn(
+                modifier = androidx.compose.ui.Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding), // Alkalmazd az innerPadding-et itt is
                 reverseLayout = true,
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                // A contentPadding-et itt is használhatod további belső térközökhöz,
+                // de a Scaffold innerPadding-je a legfontosabb az átfedések elkerülésére.
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 16.dp,
+                    bottom = 16.dp
+                ), // Vagy csak bottom = 16.dp, ha a többi már jó
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
             ) {
                 items(messages.reversed()) { message ->
-                    if(message.isVisible){
+                    if (message.isVisible) {
                         MessageItem(message)
                     }
                 }

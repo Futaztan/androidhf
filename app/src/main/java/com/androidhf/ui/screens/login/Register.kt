@@ -19,8 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.androidhf.R
 import com.androidhf.ui.reuseable.NameField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.PasswordField
@@ -40,7 +42,7 @@ private fun onRegister(
         return
     }
     if (!password1.equals(password2)) {
-        Toast.makeText(context, "A ket jelszo nem egyezik", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.login_passmismatch, Toast.LENGTH_LONG).show();
         return
     }
     AuthService.registerWithEmailAndPassword(email, password1, context) { success ->
@@ -54,7 +56,7 @@ private fun onRegister(
 
 @Composable
 fun RegisterScreen(navController: NavController) {
-    UIVar.topBarTitle = "Register"
+    UIVar.topBarTitle = stringResource(id = R.string.login_registration)
 
     var name by remember { mutableStateOf("") }
     var password1 by remember { mutableStateOf("") }
@@ -70,7 +72,7 @@ fun RegisterScreen(navController: NavController) {
             NameField(
                 value = name,
                 onChange = { name = it },
-                label = "Register",
+                label = stringResource(id = R.string.login_register),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.padding(UIVar.Padding))
@@ -98,7 +100,7 @@ fun RegisterScreen(navController: NavController) {
                 )
             },
                 modifier = Modifier.fillMaxWidth()
-            ) { Text("REGISTER") }
+            ) { Text(stringResource(id = R.string.login_register)) }
 
         }
 

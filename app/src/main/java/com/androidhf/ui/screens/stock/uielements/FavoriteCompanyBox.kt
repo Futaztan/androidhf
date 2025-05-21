@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidhf.R
 import com.androidhf.data.Company
 import com.androidhf.ui.reuseable.BorderBox
+import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.stock.uielements.MiniStockChart
 import com.androidhf.ui.screens.stock.StockViewModel
 import com.androidhf.ui.screens.stock.query.stocksAggregatesBars
@@ -160,7 +162,7 @@ fun FavoriteCompanyBox(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(UIVar.Padding/2f)
             ) {
                 // Felső rész: Ticker kód és ár
                 Text(
@@ -174,7 +176,7 @@ fun FavoriteCompanyBox(
                 // Ár megjelenítése (az árat a bottomwindow-ból vesszük)
                 if (isLoading) {
                     Text(
-                        text = "Loading...",
+                        text = stringResource(id = R.string.stock_loading),
                         style = TextStyle(fontSize = 16.sp)
                     )
                 } else {
@@ -202,13 +204,13 @@ fun FavoriteCompanyBox(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Hold on...",
+                                text = stringResource(id = R.string.stock_holdon),
                                 style = TextStyle(fontSize = 12.sp)
                             )
                         }
                     } else if (hasError || stockData.isEmpty()) {
                         Text(
-                            text = "Chart data unavailable",
+                            text = stringResource(id = R.string.stock_chartdataunav),
                             style = TextStyle(fontSize = 12.sp, color = Color.Gray),
                             modifier = Modifier.align(Alignment.Center)
                         )

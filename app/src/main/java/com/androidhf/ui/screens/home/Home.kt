@@ -26,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.androidhf.R
 import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.ListXItemsTransactions
@@ -44,7 +46,7 @@ import com.androidhf.ui.screens.login.auth.AuthService
 
 @Composable
 fun HomeScreen() {
-    UIVar.topBarTitle = "Home"
+    UIVar.topBarTitle = stringResource(id = R.string.home_home)
 
     val sViewModel: SavingViewModel = hiltViewModel()
     val tViewModel: TransactionViewModel = hiltViewModel()
@@ -62,8 +64,8 @@ fun HomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Panel{
-            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
-            else HeaderText("Szia ${AuthService.getUserDisplayName()}")
+            if(!AuthService.isLoggedIn()) HeaderText(stringResource(id = R.string.home_hello))
+            else HeaderText(stringResource(id = R.string.home_hi) + AuthService.getUserDisplayName())
         }
 
         Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${money}") }
@@ -72,7 +74,7 @@ fun HomeScreen() {
             Spacer(modifier = Modifier.width(UIVar.Padding))
             ListXItemsTransactions(tViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
         }
-        Text("3 legújabb takarék")
+        Text(stringResource(id = R.string.home_3newestsavings))
         sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)

@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -101,7 +102,7 @@ fun InvestmentBox(
                 ) {
                     Column {
                         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                            Text("Biztosan törölni szeretné?", modifier = Modifier.align(Alignment.CenterVertically), color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(id = R.string.popup_areyousuredelete), modifier = Modifier.align(Alignment.CenterVertically), color = MaterialTheme.colorScheme.error)
                             androidx.compose.material3.Icon(
                                 painter = painterResource(id = R.drawable.ic_warning_48),
                                 contentDescription = "Warning",
@@ -120,14 +121,14 @@ fun InvestmentBox(
                                 ),
                                 modifier = Modifier.weight(3f)
                             ) {
-                                Text("Igen", color = MaterialTheme.colorScheme.onError) // szöveg szín
+                                Text(stringResource(id = R.string.general_yes), color = MaterialTheme.colorScheme.onError) // szöveg szín
                             }
                             Spacer(modifier = Modifier.width(UIVar.Padding))
                             Button(onClick = {
                                 showPopup=false
                             }, modifier = Modifier.weight(7f)
                             ) {
-                                Text("Nem")
+                                Text(stringResource(id = R.string.general_no))
                             }
                         }
                     }
@@ -248,7 +249,7 @@ fun InvestmentBox(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(UIVar.Padding/2f)
             ) {
                 // Ticker kód
                 Text(
@@ -256,14 +257,14 @@ fun InvestmentBox(
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)) {
                             append(stock.companyCode + " ")
                         }
-                        withStyle(style = SpanStyle(fontSize = 8.sp)) {
-                            append(company.companyName)
-                        }
+                        /*withStyle(style = SpanStyle(fontSize = 8.sp)) {
+                            append(stock.companyName)
+                        }*/
                     }
                 )
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 Text(
-                    text = "Amount: ${amount}",
+                    text = stringResource(id = R.string.stock_stockamount) + " ${amount}",
                     style = TextStyle(fontSize = 14.sp)
                 )
                 Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -271,7 +272,7 @@ fun InvestmentBox(
                 // Jelenlegi ár
                 if (isLoading) {
                     Text(
-                        text = "Loading...",
+                        text = stringResource(id = R.string.stock_loading),
                         style = TextStyle(fontSize = 14.sp)
                     )
                 } else if (hasError) {
@@ -283,13 +284,13 @@ fun InvestmentBox(
                     Row (modifier = Modifier.fillMaxWidth()){
                         Box(modifier = Modifier.fillMaxWidth()){
                             Text(
-                                text = "Bought for",
+                                text = stringResource(id = R.string.stock_boughtfor),
                                 style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Bold),
                                 modifier = Modifier.align(Alignment.CenterStart)
                             )
 
                             Text(
-                                text = "Currently",
+                                text = stringResource(id = R.string.stock_currently),
                                 style = TextStyle(fontSize = 8.sp, fontWeight = FontWeight.Bold),
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
@@ -348,13 +349,13 @@ fun InvestmentBox(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Hold on...",
+                                text = stringResource(id = R.string.stock_holdon),
                                 style = TextStyle(fontSize = 12.sp)
                             )
                         }
                     } else if (hasError) {
                         Text(
-                            text = "Chart data unavailable",
+                            text = stringResource(id = R.string.stock_chartdataunav),
                             style = TextStyle(fontSize = 12.sp, color = Color.Gray),
                             modifier = Modifier.align(Alignment.Center)
                         )

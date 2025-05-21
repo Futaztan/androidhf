@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
+import com.androidhf.R
 
 
 @Composable
@@ -22,7 +24,7 @@ fun NameField(
     onChange: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     label: String,
-    placeholder: String = "Enter your Email address"
+    placeholder: String = stringResource(id = R.string.namefield_email)
 ) {
 
     val focusManager = LocalFocusManager.current

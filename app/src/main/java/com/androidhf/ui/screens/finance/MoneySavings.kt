@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.androidhf.R
 import com.androidhf.data.datatypes.Savings
 import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
@@ -45,7 +47,7 @@ import java.util.Calendar
 @Composable
 fun MoneySavingsScreen(navController: NavController)
 {
-    UIVar.topBarTitle = "Takarék felvétel"
+    UIVar.topBarTitle = stringResource(id = R.string.moneysavings_title)
 
     val tViewModel: TransactionViewModel = hiltViewModel()
     val sViewModel: SavingViewModel = hiltViewModel()
@@ -78,7 +80,7 @@ fun MoneySavingsScreen(navController: NavController)
                         .padding(16.dp)
                         .align(Alignment.BottomCenter)
                 ) {
-                    Text("Hiányos a kitöltés!", color = Color.Black)
+                    Text(stringResource(id = R.string.moneysavings_missing), color = Color.Black)
                 }
             }
         }
@@ -154,7 +156,7 @@ fun MoneySavingsScreen(navController: NavController)
         }
         Panel(centerItems = false, backgroundColor = input_background_color){
             Column{
-                Text("Adja meg az összeget:", color = input_text_color)
+                Text(stringResource(id = R.string.moneysavings_enteramount), color = input_text_color)
                 NumberTextField(
                     input = input,
                     onInputChange = { input = it },
@@ -167,16 +169,16 @@ fun MoneySavingsScreen(navController: NavController)
         Panel(centerItems = false, backgroundColor = date_background_color)
         {
             Column{
-                Text("Válasszon egy dátumot:", color = date_text_color)
+                Text(stringResource(id = R.string.moneysavings_chooseadate), color = date_text_color)
                 Button(onClick = { datePickerDialog.show() }) {
-                    Text(text = selectedDate.toString() ?: "Dátum kiválasztása")
+                    Text(text = selectedDate.toString() ?: stringResource(id = R.string.moneysavings_choosedate))
                 }
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false, backgroundColor = MaterialTheme.colorScheme.primaryContainer) {
             Column{
-                Text("Válasszon egy típust:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text(stringResource(id = R.string.moneysavings_chooseatype), color = MaterialTheme.colorScheme.onPrimaryContainer)
                 SimpleEnumDropdown(selected = selectedType, onSelectedChange = { selectedType = it })
             }
         }
@@ -184,11 +186,11 @@ fun MoneySavingsScreen(navController: NavController)
         Panel(centerItems = false, backgroundColor = title_background_color)
         {
             Column{
-                Text("Adjon egy nevet:", color = title_text_color)
+                Text(stringResource(id = R.string.moneysavings_chooseaname), color = title_text_color)
                 TextField(
                     value = title,
                     onValueChange = { title = it },
-                    placeholder = { Text("Cím") },
+                    placeholder = { Text(stringResource(id = R.string.moneysavings_name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -196,11 +198,11 @@ fun MoneySavingsScreen(navController: NavController)
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false, backgroundColor = desc_background_color) {
             Column {
-                Text("Adjon egy rövid leírást miért hozta létre:", color = desc_text_color)
+                Text(stringResource(id = R.string.moneysavings_shortdescdialog), color = desc_text_color)
                 TextField(
                     value = description,
                     onValueChange = { description = it },
-                    placeholder = { Text("Rövid leírás")},
+                    placeholder = { Text(stringResource(id = R.string.moneysavings_shortdesc))},
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -281,11 +283,11 @@ fun MoneySavingsScreen(navController: NavController)
                         }
                     }
                 ) {
-                    Text("Mentés")
+                    Text(stringResource(id = R.string.moneysavings_save))
                 }
                 Spacer(modifier = Modifier.width(UIVar.Padding))
                 Button(onClick = {navController.popBackStack()}) {
-                    Text("Mégse")
+                    Text(stringResource(id = R.string.general_cancel))
                 }
             }
         }
@@ -303,7 +305,7 @@ fun SimpleEnumDropdown(
 
     Column {
         Button(onClick = { expanded = true }) {
-            Text(text = selected.displayName)
+            Text(text = selected.getDisplayName(LocalContext.current))
         }
 
         DropdownMenu(
@@ -312,7 +314,8 @@ fun SimpleEnumDropdown(
         ) {
             SavingsType.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(type.displayName) },
+                    text = {
+                        Text(type.getDisplayName(LocalContext.current)) },
                     onClick = {
                         onSelectedChange(type)
                         expanded = false

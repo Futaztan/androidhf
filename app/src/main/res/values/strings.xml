@@ -1,3 +1,131 @@
 <resources>
-    <string name="app_name">androidhf</string>
+    <string name="app_name">AndroidHF</string>
+    <string name="stock_topbartitle">Stocks</string>
+    <string name="stock_currentinvestments">Current investments</string>
+    <string name="stock_noinvestments">No investments yet</string>
+    <string name="stock_favorites">Favorites</string>
+    <string name="stock_nocompanies">No favorite companies yet</string>
+    <string name="stock_search1">Search…</string>
+    <string name="stock_search2">Search</string>
+    <string name="stock_tryagainlater">Try again later!</string>
+    <string name="stock_nodata">No data</string>
+    <string name="stock_holdon">Hold on…</string>
+    <string name="stock_stock"> stock</string>
+    <string name="stock_stockamount">Amount</string>
+
+    <string name="stock_mark">Mark</string>
+    <string name="stock_loading">Loading…</string>
+    <string name="stock_boughtfor">Bought for</string>
+    <string name="stock_currently">Currently</string>
+    <string name="stock_chartdataunav">Chart data unavailable</string>
+    <string name="stock_favoritesadded">Added to favorites</string>
+    <string name="stock_favoritesremoved">Removed from favorites</string>
+    <string name="stock_marked">Stock marked</string>
+    <string name="stock_unmarked">Stock unmarked</string>
+
+
+    <string name="login_user">Login</string>
+    <string name="login_pass">Password</string>
+    <string name="login_register">Register</string>
+    <string name="login_passmismatch">Passwords do not match</string>
+    <string name="login_registration">Registration</string>
+
+    <string name="popup_areyousuredelete">Are you sure you want to delete?</string>
+
+    <string name="home_home">Home</string>
+    <string name="home_hello">Hello!</string>
+    <string name="home_hi">Hi </string>
+    <string name="home_3newestsavings">3 newest savings</string>
+
+    <string name="moneysavings_title">New saving</string>
+    <string name="moneysavings_missing">Please fill out all fields</string>
+    <string name="moneysavings_enteramount">Enter amount:</string>
+    <string name="moneysavings_chooseadate">Choose a date:</string>
+    <string name="moneysavings_choosedate">Choose date:</string>
+    <string name="moneysavings_chooseatype">Choose a type:</string>
+    <string name="moneysavings_chooseaname">Choose a name:</string>
+    <string name="moneysavings_name">Title</string>
+    <string name="moneysavings_shortdescdialog">Write a short description:</string>
+    <string name="moneysavings_shortdesc">Short description</string>
+    <string name="moneysavings_save">Save</string>
+
+    <string name="moneyincome_title">New income</string>
+    <string name="moneyincome_whichday">When was the transaction?</string>
+    <string name="moneyincome_fromwhen">Enter start date:</string>
+    <string name="moneyincome_howlong">Enter end date:</string>
+    <string name="moneyincome_submit">Submit and close</string>
+
+    <string name="moneyexpense_title">New expense</string>
+    <string name="moneyexpense_overflow">If you submit this transaction, one of your savings will overflow its limit! Are you sure you want to continue?</string>
+
+    <string name="financeincome_title">Incomes List</string>
+    <string name="financeincome_sortby">Sort by</string>
+    <string name="financeincome_amount">Amount</string>
+    <string name="financeincome_category">Category</string>
+    <string name="financeincome_date">Date</string>
+    <string name="financeincome_ascdesc">Ascend/Descend</string>
+    <string name="financeincome_toexpenses">Expenses ➤</string>
+
+    <string name="financeexpenses_title">Expense List</string>
+    <string name="financeexpenses_toincome">Incomes ➤</string>
+
+    <string name="finance_title">Finance</string>
+    <string name="finance_income">Income</string>
+    <string name="finance_expense">Expense</string>
+    <string name="finance_saving">Saving</string>
+    <string name="finance_newincome">New income</string>
+    <string name="finance_newexpense">New expense</string>
+    <string name="finance_newsaving">New saving</string>
+    <string name="finance_balance">Balance</string>
+
+    <string name="savingcard_areyousuredelete">Are you sure you want to delete?</string>
+    <string name="savingcard_deadlineinbound"> Deadline Inbound! </string>
+    <string name="savingcard_typecollect">Type: Collect</string>
+    <string name="savingcard_typehold">Type: Hold</string>
+    <string name="savingcard_typelimit">Type: Limit</string>
+    <string name="savingcard_date">Date:</string>
+    <string name="savingcard_balance">Balance:</string>
+    <string name="savingcard_successful">Successfully achieved!</string>
+    <string name="savingcard_failed">Failed to achieve!</string>
+
+    <string name="ai_delete">Delete conversation</string>
+    <string name="ai_areyousuredelete">Are you sure you want to delete the entire conversation?</string>
+    <string name="ai_messageai">Send a message to the AI!</string>
+    <string name="ai_startchat">Start to chat!</string>
+
+    <string name="report_balance">Balance:</string>
+    <string name="report_30day">30 Day Statistics</string>
+    <string name="report_income">Income</string>
+    <string name="report_expense">Expense</string>
+    <string name="report_mostincome">Most income from:</string>
+    <string name="report_mostexpense">Most expense from:</string>
+    <string name="report_currsavings">All Current Savings:</string>
+    <string name="report_savingnum">Number of Savings:</string>
+    <string name="report_collect">Collect:</string>
+    <string name="report_limit">Limit:</string>
+    <string name="report_hold">Hold:</string>
+    <string name="report_completed">Completed:</string>
+    <string name="report_failed">Failed:</string>
+
+    <string name="passwordfield_pass">Password:</string>
+
+    <string name="namefield_email">Enter your Email address</string>
+
+    <string name="mainactivity_home">Home</string>
+    <string name="mainactivity_finance">Finance</string>
+    <string name="mainactivity_stock">Stocks</string>
+
+    <string name="savingstype_time">Have more balance than the set amount, until the deadline</string>
+    <string name="savingstype_incamount">Income goal</string>
+    <string name="savingstype_expamount">Spending limit</string>
+
+
+
+
+    <string name="general_yes">Yes</string>
+    <string name="general_no">No</string>
+    <string name="general_cancel">Cancel</string>
+    <string name="general_back">Back</string>
+
+    <!-- stringResource(id = R.string.passwordfield_) -->
 </resources>

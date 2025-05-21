@@ -47,6 +47,7 @@ import kotlin.math.max
 import kotlin.math.min
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -54,6 +55,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import com.androidhf.data.datatypes.SavingsType
 import com.androidhf.ui.reuseable.ListXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
@@ -61,12 +63,19 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.androidhf.R
+import com.androidhf.data.datatypes.Transaction
+import com.androidhf.ui.reuseable.Panel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @ExperimentalMaterialApi
 fun FinanceScreen(navHostController: NavHostController) {
-    UIVar.topBarTitle = "Finance"
+    UIVar.topBarTitle = stringResource(id = R.string.finance_title)
 
     //ezekkel érhetők el az adatok
     val sViewModel: SavingViewModel = hiltViewModel()
@@ -76,6 +85,14 @@ fun FinanceScreen(navHostController: NavHostController) {
     val listState = rememberLazyListState()
     val haptic = LocalView.current
 
+
+    val allTransactions by tViewModel.allTransactions.collectAsState()
+
+    val balance = remember(allTransactions) {
+        allTransactions
+            .sortedWith(compareBy<Transaction> { it.date }.thenBy { it.time })
+            .map { it.amount }
+    }
 
     val isScrolledToBottom by remember {
         derivedStateOf {
@@ -113,21 +130,33 @@ fun FinanceScreen(navHostController: NavHostController) {
             }
             item {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
-                Grafikon_init()
+
+
+                if (balance.isEmpty()) {
+                    Panel {
+                        Column {
+                            CircularProgressIndicator()
+                            Text(stringResource(id = R.string.stock_holdon))
+                        }
+
+                    }
+                } else {
+                    Grafikon_init(balance)
+                }
             }
             item {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     BorderBox(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.clickable { navHostController.navigate("FinanceIncome") }) {
-                            HeaderText("Bevétel")
+                            HeaderText(stringResource(id = R.string.finance_income))
                             ListXItemsTransactionsMonthly(tViewModel.incomeTransactions.collectAsState(), 40, Color.Green)
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.clickable { navHostController.navigate("FinanceExpense") }) {
-                            HeaderText("Kiadás")
+                            HeaderText(stringResource(id = R.string.finance_expense))
                             ListXItemsTransactionsMonthly(tViewModel.expenseTransactions.collectAsState(), 40, Color.Red)
                         }
                     }
@@ -198,15 +227,15 @@ fun FinanceScreen(navHostController: NavHostController) {
             Box {
                 Button(onClick = {navHostController.navigate("money_income")},
                     modifier = Modifier.align(Alignment.BottomStart)
-                ) { Text("Bevétel") }
+                ) { Text(stringResource(id = R.string.finance_newincome)) }
 
                 Button(onClick = {navHostController.navigate("money_saving")},
                     modifier = Modifier.align(Alignment.BottomCenter)
-                ) { Text("Takarék???") }
+                ) { Text(stringResource(id = R.string.finance_newsaving)) }
 
                 Button(onClick = {navHostController.navigate("money_expense")},
                     modifier = Modifier.align(Alignment.BottomEnd)
-                ) { Text("Kiadás") }
+                ) { Text(stringResource(id = R.string.finance_newexpense)) }
             }
         }
     }
@@ -226,7 +255,7 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
             .padding(4.dp)
         )
         {
-            HeaderText("Egyenleg: ")
+            HeaderText(stringResource(id = R.string.finance_balance))
             if(money < 0) Text("$money Ft", color = Color.Red)
             else if(money > 0) Text("$money Ft", color = Color.Green)
             else Text("$money Ft", color = Color.Black)
@@ -236,10 +265,8 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
 }
 
 @Composable
-fun Grafikon_init()
+fun Grafikon_init(balance : List<Int>)
 {
-    val viewmodel: TransactionViewModel = hiltViewModel()
-    val balance = viewmodel.getSortedMoney()
     val pointsData = balance.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
 
 

@@ -1,14 +1,11 @@
 package com.androidhf
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 
 import androidx.compose.foundation.background
 
@@ -27,14 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -43,10 +37,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 
 import com.androidhf.ui.screens.ai.AIScreen
 import com.androidhf.ui.screens.ai.AIViewModel
@@ -62,12 +52,11 @@ import com.androidhf.ui.screens.stock.StockScreen
 import com.androidhf.ui.screens.stock.StockViewModel
 
 import com.androidhf.ui.theme.AndroidhfTheme
-import java.util.concurrent.TimeUnit
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import com.androidhf.ui.reuseable.UIVar
@@ -125,6 +114,7 @@ class MainActivity : ComponentActivity() {
                 val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = hiltViewModel()
+                val aiViewModel: AIViewModel = hiltViewModel()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -150,7 +140,7 @@ class MainActivity : ComponentActivity() {
                         composable("stock") { StockScreen(navController) }
                         composable("stock_detail") { StockChartScreen() }
 
-                        composable("ai") { AIScreen() }
+                        composable("ai") { AIScreen(aiViewModel) }
                         composable("money_income") { MoneyIncomeScreen(navController) }
                         composable("money_expense") { MoneyExpenseScreen(navController) }
                         composable("money_saving") { MoneySavingsScreen(navController) }
@@ -195,7 +185,7 @@ fun BottomNavBar(navController: NavHostController) {
                     contentDescription = "Home icon"
                 )
             },
-            label = { Text("Home") }
+            label = { Text(stringResource(id = R.string.mainactivity_home)) }
         )
         NavigationBarItem(
             selected = false,
@@ -207,7 +197,7 @@ fun BottomNavBar(navController: NavHostController) {
                     contentDescription = "Finance icon"
                 )
             },
-            label = { Text("Pénzügy") }
+            label = { Text(stringResource(id = R.string.mainactivity_finance)) }
         )
         NavigationBarItem(
             selected = false,
@@ -219,7 +209,7 @@ fun BottomNavBar(navController: NavHostController) {
                     contentDescription = "Stocks icon"
                 )
             },
-            label = { Text("Stock") }
+            label = { Text(stringResource(id = R.string.mainactivity_stock)) }
         )
         NavigationBarItem(
             selected = false,

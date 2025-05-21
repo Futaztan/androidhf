@@ -21,9 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.androidhf.R
 import com.androidhf.data.datatypes.Category
 import com.androidhf.data.datatypes.Frequency
 import com.androidhf.data.datatypes.RepetitiveTransaction
@@ -37,7 +39,7 @@ import java.util.Calendar
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewModel*/) {
-    UIVar.topBarTitle = "Bevétel felvétel"
+    UIVar.topBarTitle = stringResource(id = R.string.moneyincome_title)
 
     val tViewModel: TransactionViewModel = hiltViewModel()
     val sViewModel: SavingViewModel = hiltViewModel()
@@ -140,25 +142,25 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
 
         if(frequency== Frequency.EGYSZERI)
         {
-            Text("Melyik napon történt a tranzakció:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(stringResource(id = R.string.moneyincome_whichday), color = MaterialTheme.colorScheme.onPrimaryContainer)
             Button(onClick = { onDatePickerDialog.show() }) {
                 Text(text = onDate.toString())
             }
         }
         else{
-            Text("Melyik naptól kezdődjön", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(stringResource(id = R.string.moneyincome_fromwhen), color = MaterialTheme.colorScheme.onPrimaryContainer)
             Button(onClick = { fromDatePickerDialog.show() }) {
                 Text(text = fromDate.toString())
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Meddig menjen:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(stringResource(id = R.string.moneyincome_howlong), color = MaterialTheme.colorScheme.onPrimaryContainer)
             Button(onClick = { untilDatePickerDialog.show() }) {
                 Text(text = untilDate.toString())
             }
 
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text("Add meg az összeget:")
+        Text(stringResource(id = R.string.moneysavings_enteramount))
         NumberTextField(
             input = input,
             onInputChange = { input = it }
@@ -168,7 +170,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
 
         Button(onClick = { onSubmit() })
         {
-            Text("Hozzáadás és vissza")
+            Text(stringResource(id = R.string.moneyincome_submit))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -176,7 +178,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
         Button(onClick = {
             navController.popBackStack()
         }) {
-            Text("Mégse")
+            Text(stringResource(id = R.string.general_cancel))
         }
     }
 }

@@ -30,16 +30,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.androidhf.R
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.ListXItemsTransactions
 import com.androidhf.ui.reuseable.UIVar
 
 @Composable
 fun FinanceIncome(navController: NavHostController) {
-    UIVar.topBarTitle = "Incomes List"
+    UIVar.topBarTitle = stringResource(id = R.string.financeincome_title)
     val tViewModel: TransactionViewModel = hiltViewModel()
 
     var amount by remember { mutableStateOf(false)}
@@ -80,28 +82,28 @@ fun FinanceIncome(navController: NavHostController) {
     }
 
     Column (modifier = Modifier.padding(UIVar.Padding).verticalScroll(rememberScrollState())) {
-        Text(text = "Sort by:", modifier = Modifier.padding(bottom = UIVar.Padding), fontSize = UIVar.HeaderText)
+        Text(text = stringResource(id = R.string.financeincome_sortby), modifier = Modifier.padding(bottom = UIVar.Padding), fontSize = UIVar.HeaderText)
         Row(horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()) {
             Button(onClick = {
                 amount = !amount
                 category = false
                 date = false
             }, colors = buttonAmountColor) {
-                Text(text = "Amount")
+                Text(text = stringResource(id = R.string.financeincome_amount))
             }
             Button(onClick = {
                 category = !category
                 amount = false
                 date = false
             }, colors = buttonCatColor) {
-                Text(text = "Category")
+                Text(text = stringResource(id = R.string.financeincome_category))
             }
             Button(onClick = {
                 date = !date
                 amount = false
                 category = false
             }, colors = buttonDateColor) {
-                Text(text = "Date")
+                Text(text = stringResource(id = R.string.financeincome_date))
             }
             Button(onClick = {
                 search = !search
@@ -113,7 +115,7 @@ fun FinanceIncome(navController: NavHostController) {
                 category = false
                 date = false
             }, colors = buttonSearchColor) {
-                Text(text = "Search")
+                Text(text = stringResource(id = R.string.stock_search2))
             }
         }
         if (search)
@@ -124,7 +126,7 @@ fun FinanceIncome(navController: NavHostController) {
                 onValueChange = {
                     input = it
                 },
-                placeholder = { Text("Search") },
+                placeholder = { Text(stringResource(id = R.string.stock_search2)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -137,7 +139,7 @@ fun FinanceIncome(navController: NavHostController) {
             Button(onClick = {
                 asc = !asc
             }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Ascend/Descend")
+                Text(text = stringResource(id = R.string.financeincome_ascdesc))
             }
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (asc)
@@ -154,7 +156,7 @@ fun FinanceIncome(navController: NavHostController) {
             Button(onClick = {
                 asc = !asc
             }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Ascend/Descend")
+                Text(text = stringResource(id = R.string.financeincome_ascdesc))
             }
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (asc)
@@ -179,11 +181,11 @@ fun FinanceIncome(navController: NavHostController) {
             Row(modifier = Modifier, Arrangement.SpaceAround) {
                 Spacer(modifier = Modifier.width(UIVar.Padding))
                 Button(onClick = { navController.popBackStack() }, modifier = Modifier.weight(1f)) {
-                    Text(text = "Vissza")
+                    Text(stringResource(id = R.string.general_back))
                 }
                 Spacer(modifier = Modifier.width(UIVar.Padding))
                 Button(onClick = { navController.navigate("FinanceExpense") }, modifier = Modifier.weight(1f)) {
-                    Text(text = "Kiadások ➤")
+                    Text(text = stringResource(id = R.string.financeincome_toexpenses))
                 }
                 Spacer(modifier = Modifier.width(UIVar.Padding))
             }

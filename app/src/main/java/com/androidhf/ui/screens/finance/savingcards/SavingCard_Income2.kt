@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -90,7 +91,7 @@ fun SavingCard_Income2(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "Biztosan törölni szeretné?",
+                                stringResource(id = R.string.savingcard_areyousuredelete),
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -113,7 +114,7 @@ fun SavingCard_Income2(
                                 modifier = Modifier.weight(3f)
                             ) {
                                 Text(
-                                    "Igen",
+                                    stringResource(id = R.string.general_yes),
                                     color = MaterialTheme.colorScheme.onError
                                 ) // szöveg szín
                             }
@@ -126,7 +127,7 @@ fun SavingCard_Income2(
                                     }
                                 }, modifier = Modifier.weight(7f)
                             ) {
-                                Text("Nem")
+                                stringResource(id = R.string.general_no)
                             }
                         }
 
@@ -202,7 +203,7 @@ private fun Content(saving: Savings) {
                                     contentDescription = "Warning",
                                     tint = MaterialTheme.colorScheme.onError
                                 )
-                                Text(" Deadline Inbound! ", color = MaterialTheme.colorScheme.onError)
+                                Text(stringResource(id = R.string.savingcard_deadlineinbound), color = MaterialTheme.colorScheme.onError)
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_warning_16),
                                     contentDescription = "Warning",
@@ -232,7 +233,7 @@ private fun Content(saving: Savings) {
                                     .align(Alignment.End)
                             )
                             {
-                                Text("Type: Collect", color = UIVar.boxColor())
+                                Text(stringResource(id = R.string.savingcard_typecollect), color = UIVar.boxColor())
                             }
                         }
                     }
@@ -257,7 +258,7 @@ private fun Content(saving: Savings) {
 
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Date:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
+                    Text(stringResource(id = R.string.savingcard_date), modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
                         progress = DateProgressBar(saving).coerceIn(0f, 1f),
                         modifier = Modifier
@@ -269,7 +270,7 @@ private fun Content(saving: Savings) {
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Balance:", modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
+                    Text(stringResource(id = R.string.savingcard_balance), modifier = Modifier.weight(2f), color = UIVar.onBoxColor())
                     LinearProgressIndicator(
                         progress = saving.Start / saving.Amount.toFloat(),
                         modifier = Modifier
@@ -289,7 +290,7 @@ private fun Content(saving: Savings) {
                         Column(modifier = Modifier.weight(8f)) {
                             HeaderText(saving.Title)
                             Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
-                            Text("Successfully achieved!", color = UIVar.onBoxColor())
+                            Text(stringResource(id = R.string.savingcard_successful), color = UIVar.onBoxColor())
                             Box(
                                 modifier = Modifier
                                     .background(
@@ -299,7 +300,7 @@ private fun Content(saving: Savings) {
                                     .padding(start = 4.dp, end = 4.dp)
                             )
                             {
-                                Text("Type: Collect", color = UIVar.boxColor())
+                                Text(stringResource(id = R.string.savingcard_typecollect), color = UIVar.boxColor())
                             }
                         }
                         Box(
@@ -326,7 +327,7 @@ private fun Content(saving: Savings) {
                         Column(modifier = Modifier.weight(8f)) {
                             HeaderText(saving.Title)
                             Text("${saving.Amount} Ft", color = UIVar.onBoxColor())
-                            Text("Failed to achieve!", color = UIVar.onBoxColor())
+                            Text(stringResource(id = R.string.savingcard_failed), color = UIVar.onBoxColor())
                             Box(
                                 modifier = Modifier
                                     .background(
@@ -336,7 +337,7 @@ private fun Content(saving: Savings) {
                                     .padding(start = 4.dp, end = 4.dp)
                             )
                             {
-                                Text("Type: Collect", color = UIVar.boxColor())
+                                Text(stringResource(id = R.string.savingcard_typecollect), color = UIVar.boxColor())
                             }
                         }
                         Box(

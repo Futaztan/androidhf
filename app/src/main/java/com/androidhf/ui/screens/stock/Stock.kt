@@ -1,6 +1,7 @@
 package com.androidhf.ui.screens.stock
 
 import android.util.Log
+import android.widget.Toast
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +43,9 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -81,7 +84,7 @@ fun StockScreen(navController: NavController) {
 
     val stockViewModel: StockViewModel = hiltViewModel()
 
-    UIVar.topBarTitle = "Stock"
+    UIVar.topBarTitle = stringResource(id = R.string.stock_topbartitle)
     var showChart by remember { mutableStateOf(false) }
 
     val stockData = remember { mutableStateListOf<AggregateDTO>()  }
@@ -209,7 +212,7 @@ fun StockScreen(navController: NavController) {
     }
 */
 
-    Box(modifier = Modifier.fillMaxSize().blur(intensity).padding(UIVar.Padding)){
+    Box(modifier = Modifier.fillMaxSize().blur(intensity)){
 
         LazyColumn(
             modifier = Modifier
@@ -218,14 +221,14 @@ fun StockScreen(navController: NavController) {
         ) {
             // Fejléc
             item {
-                HeaderText("Jelenlegi befektetések:")
+                HeaderText(stringResource(id = R.string.stock_currentinvestments),modifier = Modifier.padding(start = UIVar.Padding))
                 Spacer(modifier = Modifier.height(UIVar.Padding))
             }
 
             if (stocks.isEmpty()) {
                 item {
                     Text(
-                        "Még nincs befektetés",
+                        stringResource(id = R.string.stock_noinvestments),
                         modifier = Modifier.padding(start = UIVar.Padding, bottom = UIVar.Padding)
                     )
                 }
@@ -251,6 +254,8 @@ fun StockScreen(navController: NavController) {
                             onDelete = { stockViewModel.deleteStock(stock1) },
                             onClick = {
                                 stockQuery(stock1.companyCode)
+                                currentCompanyName = stock1.companyName;
+                                currentCompanyCode = stock1.companyCode;
                                 showBottomWindow.value = true
                             },
                             modifier = Modifier
@@ -273,6 +278,8 @@ fun StockScreen(navController: NavController) {
                                 onDelete = { stockViewModel.deleteStock(stock2) },
                                 onClick = {
                                     stockQuery(stock2.companyCode)
+                                    currentCompanyName = stock2.companyName;
+                                    currentCompanyCode = stock2.companyCode;
                                     showBottomWindow.value = true
                                 },
                                 modifier = Modifier
@@ -290,13 +297,13 @@ fun StockScreen(navController: NavController) {
 
             // Kedvencek fejléc
             item {
-                HeaderText("Kedvencek:")
+                HeaderText(stringResource(id = R.string.stock_favorites),modifier = Modifier.padding(start = UIVar.Padding))
                 Spacer(modifier = Modifier.height(UIVar.Padding))
             }
 
             if(companies.isEmpty()){
                 item{
-                    Text("Még nincs kedvenc cég")
+                    Text(stringResource(id = R.string.stock_nocompanies))
                 }
             }
             // Kedvencek listája
@@ -312,6 +319,8 @@ fun StockScreen(navController: NavController) {
                         onDelete = { stockViewModel.deleteCompany(companyRow[0]) },
                         onClick = {
                             stockQuery(companyRow[0].companyCode)
+                            currentCompanyName = companyRow[0].companyName;
+                            currentCompanyCode = companyRow[0].companyCode;
                             showBottomWindow.value = true
                         },
                         modifier = Modifier
@@ -326,6 +335,8 @@ fun StockScreen(navController: NavController) {
                             onDelete = { stockViewModel.deleteCompany(companyRow[1]) },
                             onClick = {
                                 stockQuery(companyRow[1].companyCode)
+                                currentCompanyName = companyRow[0].companyName;
+                                currentCompanyCode = companyRow[0].companyCode;
                                 showBottomWindow.value = true
                             },
                             modifier = Modifier
@@ -377,7 +388,7 @@ fun StockScreen(navController: NavController) {
                     TextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
-                        placeholder = { Text("Keresés...")},
+                        placeholder = { Text(stringResource(id = R.string.stock_search1))},
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(6f)
@@ -401,12 +412,12 @@ fun StockScreen(navController: NavController) {
                             }
 
                         },
-                        enabled = searchQuery.length >= 2 && !isLoading,
+                        enabled = searchQuery.length >= 2 /* && !isLoading*/,
                         modifier = Modifier
                             .weight(2f)
                             .align(Alignment.CenterVertically)
                     ){
-                        Text("Keresés")
+                        Text(stringResource(id = R.string.stock_search2))
                     }
 
                 }
@@ -450,6 +461,9 @@ fun bottomwindow(
 ) {
     var stockInput by remember { mutableStateOf("") }
     val stockViewModel: StockViewModel = hiltViewModel()
+    val companies by stockViewModel.company.collectAsState()
+    val isFavorite = companies.any { it.companyCode == currentCompanyCode }
+
     Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures {} }
     ) {
         Panel(modifier = Modifier
@@ -460,7 +474,7 @@ fun bottomwindow(
             Box(modifier = Modifier.align(Alignment.TopEnd)) {
                 Row {
                     if(stockData.isEmpty() && !isLoading){
-                        Text("Próbáld újra később!",color = Color.Red)
+                        Text(stringResource(id = R.string.stock_tryagainlater),color = Color.Red)
                     }
                     if(!isLoading && stockData.isNotEmpty()){
                         Text("%.2f USD".format(stockData.last().close ?: 0.0)) //TODO: ÁT KELL VÁLTANI FORINTRA
@@ -475,7 +489,7 @@ fun bottomwindow(
                 }
             }
             Column {
-                HeaderText(if(companyName == "null") "Nincs adat" else companyName)
+                HeaderText(if(companyName == "null") stringResource(id = R.string.stock_nodata) else companyName)
 
                 // Show loading or chart
                 if (isLoading) {
@@ -491,17 +505,17 @@ fun bottomwindow(
                         ) {
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("Hold on...")
+                            Text(stringResource(id = R.string.stock_holdon))
                         }
 
 
                     }
                 } else if (stockData.isNotEmpty()) {
-                    LineChartSample(stockData, companyName + " stock")
+                    LineChartSample(stockData, companyName + stringResource(id = R.string.stock_stock))
                     NumberTextField(
                         input = stockInput,
                         onInputChange = { stockInput = it },
-                        placeholder = "Stock amount"
+                        placeholder = stringResource(id = R.string.stock_stockamount)
                     )
                 }
 
@@ -510,11 +524,13 @@ fun bottomwindow(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Button(onClick = { showBottom.value = false }, modifier = Modifier
                         .weight(3f)
-                        .align(Alignment.CenterVertically)) { Text("Mégse") }
+                        .align(Alignment.CenterVertically)) { Text(stringResource(id = R.string.general_cancel)) }
                     if(stockData.isNotEmpty()){
                         Spacer(modifier = Modifier.width(UIVar.Padding))
+                        val context1 = LocalContext.current
                         Button(onClick = {
                             if(stockInput.toFloatOrNull() != null){
+                                Toast.makeText(context1, context1.getString(R.string.stock_favoritesadded), Toast.LENGTH_SHORT).show()
                                 stockViewModel.addStock(Stock(companyName = companyName, companyCode = currentCompanyCode, stockAmount = stockInput.toFloat(), price = stockData.last().close?.toFloat()
                                     ?: -1f))
                             }
@@ -522,15 +538,28 @@ fun bottomwindow(
                         }, modifier = Modifier
                             .weight(3f)
                             .align(Alignment.CenterVertically),
-                            enabled = !isLoading ) { // Disable during loading
-                            Text("Megjelölés")
+                            enabled = !isLoading && stockInput.isNotEmpty()
+                        ) { // Disable during loading
+                            Text(stringResource(id = R.string.stock_mark))
                         }
                         Spacer(modifier = Modifier.width(UIVar.Padding))
+                        val context = LocalContext.current
                         IconButton(onClick = {
-                            stockViewModel.addCompany(Company(companyName = companyName, companyCode = currentCompanyCode))
+                            if (isFavorite) {
+                                // Meg kell találnunk a megfelelő céget a listában
+                                val companyToDelete = companies.find { it.companyCode == currentCompanyCode }
+                                if (companyToDelete != null) {
+                                    stockViewModel.deleteCompany(companyToDelete)
+                                    Toast.makeText(context, context.getString(R.string.stock_favoritesremoved), Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                // Ha még nem kedvenc, akkor hozzáadjuk a kedvencekhez
+                                stockViewModel.addCompany(Company(companyName = companyName, companyCode = currentCompanyCode))
+                                Toast.makeText(context, context.getString(R.string.stock_favoritesadded), Toast.LENGTH_SHORT).show()
+                            }
                         }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_notfav_48),
+                                 painter = painterResource(id = if(isFavorite) R.drawable.ic_fav_48 else R.drawable.ic_notfav_48),
                                 contentDescription = "Not favourite icon",
                                 modifier = Modifier.weight(1f)
                                     .align(Alignment.CenterVertically)

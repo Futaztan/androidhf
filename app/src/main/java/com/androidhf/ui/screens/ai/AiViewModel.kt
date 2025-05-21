@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @HiltViewModel
 class AIViewModel  @Inject constructor(
@@ -45,7 +46,8 @@ class AIViewModel  @Inject constructor(
 
     suspend fun dataToAIPrompt(): String {
         var output: String =
-            "Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
+            "Amit küldök adatokat azokat nem kell megismételni, azaz az általam leírt pénzeket. Azonnal küldd vissza az elemzést és a tanácsaid. A pénzek forintba vannak. Próbálj úgy" +
+                    "fogalmazni, hogy beleférj a token limitbe. Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
         transactionsRepository.getIncomeTransactions().first().forEach { item ->
             if (item.date.isAfter(LocalDate.now().minusDays(30))) {
                 output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "
@@ -58,7 +60,6 @@ class AIViewModel  @Inject constructor(
             }
         }
 
-        //TODO: ide kell még a repetitiveTransactions
 
         output += "ezek a takarékaim, céljaim : "
         output += "ezek bevételi célok, adott végére szeretnék ennyi pénzt kapni " +

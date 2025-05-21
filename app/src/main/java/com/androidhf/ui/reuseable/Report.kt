@@ -13,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.androidhf.R
 import com.androidhf.ui.screens.finance.SavingViewModel
 import com.androidhf.ui.screens.finance.TransactionViewModel
 
@@ -29,7 +31,7 @@ fun Report()
         Column {
             //1. sor
             Row {
-                HeaderText("Egyenleg: ")
+                HeaderText(stringResource(id = R.string.report_balance))
                 if(tViewModel.balance.collectAsState().value < 0) Text("${tViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold,
@@ -43,21 +45,21 @@ fun Report()
                     fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(UIVar.Padding))
-            Text("30 Day Statistics", fontSize = UIVar.HeaderText, fontWeight = FontWeight.Bold)
+            Text(stringResource(id = R.string.report_30day), fontSize = UIVar.HeaderText, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(UIVar.Padding))
             //2. sor 30 napos income és expense
             Column {
                 Row {
                     BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                         Column {
-                            Text("Income:")
+                            Text(stringResource(id = R.string.report_income))
                             Text("${tViewModel.get30DaysIncome()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorGreen())
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                         Column {
-                            Text("Expense:")
+                            Text(stringResource(id = R.string.report_expense))
                             Text("${tViewModel.get30DaysExpense()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorRed())
                         }
                     }
@@ -71,7 +73,7 @@ fun Report()
                     {
                         BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                             Column {
-                                Text("Most income from:")
+                                Text(stringResource(id = R.string.report_mostincome))
                                 Text(tViewModel.get30DaysIncomeByType(), color = UIVar.colorGreen())
                             }
                         }
@@ -84,7 +86,7 @@ fun Report()
                     {
                         BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                             Column {
-                                Text("Most expense from:")
+                                Text(stringResource(id = R.string.report_expense))
                                 Text(tViewModel.get30DaysExpenseByType(), color = UIVar.colorRed())
                             }
                         }
@@ -92,12 +94,12 @@ fun Report()
                 }
             }
             Spacer(modifier = Modifier.height(UIVar.Padding))
-            Text("All Current Savings", fontSize = UIVar.HeaderText, fontWeight = FontWeight.Bold)
+            Text(stringResource(id = R.string.report_currsavings), fontSize = UIVar.HeaderText, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Column {
                 Panel(backgroundColor = UIVar.secondColor()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Number of Savings:")
+                        Text(stringResource(id = R.string.report_savingnum))
                         Text(sViewModel.savingsCount().toString())
                     }
                 }
@@ -110,7 +112,7 @@ fun Report()
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Collect:")
+                                Text(stringResource(id = R.string.report_collect))
                                 Text(sViewModel.savingsCountByCollect().toString())
                             }
                         }
@@ -123,7 +125,7 @@ fun Report()
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Limit:")
+                                Text(stringResource(id = R.string.report_limit))
                                 Text(sViewModel.savingsCountByLimit().toString())
                             }
                         }
@@ -136,7 +138,7 @@ fun Report()
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Hold:")
+                                Text(stringResource(id = R.string.report_hold))
                                 Text(sViewModel.savingsCountByHold().toString())
                             }
                         }
@@ -151,7 +153,7 @@ fun Report()
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Completed:")
+                                Text(stringResource(id = R.string.report_completed))
                                 Text(sViewModel.savingsCountCompleted().toString())
                             }
                         }
@@ -164,7 +166,7 @@ fun Report()
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Failed:")
+                                Text(stringResource(id = R.string.report_failed))
                                 Text(sViewModel.savingsCountFailed().toString())
                             }
                         }
