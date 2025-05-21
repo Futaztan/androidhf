@@ -17,7 +17,7 @@ interface RepetitiveTransactionDao {
 
 
     @Query("SELECT * FROM repetitivetransactions")
-    fun getAllRepTransactions(): Flow<List<RepetitiveTransactionEntity>>
+    suspend fun getAllRepTransactions(): List<RepetitiveTransactionEntity>
 
     @Query("DELETE FROM repetitivetransactions WHERE id = :id")
     suspend fun deleteRepTransactionById(id: Long)

@@ -1,6 +1,5 @@
-package com.androidhf.ui.screens.finance
+package com.androidhf.ui.screens.finance.viewmodel
 
-import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.datatypes.Transaction

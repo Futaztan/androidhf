@@ -1,8 +1,8 @@
 package com.androidhf.data.database
 
 import android.util.Log
-import com.androidhf.data.datatypes.Category
-import com.androidhf.data.datatypes.Frequency
+import com.androidhf.data.enums.Category
+import com.androidhf.data.enums.Frequency
 import com.androidhf.data.datatypes.RepetitiveTransaction
 import com.androidhf.data.datatypes.Savings
 import com.androidhf.data.datatypes.Transaction
@@ -10,7 +10,6 @@ import com.androidhf.ui.screens.login.auth.AuthService
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject

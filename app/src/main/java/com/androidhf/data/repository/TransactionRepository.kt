@@ -2,7 +2,7 @@ package com.androidhf.data.repository
 
 import android.util.Log
 import com.androidhf.data.datatypes.Savings
-import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.enums.SavingsType
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.data.dao.TransactionDao
 import com.androidhf.data.database.FirebaseDB
@@ -26,7 +26,7 @@ class TransactionRepository @Inject constructor(
         if(AuthService.isLoggedIn())
         {
             transactionList = firebaseDB.getTransactionsFromFirebase()
-
+            //TODO
         }
         return transactionDao.getAllTransactions().map { entities ->
             entities.map { it.toDomain() }

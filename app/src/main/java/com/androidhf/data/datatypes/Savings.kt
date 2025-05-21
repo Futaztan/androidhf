@@ -2,6 +2,7 @@ package com.androidhf.data.datatypes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.androidhf.data.enums.SavingsType
 import java.time.LocalDate
 
 

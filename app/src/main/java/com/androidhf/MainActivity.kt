@@ -45,15 +45,15 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.ai.AIScreen
-import com.androidhf.ui.screens.finance.FinanceExpense
-import com.androidhf.ui.screens.finance.FinanceIncome
+import com.androidhf.ui.screens.finance.detail.FinanceExpense
+import com.androidhf.ui.screens.finance.detail.FinanceIncome
 import com.androidhf.ui.screens.finance.FinanceScreen
-import com.androidhf.ui.screens.finance.MoneyExpenseScreen
-import com.androidhf.ui.screens.finance.MoneyIncomeScreen
-import com.androidhf.ui.screens.finance.MoneySavingsScreen
-import com.androidhf.ui.screens.finance.SavingViewModel
-import com.androidhf.ui.screens.finance.TransactionViewModel
-import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
+import com.androidhf.ui.screens.finance.money.MoneyExpenseScreen
+import com.androidhf.ui.screens.finance.money.MoneyIncomeScreen
+import com.androidhf.ui.screens.finance.money.MoneySavingsScreen
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
+import com.androidhf.ui.screens.finance.dailycheck.DailyWorker
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
@@ -90,6 +90,7 @@ class MainActivity : ComponentActivity() {
             )
 
         setContent {
+
             AndroidhfTheme {
                 val sViewModel: SavingViewModel = hiltViewModel()
                 val tViewModel: TransactionViewModel = hiltViewModel()

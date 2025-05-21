@@ -1,11 +1,8 @@
 package com.androidhf.ui.reuseable
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -16,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.androidhf.ui.screens.finance.SavingViewModel
-import com.androidhf.ui.screens.finance.TransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @Composable
 fun Report()

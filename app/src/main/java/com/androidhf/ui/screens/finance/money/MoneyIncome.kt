@@ -1,8 +1,6 @@
-package com.androidhf.ui.screens.finance
+package com.androidhf.ui.screens.finance.money
 
 import android.app.DatePickerDialog
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +12,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,27 +23,32 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.androidhf.data.datatypes.Category
-import com.androidhf.data.datatypes.Frequency
+import com.androidhf.data.enums.Category
+import com.androidhf.data.enums.Frequency
 import com.androidhf.data.datatypes.RepetitiveTransaction
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Calendar
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewModel*/) {
     UIVar.topBarTitle = "Bevétel felvétel"
 
     val tViewModel: TransactionViewModel = hiltViewModel()
+    val reptransViewModel : RepetitiveTransactionViewModel = hiltViewModel()
     val sViewModel: SavingViewModel = hiltViewModel()
 
     var input by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.FIZETES) }
+    var description by remember { mutableStateOf("") }
 
     var onDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
     var fromDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
@@ -94,9 +98,10 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
     fun onSubmit() {
         val amount = input.toIntOrNull()
         if (amount != null) {
+            if(description.isBlank()) description="-"
             val transaction = Transaction(
                 amount,
-                "TODO",
+                description,
                 onDate,
                 LocalTime.now(),
                 category,
@@ -108,7 +113,8 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
-                //TODO addRepetitiveTransaction(repetitiveTransaction)
+                reptransViewModel.addRepTransaction(repetitiveTransaction)
+
             }
 
             navController.popBackStack() // visszalép az előző képernyőre
@@ -164,6 +170,11 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
             input = input,
             onInputChange = { input = it }
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text("Adjon meg egy rövid leírást az új tranakcióról:")
+        TextField(value = description, onValueChange ={description=it})
 
         Spacer(modifier = Modifier.height(16.dp))
 

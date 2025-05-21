@@ -2,6 +2,8 @@ package com.androidhf.data.datatypes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.androidhf.data.enums.Category
+import com.androidhf.data.enums.Frequency
 import java.time.LocalDate
 import java.time.LocalTime
 

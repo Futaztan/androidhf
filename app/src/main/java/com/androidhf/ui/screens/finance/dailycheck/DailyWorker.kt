@@ -1,4 +1,4 @@
-package com.androidhf.ui.screens.finance.everyXtime
+package com.androidhf.ui.screens.finance.dailycheck
 
 
 import android.content.Context
@@ -6,14 +6,13 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.androidhf.data.datatypes.Frequency
+import com.androidhf.data.enums.Frequency
 import com.androidhf.data.datatypes.RepetitiveTransaction
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.data.repository.RepetitiveTransactionRepository
 import com.androidhf.data.repository.TransactionRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.first
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -31,7 +30,7 @@ class DailyWorker @AssistedInject constructor(
 
         Log.d("DailyWorker", "Munka fut: ${System.currentTimeMillis()}")
 
-        for (repTransaction in repTransactionRepo.getAllRepetitiveTransactions().first()) {
+        for (repTransaction in repTransactionRepo.getAllRepetitiveTransactions()) {
             val newTransaction = Transaction(
                 repTransaction.transaction.amount,
                 repTransaction.transaction.description,
