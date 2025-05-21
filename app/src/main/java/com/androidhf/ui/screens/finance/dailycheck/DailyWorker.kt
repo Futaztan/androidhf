@@ -13,6 +13,7 @@ import com.androidhf.data.repository.RepetitiveTransactionRepository
 import com.androidhf.data.repository.TransactionRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.first
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -30,7 +31,7 @@ class DailyWorker @AssistedInject constructor(
 
         Log.d("DailyWorker", "Munka fut: ${System.currentTimeMillis()}")
 
-        for (repTransaction in repTransactionRepo.getAllRepetitiveTransactions()) {
+        for (repTransaction in repTransactionRepo.getAllRepetitiveTransactions().first()) {
             val newTransaction = Transaction(
                 repTransaction.transaction.amount,
                 repTransaction.transaction.description,

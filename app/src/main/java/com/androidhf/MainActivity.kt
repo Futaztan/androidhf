@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("login") { LoginScreen(navController) }
+                        composable("login") { LoginScreen(navController,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel) }
                         composable("register") { RegisterScreen(navController) }
                         composable("user") { UserScreen(navController)}
                         composable("home") { HomeScreen(transactionViewModel,savingViewModel) }

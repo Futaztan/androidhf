@@ -391,7 +391,7 @@ class FirebaseDB @Inject constructor() {
         val user = AuthService.getUserEmail()
         firestore.collection("users")
             .document(user)
-            .collection("stocks")
+            .collection("companies")
             .whereEqualTo("id",company.id)
             .get()
             .addOnSuccessListener { result->

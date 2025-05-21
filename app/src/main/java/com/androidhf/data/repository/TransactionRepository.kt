@@ -104,6 +104,11 @@ class TransactionRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteAll()
+    {
+        transactionDao.clearTable()
+    }
+
     /*
     fun calculateBalanceChangesSimple(): List<Int> {
         val allTransactions = mutableListOf<Pair<Transaction, Boolean>>()

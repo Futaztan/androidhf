@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface CompanyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCompany(company: CompanyEntity)
+    suspend fun insertCompany(company: CompanyEntity) : Long
 
     @Update
     suspend fun updateCompany(company: CompanyEntity)
@@ -28,4 +28,7 @@ interface CompanyDao {
 
     @Query("SELECT * FROM Companies")
     fun getAllCompanies(): Flow<List<CompanyEntity>>
+
+    @Query("DELETE FROM Companies")
+    suspend fun clearTable()
 }

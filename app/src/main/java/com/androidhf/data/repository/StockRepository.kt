@@ -19,9 +19,14 @@ class StockRepository @Inject constructor(
     private val firebaseDB: FirebaseDB
 ){
     suspend fun getAllStocks() : Flow<List<Stock>> {
+
         if(AuthService.isLoggedIn())
         {
-            return flowOf(firebaseDB.getAllStockFromFirebase())
+            val firestorelist = firebaseDB.getAllStockFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                stockDao.insertStock(firestorelist.get(i).toEntity())
+            }
         }
         return stockDao.getAllStocks().map { stockEntities ->
             stockEntities.map { it.toDomain() }
@@ -44,15 +49,20 @@ class StockRepository @Inject constructor(
     }
 
     suspend fun addStock(stock: Stock) {
+        val id = stockDao.insertStock(stock.toEntity())
+        val withId = stock.copy(id=id)
         if(AuthService.isLoggedIn())
-            firebaseDB.addStockToFirebase(stock)
-        stockDao.insertStock(stock.toEntity())
+            firebaseDB.addStockToFirebase(withId)
     }
 
     suspend fun getAllCompanies() : Flow<List<Company>> {
         if(AuthService.isLoggedIn())
         {
-            return flowOf(firebaseDB.getAllCompanyFromFirebase())
+            val firestorelist = firebaseDB.getAllCompanyFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                companyDao.insertCompany(firestorelist.get(i).toEntity())
+            }
         }
         return companyDao.getAllCompanies().map { companyEntities ->
             companyEntities.map { it.toDomain() }
@@ -63,9 +73,11 @@ class StockRepository @Inject constructor(
         //ide lehet hogy kell kérdőjel
     }
     suspend fun addCompany(company: Company) {
+        val id = companyDao.insertCompany(company.toEntity())
+        val withId = company.copy(id=id)
         if(AuthService.isLoggedIn())
-            firebaseDB.addCompanyToFirebase(company)
-        companyDao.insertCompany(company.toEntity())
+            firebaseDB.addCompanyToFirebase(withId)
+
     }
     suspend fun updateCompany(company: Company) {
         companyDao.updateCompany(company.toEntity())
@@ -74,6 +86,14 @@ class StockRepository @Inject constructor(
         if(AuthService.isLoggedIn())
             firebaseDB.deleteCompanyFromFirebase(company)
         companyDao.deleteCompany(company.toEntity())
+    }
+    suspend fun deleteAllStock()
+    {
+        stockDao.clearTable()
+    }
+    suspend fun deleteAllCompany()
+    {
+        companyDao.clearTable()
     }
 
 }

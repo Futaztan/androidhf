@@ -40,12 +40,18 @@ class SavingViewModel @Inject constructor(
     }
 
     //betölti a tárolt adatokat
-    private fun loadSavings()
+     fun loadSavings()
     {
         viewModelScope.launch {
             savingsRepository.getAllSavings().collect { item: List<Savings> ->
                 _savings.value = item
             }
+        }
+    }
+    fun deleteAll()
+    {
+        viewModelScope.launch {
+            savingsRepository.deleteAll()
         }
     }
 

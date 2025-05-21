@@ -42,7 +42,7 @@ class StockViewModel @Inject constructor(
         Log.e("tag-init","stock")
     }
 
-    private fun loadStock(){
+     fun loadStock(){
         viewModelScope.launch {
             stockRepository.getAllStocks().collect{ item: List<Stock> ->
                 _stock.value = item
@@ -50,7 +50,7 @@ class StockViewModel @Inject constructor(
         }
     }
 
-    private fun loadCompany(){
+     fun loadCompany(){
         viewModelScope.launch {
             stockRepository.getAllCompanies().collect{ item: List<Company> ->
                 _company.value = item
@@ -58,6 +58,18 @@ class StockViewModel @Inject constructor(
         }
     }
 
+    fun deleteAllStock()
+    {
+        viewModelScope.launch {
+            stockRepository.deleteAllStock()
+        }
+    }
+    fun deleteAllCompany()
+    {
+        viewModelScope.launch {
+            stockRepository.deleteAllCompany()
+        }
+    }
     fun addStock(stock: Stock) {
         viewModelScope.launch {
             stockRepository.addStock(stock)
