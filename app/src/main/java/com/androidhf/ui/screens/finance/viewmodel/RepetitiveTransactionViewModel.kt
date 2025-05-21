@@ -22,19 +22,23 @@ class RepetitiveTransactionViewModel @Inject constructor(
 ): ViewModel() {
 
 
+
     private val _repetitiveTransactions = MutableStateFlow<List<RepetitiveTransaction>>(emptyList())
     val repetitiveTransactions: StateFlow<List<RepetitiveTransaction>> = _repetitiveTransactions.asStateFlow()
+
 
     init {
         loadRepTransactions()
         Log.e("tag-init","rep")
     }
 
+
      fun loadRepTransactions() {
        viewModelScope.launch(Dispatchers.IO) {
            repTransactionRepository.getAllRepetitiveTransactions().collect {reptransactionList ->
                _repetitiveTransactions.value = reptransactionList
            }
+
        }
 
     }
@@ -45,13 +49,11 @@ class RepetitiveTransactionViewModel @Inject constructor(
         }
     }
 
-
     fun addRepTransaction(reptransaction: RepetitiveTransaction) {
         viewModelScope.launch {
             repTransactionRepository.addRepetitiveTransaction(reptransaction)
         }
     }
-
 
 
 

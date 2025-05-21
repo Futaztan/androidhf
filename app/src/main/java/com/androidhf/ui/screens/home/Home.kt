@@ -29,6 +29,7 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -53,21 +54,24 @@ fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: Savin
                             .padding(UIVar.Padding),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
-
-
         Panel{
             if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég")
             else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
-
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${money}") }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
         Row (modifier = Modifier.fillMaxWidth()){
             ListXItemsTransactions(transactionViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
             ListXItemsTransactions(transactionViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
         }
-        Text("3 legújabb takarék")
-        savingViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
+
+        if(sViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty())
+        {
+            Spacer(modifier = Modifier.height(UIVar.Padding))
+            Text("3 legújabb takarék")
+        }
+        sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
+
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {

@@ -1,4 +1,4 @@
-package com.androidhf.ui.screens.finance.money
+package com.androidhf.ui.screens.finance
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -39,8 +40,8 @@ import com.androidhf.data.datatypes.RepetitiveTransaction
 import com.androidhf.data.enums.SavingsType
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
+import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
-import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import java.time.LocalDate
@@ -58,19 +59,61 @@ fun MoneyExpenseScreen(
 
 
     var input by remember { mutableStateOf("") }
+    var input_invalid by remember { mutableStateOf(false) }
+    var desc by remember { mutableStateOf("") }
+    var desc_invalid by remember { mutableStateOf(false) }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
     var category by remember { mutableStateOf(Category.ELOFIZETES) }
-    var description by remember { mutableStateOf("") }
 
     var showPopup by remember { mutableStateOf(false) }
 
     var onDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
     var fromDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
     var untilDate by remember { mutableStateOf<LocalDate>(LocalDate.now().plusMonths(3)) }
+    var date_invalid by remember { mutableStateOf(false) }
+
     val calendar = Calendar.getInstance().apply {
         set(Calendar.YEAR, LocalDate.now().year)
         set(Calendar.MONTH, LocalDate.now().monthValue-1)
         set(Calendar.DAY_OF_MONTH, LocalDate.now().dayOfMonth)
+    }
+
+    val input_background_color: Color
+    val input_text_color: Color
+    val desc_background_color: Color
+    val desc_text_color: Color
+    val date_background_color: Color
+    val date_text_color: Color
+
+    if (input_invalid)
+    {
+        input_background_color = MaterialTheme.colorScheme.error
+        input_text_color = MaterialTheme.colorScheme.onError
+    }
+    else
+    {
+        input_background_color = MaterialTheme.colorScheme.primaryContainer
+        input_text_color = MaterialTheme.colorScheme.onPrimaryContainer
+    }
+    if (desc_invalid)
+    {
+        desc_background_color = MaterialTheme.colorScheme.error
+        desc_text_color = MaterialTheme.colorScheme.onError
+    }
+    else
+    {
+        desc_background_color = MaterialTheme.colorScheme.primaryContainer
+        desc_text_color = MaterialTheme.colorScheme.onPrimaryContainer
+    }
+    if (date_invalid)
+    {
+        date_background_color = MaterialTheme.colorScheme.error
+        date_text_color = MaterialTheme.colorScheme.onError
+    }
+    else
+    {
+        date_background_color = MaterialTheme.colorScheme.primaryContainer
+        date_text_color = MaterialTheme.colorScheme.onPrimaryContainer
     }
 
     val context = LocalContext.current
@@ -110,11 +153,10 @@ fun MoneyExpenseScreen(
 
     fun onSubmit() {
         val amount = input.toIntOrNull()
-        if (amount != null) {
-            if(description.isBlank()) description="-"
+        if (amount != null && amount > 0 && desc != "" && untilDate > fromDate && untilDate > LocalDate.now()) {
             val transaction = Transaction(
                 -amount,
-                description,
+                desc,
                 onDate,
                 LocalTime.now(),
                 category,
@@ -124,12 +166,30 @@ fun MoneyExpenseScreen(
                 transactionViewModel.addTransaction(transaction)
                 savingViewModel.transactionAdded(-amount)
             } else {
-                val repetitiveTransaction = RepetitiveTransaction(transaction,fromDate, untilDate)
-                reptransViewModel.addRepTransaction(repetitiveTransaction)
+                val repetitiveTransaction =
+                    RepetitiveTransaction(transaction,fromDate, untilDate)
 
+                //TODO addRepetitiveTransaction(repetitiveTransaction)
             }
 
             navController.popBackStack() // visszalép az előző képernyőre
+        }
+        else{
+            if(input.isBlank() || input.toInt() < 0)
+            {
+                input_invalid = true
+            }
+            else input_invalid = false
+            if(desc.isBlank())
+            {
+                desc_invalid = true
+            }
+            else desc_invalid = false
+            if(untilDate <= fromDate || untilDate <= LocalDate.now())
+            {
+                date_invalid = true
+            }
+            else date_invalid = false
         }
     }
 
@@ -213,45 +273,59 @@ fun MoneyExpenseScreen(
             Button(onClick = { untilDatePickerDialog.show() }) {
                 Text(text = untilDate.toString())
             }
-
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Add meg az összeget:")
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(centerItems = false) {
+            Column {
+                Text("Adja meg az összeget:")
+                NumberTextField(
+                    input = input,
+                    onInputChange = { input = it },
+                    placeholder = "10000",
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        NumberTextField(
-            input = input,
-            onInputChange = { input = it }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Adjon meg egy rövid leírást az új tranakcióról:")
-        TextField(value = description, onValueChange ={description=it})
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        val savings = savingViewModel.savings.collectAsState()
-        Button(onClick = {
-            val amount = input.toIntOrNull()
-            if (amount != null) {
-                val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
-                    !item.Closed && item.Start - amount <= item.Amount //TODO ide valami Closed ellenőrzés
-                }
-                if(found) showPopup = true
-                else onSubmit()
             }
-
-        })
-        {
-            Text("Hozzáadás és vissza")
         }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+        Panel(centerItems = false) {
+            Column {
+                Text("Adja meg a rövid leírását:")
+                TextField(
+                    value = desc,
+                    onValueChange = { desc = it },
+                    placeholder = { Text("Heti bevásárlás") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
 
-        Spacer(modifier = Modifier.height(8.dp))
+        val savings = sViewModel.savings.collectAsState()
+        Panel {
+            Row {
+                Button(onClick = {
+                    val amount = input.toIntOrNull()
+                    if (amount != null) {
+                        val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
+                            !item.Closed && item.Start - amount <= item.Amount //TODO ide valami Closed ellenőrzés
+                        }
+                        if(found) showPopup = true
+                        else onSubmit()
+                    }
 
-        Button(onClick = {
-            navController.popBackStack()
-        }) {
-            Text("Mégse")
+                })
+                {
+                    Text("Hozzáadás és vissza")
+                }
+                Spacer(modifier = Modifier.width(UIVar.Padding))
+                Button(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Text("Mégse")
+                }
+            }
         }
     }
 }
