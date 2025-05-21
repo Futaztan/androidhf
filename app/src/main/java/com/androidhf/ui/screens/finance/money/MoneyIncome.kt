@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,9 @@ import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Calendar
@@ -45,6 +49,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
     UIVar.topBarTitle = "Bevétel felvétel"
 
     val tViewModel: TransactionViewModel = hiltViewModel()
+    val reptransViewModel : RepetitiveTransactionViewModel = hiltViewModel()
     val sViewModel: SavingViewModel = hiltViewModel()
 
     var input by remember { mutableStateOf("") }
@@ -156,7 +161,8 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
-                //TODO addRepetitiveTransaction(repetitiveTransaction)
+                reptransViewModel.addRepTransaction(repetitiveTransaction)
+
             }
 
             navController.popBackStack() // visszalép az előző képernyőre

@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,16 +17,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,7 +53,7 @@ import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
 import co.yml.charts.ui.wavechart.model.WaveFillColor
 import co.yml.charts.ui.wavechart.model.WavePlotData
-import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.enums.SavingsType
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.ListXItemsTransactionsMonthly
@@ -66,6 +61,9 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -77,6 +75,7 @@ fun FinanceScreen(navHostController: NavHostController) {
     //ezekkel érhetők el az adatok
     val sViewModel: SavingViewModel = hiltViewModel()
     val tViewModel: TransactionViewModel = hiltViewModel()
+    val reptransactionViewModel : RepetitiveTransactionViewModel = hiltViewModel()
 
     //alsó gombok eltüntetése
     val listState = rememberLazyListState()
@@ -108,6 +107,7 @@ fun FinanceScreen(navHostController: NavHostController) {
         .fillMaxSize()
     )
     {
+
         val savings = sViewModel.savings.collectAsState()
         LazyColumn(modifier = Modifier
             .fillMaxWidth(),

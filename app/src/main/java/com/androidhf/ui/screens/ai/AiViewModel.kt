@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.AiMessages
 import com.androidhf.data.repository.SavingsRepository
-import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.enums.SavingsType
 import com.androidhf.data.repository.TransactionRepository
 import com.androidhf.data.gemini.GeminiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

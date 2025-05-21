@@ -2,13 +2,15 @@ package com.androidhf.data.repository
 
 import android.util.Log
 import com.androidhf.data.datatypes.Savings
-import com.androidhf.data.datatypes.SavingsType
+import com.androidhf.data.enums.SavingsType
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.data.dao.TransactionDao
 import com.androidhf.data.database.FirebaseDB
 import com.androidhf.ui.screens.login.auth.AuthService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,19 +22,33 @@ class TransactionRepository @Inject constructor(
     private val firebaseDB: FirebaseDB
 ) {
 
-    fun getAllTransactions(): Flow<List<Transaction>> {
+    suspend fun getAllTransactions(): Flow<List<Transaction>> {
+
+        if(AuthService.isLoggedIn())
+        {
+
+            return flowOf(firebaseDB.getAllTransactionsFromFirebase())
+        }
         return transactionDao.getAllTransactions().map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    fun getIncomeTransactions(): Flow<List<Transaction>> {
+    suspend fun getIncomeTransactions(): Flow<List<Transaction>> {
+        if(AuthService.isLoggedIn())
+        {
+            return flowOf(firebaseDB.getIncomeTransactionFromFirebase())
+        }
         return transactionDao.getTransactionsByType("INCOME").map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    fun getExpenseTransactions(): Flow<List<Transaction>> {
+    suspend fun getExpenseTransactions(): Flow<List<Transaction>> {
+        if(AuthService.isLoggedIn())
+        {
+            return flowOf(firebaseDB.getExpenseTransactionFromFirebase())
+        }
         return transactionDao.getTransactionsByType("EXPENSE").map { entities ->
             entities.map { it.toDomain() }
         }

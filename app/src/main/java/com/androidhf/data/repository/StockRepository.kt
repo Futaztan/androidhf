@@ -1,5 +1,7 @@
-package com.androidhf.data
+package com.androidhf.data.repository
 
+import com.androidhf.data.Company
+import com.androidhf.data.Stock
 import com.androidhf.data.dao.CompanyDao
 import com.androidhf.data.dao.StockDao
 import com.androidhf.data.database.FirebaseDB

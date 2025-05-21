@@ -1,17 +1,12 @@
 package com.androidhf
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
-
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -27,18 +22,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-
-import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,43 +43,31 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-
-import com.androidhf.ui.screens.ai.AIScreen
-import com.androidhf.ui.screens.ai.AIViewModel
-import com.androidhf.ui.screens.finance.FinanceScreen
-import com.androidhf.ui.screens.finance.MoneyExpenseScreen
-import com.androidhf.ui.screens.finance.MoneyIncomeScreen
-import com.androidhf.ui.screens.finance.MoneySavingsScreen
-
-import com.androidhf.ui.screens.home.HomeScreen
-import com.androidhf.ui.screens.stock.query.StockChartScreen
-import com.androidhf.ui.screens.stock.StockScreen
-
-import com.androidhf.ui.screens.stock.StockViewModel
-
-import com.androidhf.ui.theme.AndroidhfTheme
-import java.util.concurrent.TimeUnit
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import com.androidhf.ui.reuseable.UIVar
-import com.androidhf.ui.screens.finance.FinanceExpense
-import com.androidhf.ui.screens.finance.FinanceIncome
-import com.androidhf.ui.screens.finance.SavingViewModel
-import com.androidhf.ui.screens.finance.TransactionViewModel
+import com.androidhf.ui.screens.ai.AIScreen
+import com.androidhf.ui.screens.finance.detail.FinanceExpense
+import com.androidhf.ui.screens.finance.detail.FinanceIncome
+import com.androidhf.ui.screens.finance.FinanceScreen
+import com.androidhf.ui.screens.finance.money.MoneyExpenseScreen
+import com.androidhf.ui.screens.finance.money.MoneyIncomeScreen
+import com.androidhf.ui.screens.finance.money.MoneySavingsScreen
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
+import com.androidhf.ui.screens.finance.dailycheck.DailyWorker
+import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
 import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.screens.stock.StockScreen
+import com.androidhf.ui.screens.stock.StockViewModel
+import com.androidhf.ui.screens.stock.query.StockChartScreen
 import com.androidhf.ui.screens.user.UserScreen
+import com.androidhf.ui.theme.AndroidhfTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import java.util.concurrent.TimeUnit
 
-//TODO import com.androidhf.ui.screens.finance.everyXtime.DailyWorker
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -93,8 +77,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        //TODO ezt visszarakni majd ha jó lesz
-        /*
+
         val uploadWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<DailyWorker>(24, TimeUnit.HOURS)
                 .build()
@@ -105,8 +88,9 @@ class MainActivity : ComponentActivity() {
                 ExistingPeriodicWorkPolicy.KEEP,
                 uploadWorkRequest
             )
-            */
+
         setContent {
+
             AndroidhfTheme {
                 val sViewModel: SavingViewModel = hiltViewModel()
                 val tViewModel: TransactionViewModel = hiltViewModel()

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.Company
 import com.androidhf.data.Stock
-import com.androidhf.data.StockRepository
+import com.androidhf.data.repository.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.polygon.kotlin.sdk.rest.AggregateDTO
 import kotlinx.coroutines.flow.MutableStateFlow

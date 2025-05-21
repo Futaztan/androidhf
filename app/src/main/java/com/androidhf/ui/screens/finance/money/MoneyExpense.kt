@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -57,7 +56,7 @@ fun MoneyExpenseScreen(navController: NavController) {
     var desc by remember { mutableStateOf("") }
     var desc_invalid by remember { mutableStateOf(false) }
     var frequency by remember { mutableStateOf(Frequency.EGYSZERI) }
-    var category by remember { mutableStateOf(Category.FIZETES) }
+    var category by remember { mutableStateOf(Category.ELOFIZETES) }
 
     var showPopup by remember { mutableStateOf(false) }
 
@@ -231,53 +230,41 @@ fun MoneyExpenseScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(UIVar.Padding),
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Panel(centerItems = false) {
-            Column {
-                Text("Válassza ki a gyakoriságot:")
-                FrequencyDropdownMenu(
-                    selected = frequency,
-                    onSelectedChange = { frequency = it }
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(UIVar.Padding))
-        Panel(centerItems = false) {
-            Column {
-                Text("Válassza ki a kategóriát:")
-                CategoryDropdownMenu(
-                    selected = category,
-                    onSelectedChange = { category = it }
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(UIVar.Padding))
 
-        Panel(centerItems = false)
+
+
+
+
+        FrequencyDropdownMenu(
+            selected = frequency,
+            onSelectedChange = { frequency = it }
+        )
+
+        CategoryDropdownMenu(
+            selected = category,
+            onSelectedChange = { category = it }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if(frequency== Frequency.EGYSZERI)
         {
-            if(frequency== Frequency.EGYSZERI)
-            {
-                Column {
-                    Text("Melyik napon történt a tranzakció:", color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    Button(onClick = { onDatePickerDialog.show() }) {
-                        Text(text = onDate.toString())
-                    }
-                }
+            Text("Melyik napon történt a tranzakció:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Button(onClick = { onDatePickerDialog.show() }) {
+                Text(text = onDate.toString())
             }
-            else{
-                Column {
-                    Text("Melyik naptól kezdődjön", color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    Button(onClick = { fromDatePickerDialog.show() }) {
-                        Text(text = fromDate.toString())
-                    }
-                    Spacer(modifier = Modifier.height(UIVar.Padding))
-                    Text("Meddig menjen:", color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    Button(onClick = { untilDatePickerDialog.show() }) {
-                        Text(text = untilDate.toString())
-                    }
-                }
+        }
+        else{
+            Text("Melyik naptól kezdődjön", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Button(onClick = { fromDatePickerDialog.show() }) {
+                Text(text = fromDate.toString())
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Meddig menjen:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Button(onClick = { untilDatePickerDialog.show() }) {
+                Text(text = untilDate.toString())
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))

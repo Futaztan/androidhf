@@ -1,4 +1,4 @@
-package com.androidhf.data.datatypes
+package com.androidhf.data.enums
 
 enum class Category(val type : Type, val displayName : String) {
     FIZETES(Type.INCOME, "Fizetés"),

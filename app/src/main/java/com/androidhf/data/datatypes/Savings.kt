@@ -2,6 +2,7 @@ package com.androidhf.data.datatypes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.androidhf.data.enums.SavingsType
 import java.time.LocalDate
 
 
@@ -21,8 +22,6 @@ data class Savings(
     var Closed: Boolean =  false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 ) {
 
-//    val id: String =
-//        UUID.randomUUID().toString() //TODO: ez lehet hogy nem működik ha elmentjük majd
 
     fun toEntity() : SavingsEntity
     {
