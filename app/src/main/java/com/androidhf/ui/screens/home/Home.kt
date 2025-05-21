@@ -56,7 +56,7 @@ fun HomeScreen() {
 
 
         Panel{
-            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
+            if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég")
             else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
 

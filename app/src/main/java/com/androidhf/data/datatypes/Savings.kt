@@ -22,8 +22,6 @@ data class Savings(
     var Closed: Boolean =  false             //módosítható-e a Completed és Failed, ha closed true akkor nem
 ) {
 
-//    val id: String =
-//        UUID.randomUUID().toString() //TODO: ez lehet hogy nem működik ha elmentjük majd
 
     fun toEntity() : SavingsEntity
     {
