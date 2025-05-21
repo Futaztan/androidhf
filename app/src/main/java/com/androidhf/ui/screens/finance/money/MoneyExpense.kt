@@ -19,6 +19,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -286,10 +287,10 @@ fun MoneyExpenseScreen(navController: NavController) {
         Panel(centerItems = false) {
             Column {
                 Text("Adja meg a rövid leírását:")
-                NumberTextField(
-                    input = desc,
-                    onInputChange = { desc = it },
-                    placeholder = "Heti bevásárlás",
+                TextField(
+                    value = desc,
+                    onValueChange = { desc = it },
+                    placeholder = { Text("Heti bevásárlás") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

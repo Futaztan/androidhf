@@ -17,24 +17,18 @@ class RepetitiveTransactionViewModel @Inject constructor(
     private val repTransactionRepository: RepetitiveTransactionRepository
 ): ViewModel() {
 
-    private var repetitiveTransactionList = mutableListOf<List<RepetitiveTransaction>>(emptyList())
-
+    private var _repetitiveTransactionList = mutableListOf<List<RepetitiveTransaction>>(emptyList())
+    var repetitiveTransactionList = _repetitiveTransactionList
 
     init {
         loadRepTransactions()
     }
 
-
-
-
-
-
     private fun loadRepTransactions() {
        viewModelScope.launch(Dispatchers.IO) {
-           repetitiveTransactionList = mutableListOf(repTransactionRepository.getAllRepetitiveTransactions())
+           _repetitiveTransactionList = mutableListOf(repTransactionRepository.getAllRepetitiveTransactions())
        }
     }
-
 
     fun addRepTransaction(reptransaction: RepetitiveTransaction) {
         viewModelScope.launch {
@@ -42,6 +36,7 @@ class RepetitiveTransactionViewModel @Inject constructor(
         }
     }
 
+    //ez most komoly
      suspend fun fasz(): List<RepetitiveTransaction> {
         return repTransactionRepository.getAllRepetitiveTransactions()
     }

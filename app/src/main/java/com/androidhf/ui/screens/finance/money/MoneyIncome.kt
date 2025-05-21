@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -256,10 +257,10 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
         Panel(centerItems = false, backgroundColor = desc_background_color) {
             Column {
                 Text("Adja meg a rövid leírását:", color = desc_text_color)
-                NumberTextField(
-                    input = desc,
-                    onInputChange = { desc = it },
-                    placeholder = "XY Ösztöndíj",
+                TextField(
+                    value = desc,
+                    onValueChange = { desc = it },
+                    placeholder = { Text("XY Ösztöndíj") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
