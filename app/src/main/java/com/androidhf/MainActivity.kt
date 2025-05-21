@@ -89,6 +89,7 @@ class MainActivity : ComponentActivity() {
                 uploadWorkRequest
             )
 
+
         setContent {
 
             AndroidhfTheme {
@@ -96,6 +97,7 @@ class MainActivity : ComponentActivity() {
                 val tViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = hiltViewModel()
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -133,6 +135,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(key1 = Unit) {
                         delay(1250) //Idő amíg betölti az adatbázist
                         sViewModel.dateChecker(balance.first())
+
                     }
 
                     lifecycleScope.launchWhenCreated {

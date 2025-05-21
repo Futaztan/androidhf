@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidhf.R
-import com.androidhf.data.Company
-import com.androidhf.data.Stock
+import com.androidhf.data.datatypes.Company
+import com.androidhf.data.datatypes.Stock
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.stock.StockViewModel

@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androidhf.data.Company
-import com.androidhf.data.Stock
+import com.androidhf.data.datatypes.Company
+import com.androidhf.data.datatypes.Stock
 import com.androidhf.data.repository.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.polygon.kotlin.sdk.rest.AggregateDTO

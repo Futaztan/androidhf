@@ -1,5 +1,6 @@
 package com.androidhf.ui.screens.finance.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.datatypes.Transaction
@@ -49,6 +50,7 @@ class TransactionViewModel @Inject constructor(
 
     init {
         loadTransactions()
+        Log.e("tag-init","fasz")
     }
 
     fun get30DaysIncome(): Int {
