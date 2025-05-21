@@ -36,15 +36,22 @@ class SavingViewModel @Inject constructor(
     init
     {
         loadSavings()
+        Log.e("tag-init","saving")
     }
 
     //betölti a tárolt adatokat
-    private fun loadSavings()
+     fun loadSavings()
     {
         viewModelScope.launch {
             savingsRepository.getAllSavings().collect { item: List<Savings> ->
                 _savings.value = item
             }
+        }
+    }
+    fun deleteAll()
+    {
+        viewModelScope.launch {
+            savingsRepository.deleteAll()
         }
     }
 

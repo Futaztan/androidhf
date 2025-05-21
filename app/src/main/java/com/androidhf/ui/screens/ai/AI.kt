@@ -53,17 +53,18 @@ data class ChatMessage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AIScreen(viewModel: AIViewModel) {
+fun AIScreen(aiViewModel: AIViewModel) {
     UIVar.topBarTitle = "AI"
 
 
+
     val messages = AiMessages.messages
-    var inputText by androidx.compose.runtime.remember { mutableStateOf("") }
-    val isLoading by viewModel.isLoading.collectAsState()
-    var showDeleteConfirmation by androidx.compose.runtime.remember { mutableStateOf(false) }
+    var inputText by remember { mutableStateOf("") }
+    val isLoading by aiViewModel.isLoading.collectAsState()
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.defaultPrompt()
+        aiViewModel.defaultPrompt()
     }
 
     if (showDeleteConfirmation) {
@@ -75,7 +76,7 @@ fun AIScreen(viewModel: AIViewModel) {
                 TextButton(
                     onClick = {
                         messages.clear()
-                        viewModel.defaultPrompt()
+                        aiViewModel.defaultPrompt()
                         showDeleteConfirmation = false
                     }
                 ) {
@@ -93,29 +94,29 @@ fun AIScreen(viewModel: AIViewModel) {
     }
 
     Scaffold(
-        bottomBar = { // Használd a bottomBar slotot az input mezőhöz
-            Column( // Column, hogy a gomb és az input mező egymás alatt legyen, vagy Row ha egymás mellett szeretnéd őket strukturálni
+        bottomBar = {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth() // Fontos, hogy kitöltse a szélességet
+                    .fillMaxWidth()
                     .background(UIVar.panelColor())
                     .padding(UIVar.Padding)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween, // Elrendezi a gombokat
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
                         onClick = {
-                            viewModel.viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                            aiViewModel.viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                                 val message = ChatMessage(
                                     "user",
-                                    viewModel.dataToAIPrompt(),
+                                    aiViewModel.dataToAIPrompt(),
                                     System.currentTimeMillis()
                                 )
                                 message.isVisible = false
                                 messages.add(message)
-                                viewModel.sendMessage(inputText, messages, true)
+                                aiViewModel.sendMessage(inputText, messages, true)
 
                                 val message2 = ChatMessage(
                                     "user",
@@ -152,7 +153,7 @@ fun AIScreen(viewModel: AIViewModel) {
                                 val userMessage =
                                     ChatMessage("user", inputText, System.currentTimeMillis())
                                 messages.add(userMessage)
-                                viewModel.sendMessage(inputText, messages, true)
+                                aiViewModel.sendMessage(inputText, messages,true)
                                 inputText = ""
                             }
                         },
@@ -174,13 +175,13 @@ fun AIScreen(viewModel: AIViewModel) {
                 }
             }
         }
-    ) { innerPadding -> // Ez az innerPadding automatikusan figyelembe veszi a bottomBar magasságát
+    ) { innerPadding ->
 
         if (messages.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding), // Alkalmazd az innerPadding-et
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -193,16 +194,14 @@ fun AIScreen(viewModel: AIViewModel) {
             androidx.compose.foundation.lazy.LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding), // Alkalmazd az innerPadding-et itt is
+                    .padding(innerPadding),
                 reverseLayout = true,
-                // A contentPadding-et itt is használhatod további belső térközökhöz,
-                // de a Scaffold innerPadding-je a legfontosabb az átfedések elkerülésére.
                 contentPadding = PaddingValues(
                     start = 16.dp,
                     end = 16.dp,
                     top = 16.dp,
                     bottom = 16.dp
-                ), // Vagy csak bottom = 16.dp, ha a többi már jó
+                ),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(messages.reversed()) { message ->

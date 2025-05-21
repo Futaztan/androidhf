@@ -44,6 +44,7 @@ import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import java.time.LocalDate
@@ -51,11 +52,14 @@ import java.time.LocalTime
 import java.util.Calendar
 
 @Composable
-fun MoneyExpenseScreen(navController: NavController) {
-    UIVar.topBarTitle = stringResource(id = R.string.moneyexpense_title)
+fun MoneyExpenseScreen(
+    navController: NavController,
+    transactionViewModel: TransactionViewModel,
+    reptransViewModel: RepetitiveTransactionViewModel,
+    savingViewModel: SavingViewModel) {
+    UIVar.topBarTitle = "Kiadás felvétel"
 
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val sViewModel: SavingViewModel = hiltViewModel()
+
 
     var input by remember { mutableStateOf("") }
     var input_invalid by remember { mutableStateOf(false) }
@@ -162,8 +166,8 @@ fun MoneyExpenseScreen(navController: NavController) {
                 frequency
             )
             if (frequency == Frequency.EGYSZERI) {
-                tViewModel.addTransaction(transaction)
-                sViewModel.transactionAdded(-amount)
+                transactionViewModel.addTransaction(transaction)
+                savingViewModel.transactionAdded(-amount)
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
@@ -236,48 +240,64 @@ fun MoneyExpenseScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(UIVar.Padding),
         verticalArrangement = Arrangement.Center
     ) {
 
 
 
 
-
-        FrequencyDropdownMenu(
-            selected = frequency,
-            onSelectedChange = { frequency = it }
-        )
-
-        CategoryDropdownMenu(
-            selected = category,
-            onSelectedChange = { category = it }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if(frequency== Frequency.EGYSZERI)
-        {
-            Text(stringResource(id = R.string.moneyincome_whichday), color = MaterialTheme.colorScheme.onPrimaryContainer)
-            Button(onClick = { onDatePickerDialog.show() }) {
-                Text(text = onDate.toString())
+        Panel(centerItems = false) {
+            Column {
+                Text("Válassza ki a gyakoriságot:")
+                FrequencyDropdownMenu(
+                    selected = frequency,
+                    onSelectedChange = { frequency = it }
+                )
             }
-        }
-        else{
-            Text(stringResource(id = R.string.moneyincome_fromwhen), color = MaterialTheme.colorScheme.onPrimaryContainer)
-            Button(onClick = { fromDatePickerDialog.show() }) {
-                Text(text = fromDate.toString())
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(stringResource(id = R.string.moneyincome_howlong), color = MaterialTheme.colorScheme.onPrimaryContainer)
-            Button(onClick = { untilDatePickerDialog.show() }) {
-                Text(text = untilDate.toString())
-            }
-
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false) {
             Column {
-                Text(stringResource(id = R.string.moneysavings_enteramount))
+                Text("Válassza ki a kategóriát:")
+                CategoryDropdownMenu(
+                    selected = category,
+                    onSelectedChange = { category = it }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+
+        Panel(centerItems = false, backgroundColor = date_background_color)
+        {
+            if(frequency== Frequency.EGYSZERI)
+            {
+                Column {
+                    Text("Melyik napon történt a tranzakció:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Button(onClick = { onDatePickerDialog.show() }) {
+                        Text(text = onDate.toString())
+                    }
+                }
+            }
+            else{
+                Column {
+                    Text("Melyik naptól kezdődjön", color = date_text_color)
+                    Button(onClick = { fromDatePickerDialog.show() }) {
+                        Text(text = fromDate.toString())
+                    }
+                    Spacer(modifier = Modifier.height(UIVar.Padding))
+                    Text("Meddig menjen:", color = date_text_color)
+                    Button(onClick = { untilDatePickerDialog.show() }) {
+                        Text(text = untilDate.toString())
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(UIVar.Padding))
+
+        Panel(centerItems = false, backgroundColor = input_background_color) {
+            Column {
+                Text(stringResource(id = R.string.moneysavings_enteramount), color = input_text_color)
                 NumberTextField(
                     input = input,
                     onInputChange = { input = it },
@@ -287,9 +307,9 @@ fun MoneyExpenseScreen(navController: NavController) {
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        Panel(centerItems = false) {
+        Panel(centerItems = false, backgroundColor = desc_background_color) {
             Column {
-                Text(stringResource(id = R.string.moneysavings_shortdescdialog))
+                Text(stringResource(id = R.string.moneysavings_shortdescdialog), color = desc_text_color)
                 TextField(
                     value = desc,
                     onValueChange = { desc = it },
@@ -300,14 +320,14 @@ fun MoneyExpenseScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
 
-        val savings = sViewModel.savings.collectAsState()
+        val savings = savingViewModel.savings.collectAsState()
         Panel {
             Row {
                 Button(onClick = {
                     val amount = input.toIntOrNull()
                     if (amount != null) {
                         val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
-                            !item.Closed && item.Start - amount <= item.Amount //TODO ide valami Closed ellenőrzés
+                            !item.Closed && item.Start - amount <= item.Amount
                         }
                         if(found) showPopup = true
                         else onSubmit()

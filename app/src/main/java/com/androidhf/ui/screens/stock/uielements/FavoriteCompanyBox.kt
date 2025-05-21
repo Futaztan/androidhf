@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidhf.R
-import com.androidhf.data.Company
+import com.androidhf.data.datatypes.Company
 import com.androidhf.ui.reuseable.BorderBox
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.stock.uielements.MiniStockChart
@@ -57,7 +57,7 @@ fun FavoriteCompanyBox(
     modifier: Modifier = Modifier
 ) {
     // StockViewModel hozzáadása, hogy hozzáférjünk az adatokhoz
-    val stockViewModel: StockViewModel = hiltViewModel()
+    //val stockViewModel: StockViewModel = hiltViewModel()
 
     // Állapot változók a chart adatokhoz
     var stockData by remember { mutableStateOf<List<AggregateDTO>>(emptyList()) }

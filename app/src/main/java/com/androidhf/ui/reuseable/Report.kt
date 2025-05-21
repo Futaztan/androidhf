@@ -26,26 +26,24 @@ import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @Composable
-fun Report()
+fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingViewModel, rViewModel: RepetitiveTransactionViewModel)
 {
-    val sViewModel: SavingViewModel = hiltViewModel()
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val rViewModel: RepetitiveTransactionViewModel = hiltViewModel()
+
 
     BorderBox() {
         Column {
             //1. sor
             Row {
                 HeaderText(stringResource(id = R.string.report_balance))
-                if(tViewModel.balance.collectAsState().value < 0) Text("${tViewModel.balance.collectAsState().value} Ft",
+                if(transactionViewModel.balance.collectAsState().value < 0) Text("${transactionViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold,
                     color = UIVar.colorRed())
-                else if (tViewModel.balance.collectAsState().value > 0) Text("${tViewModel.balance.collectAsState().value} Ft",
+                else if (transactionViewModel.balance.collectAsState().value > 0) Text("${transactionViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold,
                     color = UIVar.colorGreen())
-                else Text("${tViewModel.balance.collectAsState().value} Ft",
+                else Text("${transactionViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold)
             }
@@ -58,41 +56,41 @@ fun Report()
                     BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                         Column {
                             Text(stringResource(id = R.string.report_income))
-                            Text("${tViewModel.get30DaysIncome()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorGreen())
+                            Text("${transactionViewModel.get30DaysIncome()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorGreen())
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                         Column {
                             Text(stringResource(id = R.string.report_expense))
-                            Text("${tViewModel.get30DaysExpense()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorRed())
+                            Text("${transactionViewModel.get30DaysExpense()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorRed())
                         }
                     }
                 }
-                if(tViewModel.get30DaysIncomeByType(LocalContext.current) != "" || tViewModel.get30DaysExpenseByType(LocalContext.current) != "")
+                if(transactionViewModel.get30DaysIncomeByType(LocalContext.current) != "" || transactionViewModel.get30DaysExpenseByType(LocalContext.current) != "")
                 {
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
                 Row {
-                    if (tViewModel.get30DaysIncomeByType(LocalContext.current) != "")
+                    if (transactionViewModel.get30DaysIncomeByType(LocalContext.current) != "")
                     {
                         BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                             Column {
                                 Text(stringResource(id = R.string.report_mostincome))
-                                Text(tViewModel.get30DaysIncomeByType(LocalContext.current), color = UIVar.colorGreen())
+                                Text(transactionViewModel.get30DaysIncomeByType(LocalContext.current), color = UIVar.colorGreen())
                             }
                         }
                     }
-                    if (tViewModel.get30DaysIncomeByType(LocalContext.current) != "" && tViewModel.get30DaysExpenseByType(LocalContext.current) != "")
+                    if (transactionViewModel.get30DaysIncomeByType(LocalContext.current) != "" && transactionViewModel.get30DaysExpenseByType(LocalContext.current) != "")
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (tViewModel.get30DaysExpenseByType(LocalContext.current) != "")
+                    if (transactionViewModel.get30DaysExpenseByType(LocalContext.current) != "")
                     {
                         BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                             Column {
                                 Text(stringResource(id = R.string.report_expense))
-                                Text(tViewModel.get30DaysExpenseByType(LocalContext.current), color = UIVar.colorRed())
+                                Text(transactionViewModel.get30DaysExpenseByType(LocalContext.current), color = UIVar.colorRed())
                             }
                         }
                     }
@@ -106,74 +104,74 @@ fun Report()
                 Panel(backgroundColor = UIVar.secondColor()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(stringResource(id = R.string.report_savingnum))
-                        Text(sViewModel.savingsCount().toString())
+                        Text(savingViewModel.savingsCount().toString())
                     }
                 }
-                if(sViewModel.savingsCountByHold() != 0 || sViewModel.savingsCountByLimit() != 0 || sViewModel.savingsCountByCollect() != 0)
+                if(savingViewModel.savingsCountByHold() != 0 || savingViewModel.savingsCountByLimit() != 0 || savingViewModel.savingsCountByCollect() != 0)
                 {
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
                 Row{
-                    if (sViewModel.savingsCountByCollect() != 0)
+                    if (savingViewModel.savingsCountByCollect() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(stringResource(id = R.string.report_collect))
-                                Text(sViewModel.savingsCountByCollect().toString())
+                                Text(savingViewModel.savingsCountByCollect().toString())
                             }
                         }
                     }
-                    if (sViewModel.savingsCountByCollect() != 0 && (sViewModel.savingsCountByLimit() != 0 || sViewModel.savingsCountByHold() != 0))
+                    if (savingViewModel.savingsCountByCollect() != 0 && (savingViewModel.savingsCountByLimit() != 0 || savingViewModel.savingsCountByHold() != 0))
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (sViewModel.savingsCountByLimit() != 0)
+                    if (savingViewModel.savingsCountByLimit() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(stringResource(id = R.string.report_limit))
-                                Text(sViewModel.savingsCountByLimit().toString())
+                                Text(savingViewModel.savingsCountByLimit().toString())
                             }
                         }
                     }
-                    if(sViewModel.savingsCountByHold() != 0 && sViewModel.savingsCountByLimit() != 0)
+                    if(savingViewModel.savingsCountByHold() != 0 && savingViewModel.savingsCountByLimit() != 0)
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (sViewModel.savingsCountByHold() != 0)
+                    if (savingViewModel.savingsCountByHold() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(stringResource(id = R.string.report_hold))
-                                Text(sViewModel.savingsCountByHold().toString())
+                                Text(savingViewModel.savingsCountByHold().toString())
                             }
                         }
                     }
                 }
-                if (sViewModel.savingsCountCompleted() != 0 || sViewModel.savingsCountFailed() != 0)
+                if (savingViewModel.savingsCountCompleted() != 0 || savingViewModel.savingsCountFailed() != 0)
                 {
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
                 Row {
-                    if (sViewModel.savingsCountCompleted() != 0)
+                    if (savingViewModel.savingsCountCompleted() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(stringResource(id = R.string.report_completed))
-                                Text(sViewModel.savingsCountCompleted().toString())
+                                Text(savingViewModel.savingsCountCompleted().toString())
                             }
                         }
                     }
-                    if (sViewModel.savingsCountCompleted() != 0 && sViewModel.savingsCountFailed() != 0)
+                    if (savingViewModel.savingsCountCompleted() != 0 && savingViewModel.savingsCountFailed() != 0)
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (sViewModel.savingsCountFailed() != 0)
+                    if (savingViewModel.savingsCountFailed() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(stringResource(id = R.string.report_failed))
-                                Text(sViewModel.savingsCountFailed().toString())
+                                Text(savingViewModel.savingsCountFailed().toString())
                             }
                         }
                     }
@@ -186,7 +184,7 @@ fun Report()
             Panel(backgroundColor = UIVar.secondColor()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Active Transactions:")
-                    Text(rViewModel.repetitiveTransactionList.size.toString())
+                    Text(rViewModel.repetitiveTransactions.collectAsState().value.size.toString())
                 }
             }
             Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -194,10 +192,10 @@ fun Report()
                 Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Completed:")
-                        Text(rViewModel.repetitiveTransactionList.size.toString())
+                        Text(rViewModel.repetitiveTransactions.collectAsState().value.size.toString())
                     }
                 }
-                if (rViewModel.repetitiveTransactionList.size > 0)
+                if (rViewModel.repetitiveTransactions.collectAsState().value.size > 0)
                 {
 
                     Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -209,7 +207,7 @@ fun Report()
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var napiIncome: Int = 0
                                     Text("Income:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    rViewModel.repetitiveTransactions.collectAsState().value.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.INCOME && item.transaction.frequency == Frequency.NAPI)
                                         {
                                             napiIncome += item.transaction.amount
@@ -223,7 +221,7 @@ fun Report()
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var napiExpense: Int = 0
                                     Text("Expense:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    rViewModel.repetitiveTransactions.collectAsState().value.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.EXPENSE && item.transaction.frequency == Frequency.NAPI)
                                         {
                                             napiExpense += item.transaction.amount
@@ -240,7 +238,7 @@ fun Report()
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var hetiIncome: Int = 0
                                     Text("Income:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    rViewModel.repetitiveTransactions.collectAsState().value.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.INCOME && item.transaction.frequency == Frequency.HETI)
                                         {
                                             hetiIncome += item.transaction.amount
@@ -254,7 +252,7 @@ fun Report()
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var hetiExpense: Int = 0
                                     Text("Expense:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    rViewModel.repetitiveTransactions.collectAsState().value.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.EXPENSE && item.transaction.frequency == Frequency.HETI)
                                         {
                                             hetiExpense += item.transaction.amount
@@ -271,7 +269,7 @@ fun Report()
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var haviIncome: Int = 0
                                     Text("Income:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    rViewModel.repetitiveTransactions.collectAsState().value.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.INCOME && item.transaction.frequency == Frequency.HAVI)
                                         {
                                             haviIncome += item.transaction.amount
@@ -285,7 +283,7 @@ fun Report()
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var haviExpense: Int = 0
                                     Text("Expense:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    rViewModel.repetitiveTransactions.collectAsState().value.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.EXPENSE && item.transaction.frequency == Frequency.HAVI)
                                         {
                                             haviExpense += item.transaction.amount

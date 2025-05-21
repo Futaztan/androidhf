@@ -1,10 +1,12 @@
 package com.androidhf.data.database
 
 import android.util.Log
+import com.androidhf.data.datatypes.Company
 import com.androidhf.data.enums.Category
 import com.androidhf.data.enums.Frequency
 import com.androidhf.data.datatypes.RepetitiveTransaction
 import com.androidhf.data.datatypes.Savings
+import com.androidhf.data.datatypes.Stock
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.data.enums.SavingsType
 import com.androidhf.ui.screens.login.auth.AuthService
@@ -314,13 +316,114 @@ class FirebaseDB @Inject constructor() {
             .document(user)
             .collection("repetitive_transactions")
             .add(repTransaction)
-            .addOnSuccessListener { docRef ->
-                Log.d("firestore","Transaction added with ID: ${docRef.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.d("firestore","Error adding transaction: $e")
+
+    }
+
+    suspend fun getAllStockFromFirebase() : List<Stock>  = suspendCoroutine { continuation ->
+
+        val stocklist = ArrayList<Stock>()
+        val user = AuthService.getUserEmail()
+        firestore.collection("users")
+            .document(user)
+            .collection("stocks")
+            .get()
+            .addOnSuccessListener { result->
+                for(stock in result)
+                {
+
+                    val companycode = stock.getString("companyCode")!!
+                    val companyname = stock.getString("companyName")!!
+                    val id = stock.getLong("id")!!
+                    val price = stock.getDouble("price")!!.toFloat()
+                    val stockamount = stock.getDouble("stockAmount")!!.toFloat()
+
+
+
+
+
+                    val newstock = Stock(id,companyname,companycode,stockamount,price)
+                    stocklist.add(newstock)
+                }
+                continuation.resume(stocklist)
             }
     }
+    suspend fun getAllCompanyFromFirebase() : List<Company>  = suspendCoroutine { continuation ->
+
+        val companylist = ArrayList<Company>()
+        val user = AuthService.getUserEmail()
+        firestore.collection("users")
+            .document(user)
+            .collection("companies")
+            .get()
+            .addOnSuccessListener { result->
+                for(company in result)
+                {
+
+                    val companycode = company.getString("companyCode")!!
+                    val companyname = company.getString("companyName")!!
+                    val id = company.getLong("id")!!
+
+                    val newcompany= Company(id, companyname,companycode)
+                    companylist.add(newcompany)
+                }
+                continuation.resume(companylist)
+            }
+    }
+    fun deleteStockFromFirebase(stock : Stock)
+    {
+        val user = AuthService.getUserEmail()
+        firestore.collection("users")
+            .document(user)
+            .collection("stocks")
+            .whereEqualTo("id",stock.id)
+            .get()
+            .addOnSuccessListener { result->
+                result.documents.forEach{it.reference.delete()}
+
+            }
+            .addOnFailureListener { e ->
+                Log.e("firebase", "Hiba történt törléskor", e)
+            }
+
+    }
+    fun deleteCompanyFromFirebase(company : Company)
+    {
+        val user = AuthService.getUserEmail()
+        firestore.collection("users")
+            .document(user)
+            .collection("companies")
+            .whereEqualTo("id",company.id)
+            .get()
+            .addOnSuccessListener { result->
+                result.documents.forEach{it.reference.delete()}
+
+            }
+            .addOnFailureListener { e ->
+                Log.e("firebase", "Hiba történt törléskor", e)
+            }
+
+    }
+    fun addStockToFirebase(stock : Stock)
+    {
+        val user = AuthService.getUserEmail()
+        firestore
+            .collection("users")
+            .document(user)
+            .collection("stocks")
+            .add(stock)
+
+    }
+
+    fun addCompanyToFirebase(company : Company)
+    {
+        val user = AuthService.getUserEmail()
+        firestore
+            .collection("users")
+            .document(user)
+            .collection("companies")
+            .add(company)
+    }
+
 
 
 }

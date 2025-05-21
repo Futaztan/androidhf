@@ -38,12 +38,12 @@ import com.androidhf.ui.screens.login.auth.AuthService
 
 
 @Composable
-fun HomeScreen() {
-    UIVar.topBarTitle = stringResource(id = R.string.home_home)
+fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: SavingViewModel, repetitiveViewModel: RepetitiveTransactionViewModel) {
+    UIVar.topBarTitle = "Home"
 
-    val sViewModel: SavingViewModel = hiltViewModel()
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val money = tViewModel.balance.collectAsState().value
+
+
+    val money = transactionViewModel.balance.collectAsState().value
 
     val scrollState = rememberScrollState()
     val haptic = LocalView.current
@@ -62,16 +62,16 @@ fun HomeScreen() {
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Row (modifier = Modifier.fillMaxWidth()){
-            ListXItemsTransactions(tViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
+            ListXItemsTransactions(transactionViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
-            ListXItemsTransactions(tViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
+            ListXItemsTransactions(transactionViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
         }
-        if(sViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty())
+        if(savingViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty())
         {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Text(stringResource(id = R.string.home_3newestsavings))
         }
-        sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
+        savingViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
             {
@@ -79,7 +79,7 @@ fun HomeScreen() {
             }
             else if(item.Type == SavingsType.INCOMEGOAL_BYTIME)
             {
-                SavingCard_Income1(item, { }, false)
+                SavingCard_Income1(item, { }, false, transactionViewModel)
             }
             else
             {
@@ -87,7 +87,7 @@ fun HomeScreen() {
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        Report()
+        Report(transactionViewModel,savingViewModel,repetitiveViewModel)
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Spacer(modifier = Modifier.height(UIVar.Padding))
 

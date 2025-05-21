@@ -23,4 +23,7 @@ interface SavingDao {
 
     @Update
     suspend fun updateSaving(saving: SavingsEntity): Int
+
+    @Query("DELETE FROM savings")
+    suspend fun clearTable()
 }

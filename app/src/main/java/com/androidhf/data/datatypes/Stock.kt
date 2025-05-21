@@ -1,4 +1,4 @@
-package com.androidhf.data
+package com.androidhf.data.datatypes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,7 +11,7 @@ data class Stock(
     val stockAmount: Float,
     val price: Float
 ){
-    fun toEntity(): StockEntity{
+    fun toEntity(): StockEntity {
         return StockEntity(
             id = this.id,
             companyName = this.companyName,

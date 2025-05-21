@@ -41,6 +41,7 @@ import com.androidhf.data.enums.SavingsType
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import kotlinx.coroutines.delay
@@ -48,14 +49,16 @@ import java.time.LocalDate
 import java.util.Calendar
 
 @Composable
-fun MoneySavingsScreen(navController: NavController)
+fun MoneySavingsScreen(
+    navController: NavController,
+    transactionViewModel: TransactionViewModel,
+    savingViewModel: SavingViewModel)
 {
     UIVar.topBarTitle = stringResource(id = R.string.moneysavings_title)
 
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val sViewModel: SavingViewModel = hiltViewModel()
 
-    val osszeg = tViewModel.balance.collectAsState().value
+
+    val osszeg = transactionViewModel.balance.collectAsState().value
 
     var input by remember { mutableStateOf("") }
     var input_invalid by remember { mutableStateOf(false) }
@@ -256,7 +259,7 @@ fun MoneySavingsScreen(navController: NavController)
                                         osszeg
                                     )
                                 }
-                                sViewModel.addSaving(saving)
+                                savingViewModel.addSaving(saving)
                                 navController.popBackStack()
                             }
                         }

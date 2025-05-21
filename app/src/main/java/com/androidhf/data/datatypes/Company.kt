@@ -1,4 +1,4 @@
-package com.androidhf.data
+package com.androidhf.data.datatypes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,7 +8,7 @@ data class Company(
     val companyName: String,
     val companyCode: String
 ) {
-    fun toEntity() : CompanyEntity{
+    fun toEntity() : CompanyEntity {
         return CompanyEntity(
             id = this.id,
             companyName = this.companyName,

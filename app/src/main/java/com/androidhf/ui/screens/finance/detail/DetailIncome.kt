@@ -37,9 +37,9 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @Composable
-fun FinanceIncome(navController: NavHostController) {
+fun FinanceIncome(navController: NavHostController, transactionViewModel: TransactionViewModel) {
     UIVar.topBarTitle = stringResource(id = R.string.financeincome_title)
-    val tViewModel: TransactionViewModel = hiltViewModel()
+
 
     var amount by remember { mutableStateOf(false)}
     var category by remember { mutableStateOf(false)}
@@ -66,7 +66,7 @@ fun FinanceIncome(navController: NavHostController) {
     else
         ButtonDefaults.buttonColors()
 
-    val transactions = tViewModel.incomeTransactions.collectAsState()
+    val transactions = transactionViewModel.incomeTransactions.collectAsState()
     val currentTransactions = transactions.value
 
     val context = LocalContext.current
@@ -74,7 +74,7 @@ fun FinanceIncome(navController: NavHostController) {
         if (input.isEmpty()) {
             currentTransactions
         } else {
-            val filteredList = tViewModel.incomeContainsList(input,context)
+            val filteredList = transactionViewModel.incomeContainsList(input,context)
             filteredList
         }
     }
@@ -142,13 +142,13 @@ fun FinanceIncome(navController: NavHostController) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (asc)
             {
-                ListXItemsTransactions(null, tViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorGreen())
+                ListXItemsTransactions(null, transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorGreen())
             }
-            else ListXItemsTransactions(null,tViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorGreen(), reversed = true)
+            else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorGreen(), reversed = true)
         }
         else if (category) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
-            ListXItemsTransactions(null, tViewModel.sortByCategory(list = list, context), -1, UIVar.colorGreen())
+            ListXItemsTransactions(null, transactionViewModel.sortByCategory(list = list, context), -1, UIVar.colorGreen())
         }
         else if (date) {
             Button(onClick = {
@@ -159,9 +159,9 @@ fun FinanceIncome(navController: NavHostController) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (asc)
             {
-                ListXItemsTransactions(null, tViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorGreen())
+                ListXItemsTransactions(null, transactionViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorGreen())
             }
-            else ListXItemsTransactions(null,tViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorGreen())
+            else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorGreen())
         }
         else if (!search)
         {

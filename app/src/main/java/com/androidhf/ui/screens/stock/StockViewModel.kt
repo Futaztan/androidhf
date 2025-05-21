@@ -1,12 +1,13 @@
 package com.androidhf.ui.screens.stock
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.androidhf.data.Company
-import com.androidhf.data.Stock
+import com.androidhf.data.datatypes.Company
+import com.androidhf.data.datatypes.Stock
 import com.androidhf.data.repository.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.polygon.kotlin.sdk.rest.AggregateDTO
@@ -38,9 +39,10 @@ class StockViewModel @Inject constructor(
     init {
         loadStock()
         loadCompany()
+        Log.e("tag-init","stock")
     }
 
-    private fun loadStock(){
+     fun loadStock(){
         viewModelScope.launch {
             stockRepository.getAllStocks().collect{ item: List<Stock> ->
                 _stock.value = item
@@ -48,7 +50,7 @@ class StockViewModel @Inject constructor(
         }
     }
 
-    private fun loadCompany(){
+     fun loadCompany(){
         viewModelScope.launch {
             stockRepository.getAllCompanies().collect{ item: List<Company> ->
                 _company.value = item
@@ -56,6 +58,18 @@ class StockViewModel @Inject constructor(
         }
     }
 
+    fun deleteAllStock()
+    {
+        viewModelScope.launch {
+            stockRepository.deleteAllStock()
+        }
+    }
+    fun deleteAllCompany()
+    {
+        viewModelScope.launch {
+            stockRepository.deleteAllCompany()
+        }
+    }
     fun addStock(stock: Stock) {
         viewModelScope.launch {
             stockRepository.addStock(stock)

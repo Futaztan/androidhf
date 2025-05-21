@@ -6,15 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.androidhf.data.Company
-import com.androidhf.data.CompanyEntity
+import com.androidhf.data.datatypes.CompanyEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CompanyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCompany(company: CompanyEntity)
+    suspend fun insertCompany(company: CompanyEntity) : Long
 
     @Update
     suspend fun updateCompany(company: CompanyEntity)
@@ -29,4 +28,7 @@ interface CompanyDao {
 
     @Query("SELECT * FROM Companies")
     fun getAllCompanies(): Flow<List<CompanyEntity>>
+
+    @Query("DELETE FROM Companies")
+    suspend fun clearTable()
 }

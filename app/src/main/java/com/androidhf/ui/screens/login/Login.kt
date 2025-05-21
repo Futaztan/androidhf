@@ -1,7 +1,6 @@
 package com.androidhf.ui.screens.login
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,15 +26,35 @@ import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.login.auth.AuthService
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.R
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
+import com.androidhf.ui.screens.stock.StockViewModel
 
 
-private fun onLogin(email: String, password : String, navController: NavController, context: Context)
+private fun onLogin(email: String, password : String, navController: NavController, context: Context,
+                    transactionViewModel: TransactionViewModel,reptransViewModel: RepetitiveTransactionViewModel,savingViewModel: SavingViewModel,stockViewModel: StockViewModel)
 {
 
     AuthService.getUserEmail()
     AuthService.loginWithEmailAndPassword(email,password, context){ success->
         if(success)
+
+        {
+            transactionViewModel.deleteAll()
+            reptransViewModel.deleteAll()
+            savingViewModel.deleteAll()
+            stockViewModel.deleteAllStock()
+            stockViewModel.deleteAllCompany()
+            transactionViewModel.loadTransactions()
+            reptransViewModel.loadRepTransactions()
+            savingViewModel.loadSavings()
+            stockViewModel.loadStock()
+            stockViewModel.loadCompany()
             navController.navigate("home")
+
+        }
+
 
     }
 
@@ -43,7 +62,13 @@ private fun onLogin(email: String, password : String, navController: NavControll
 }
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    transactionViewModel: TransactionViewModel,
+    reptransViewModel: RepetitiveTransactionViewModel,
+    savingViewModel: SavingViewModel,
+    stockViewModel: StockViewModel
+) {
     UIVar.topBarTitle = "Login"
 
     var name by remember { mutableStateOf("") }
@@ -66,13 +91,13 @@ fun LoginScreen(navController: NavController) {
             PasswordField(
                 value = password,
                 onChange = { password=it },
-                submit = {onLogin(name,password,navController, context)},
+                submit = {onLogin(name,password,navController, context,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel)},
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(id = R.string.login_pass)
             )
             Spacer(Modifier.padding(UIVar.Padding))
             Button(onClick = {
-                onLogin(name,password,navController,context)},
+                onLogin(name,password,navController,context,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel)},
                 modifier = Modifier.fillMaxWidth()
             ) { Text(stringResource(id = R.string.login_user)) }
             Button(onClick ={

@@ -27,7 +27,12 @@ class TransactionRepository @Inject constructor(
         if(AuthService.isLoggedIn())
         {
 
-            return flowOf(firebaseDB.getAllTransactionsFromFirebase())
+            val firestorelist = firebaseDB.getAllTransactionsFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                transactionDao.insertTransaction(firestorelist.get(i).toEntity())
+            }
+
         }
         return transactionDao.getAllTransactions().map { entities ->
             entities.map { it.toDomain() }
@@ -97,6 +102,11 @@ class TransactionRepository @Inject constructor(
         savingsToUpdate.forEach { updatedSaving ->
             savingsRepository.updateSaving(updatedSaving)
         }
+    }
+
+    suspend fun deleteAll()
+    {
+        transactionDao.clearTable()
     }
 
     /*

@@ -75,7 +75,6 @@ import com.androidhf.ui.reuseable.ListXItemsTransactionsMonthly
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
-import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import kotlinx.coroutines.delay
@@ -91,20 +90,16 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @ExperimentalMaterialApi
-fun FinanceScreen(navHostController: NavHostController) {
-    UIVar.topBarTitle = stringResource(id = R.string.finance_title)
+fun FinanceScreen(navHostController: NavHostController, transactionViewModel: TransactionViewModel, savingViewModel: SavingViewModel) {
+    UIVar.topBarTitle = "Finance"
 
-    //ezekkel érhetők el az adatok
-    val sViewModel: SavingViewModel = hiltViewModel()
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val reptransactionViewModel : RepetitiveTransactionViewModel = hiltViewModel()
 
     //alsó gombok eltüntetése
     val listState = rememberLazyListState()
     val haptic = LocalView.current
 
 
-    val allTransactions by tViewModel.allTransactions.collectAsState()
+    val allTransactions by transactionViewModel.allTransactions.collectAsState()
 
     val balance = remember(allTransactions) {
         allTransactions
@@ -138,13 +133,13 @@ fun FinanceScreen(navHostController: NavHostController) {
     )
     {
 
-        val savings = sViewModel.savings.collectAsState()
+        val savings = savingViewModel.savings.collectAsState()
         LazyColumn(modifier = Modifier
             .fillMaxWidth(),
             state = listState) {
             item {
                 BorderBox() {
-                    Finance_ui_egyenleg(navHostController)
+                    Finance_ui_egyenleg(navHostController,transactionViewModel)
                 }
             }
             item {
@@ -160,7 +155,7 @@ fun FinanceScreen(navHostController: NavHostController) {
 
                     }
                 } else {
-                    Grafikon_init(balance)
+                    Grafikon_init(transactionViewModel)
                 }
             }
             item {
@@ -169,14 +164,14 @@ fun FinanceScreen(navHostController: NavHostController) {
                     BorderBox(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.clickable { navHostController.navigate("FinanceIncome") }) {
                             HeaderText(stringResource(id = R.string.finance_income))
-                            ListXItemsTransactionsMonthly(tViewModel.incomeTransactions.collectAsState(), 40, Color.Green)
+                            ListXItemsTransactionsMonthly(transactionViewModel.incomeTransactions.collectAsState(), 40, Color.Green)
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f)) {
                         Column(modifier = Modifier.clickable { navHostController.navigate("FinanceExpense") }) {
                             HeaderText(stringResource(id = R.string.finance_expense))
-                            ListXItemsTransactionsMonthly(tViewModel.expenseTransactions.collectAsState(), 40, Color.Red)
+                            ListXItemsTransactionsMonthly(transactionViewModel.expenseTransactions.collectAsState(), 40, Color.Red)
                         }
                     }
                 }
@@ -200,7 +195,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
-                                    sViewModel.deleteSaving(saving)
+                                    savingViewModel.deleteSaving(saving)
                                     Log.d("delete","torles")
                                 }
                             )
@@ -219,7 +214,8 @@ fun FinanceScreen(navHostController: NavHostController) {
                                 saving = saving,
                                 onDismiss = {
                                     visible = false
-                                }
+                                },
+                                transactionViewModel = transactionViewModel
                             )
                         }
                     }
@@ -227,7 +223,7 @@ fun FinanceScreen(navHostController: NavHostController) {
                         if (!visible) {
                             haptic.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             delay(300)
-                            sViewModel.deleteSaving(saving)
+                            savingViewModel.deleteSaving(saving)
                         }
                     }
                 }
@@ -261,10 +257,10 @@ fun FinanceScreen(navHostController: NavHostController) {
 }
 
 @Composable
-fun Finance_ui_egyenleg(navHostController: NavHostController)
+fun Finance_ui_egyenleg(navHostController: NavHostController, transactionViewModel: TransactionViewModel)
 {
-    val viewmodel: TransactionViewModel = hiltViewModel()
-    val money = viewmodel.balance.collectAsState().value
+
+    val money = transactionViewModel.balance.collectAsState().value
     Column(
         modifier = Modifier
     )
@@ -285,9 +281,10 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
 }
 
 @Composable
-fun Grafikon_init(balance : List<Int>)
+fun Grafikon_init(transactionViewModel : TransactionViewModel)
 {
 
+    val balance = transactionViewModel.getSortedMoney()
     val list = mutableListOf<Float>()
     var osszeg: Float = 0f
     list.add(0f)
