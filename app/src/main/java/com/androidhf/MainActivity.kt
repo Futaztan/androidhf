@@ -45,6 +45,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.androidhf.ui.reuseable.UIVar
 import com.androidhf.ui.screens.ai.AIScreen
+import com.androidhf.ui.screens.ai.AIViewModel
 import com.androidhf.ui.screens.finance.detail.FinanceExpense
 import com.androidhf.ui.screens.finance.detail.FinanceIncome
 import com.androidhf.ui.screens.finance.FinanceScreen
@@ -54,6 +55,7 @@ import com.androidhf.ui.screens.finance.money.MoneySavingsScreen
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import com.androidhf.ui.screens.finance.dailycheck.DailyWorker
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.home.HomeScreen
 import com.androidhf.ui.screens.login.LoginScreen
 import com.androidhf.ui.screens.login.RegisterScreen
@@ -89,13 +91,17 @@ class MainActivity : ComponentActivity() {
                 uploadWorkRequest
             )
 
+
         setContent {
 
             AndroidhfTheme {
-                val sViewModel: SavingViewModel = hiltViewModel()
-                val tViewModel: TransactionViewModel = hiltViewModel()
+                val savingViewModel: SavingViewModel = hiltViewModel()
+                val transactionViewModel: TransactionViewModel = hiltViewModel()
                 val navController = rememberNavController()
                 val stockViewModel: StockViewModel = hiltViewModel()
+                val aiViewModel : AIViewModel = hiltViewModel()
+                val reptransViewModel : RepetitiveTransactionViewModel = hiltViewModel()
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -113,30 +119,32 @@ class MainActivity : ComponentActivity() {
                         startDestination = "home",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("login") { LoginScreen(navController) }
+                        composable("login") { LoginScreen(navController,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel) }
                         composable("register") { RegisterScreen(navController) }
                         composable("user") { UserScreen(navController)}
-                        composable("home") { HomeScreen() }
-                        composable("penzugy") { FinanceScreen(navController) }
-                        composable("stock") { StockScreen(navController) }
-                        composable("stock_detail") { StockChartScreen() }
+                        composable("home") { HomeScreen(transactionViewModel,savingViewModel) }
+                        composable("penzugy") { FinanceScreen(navController,transactionViewModel,savingViewModel) }
+                        composable("stock") { StockScreen(navController,stockViewModel) }
+                        composable("stock_detail") { StockChartScreen(stockViewModel) }
 
-                        composable("ai") { AIScreen() }
-                        composable("money_income") { MoneyIncomeScreen(navController) }
-                        composable("money_expense") { MoneyExpenseScreen(navController) }
-                        composable("money_saving") { MoneySavingsScreen(navController) }
+                        composable("ai") { AIScreen(aiViewModel) }
+                        composable("money_income") { MoneyIncomeScreen(navController,transactionViewModel, reptransViewModel,savingViewModel) }
+                        composable("money_expense") { MoneyExpenseScreen(navController,transactionViewModel,reptransViewModel,savingViewModel) }
+                        composable("money_saving") { MoneySavingsScreen(navController,transactionViewModel, savingViewModel) }
 
-                        composable("FinanceIncome") { FinanceIncome(navController) }
-                        composable("FinanceExpense") { FinanceExpense(navController) }
+                        composable("FinanceIncome") { FinanceIncome(navController,transactionViewModel) }
+                        composable("FinanceExpense") { FinanceExpense(navController,transactionViewModel) }
                     }
-                    val balance = tViewModel.balance
+                    val balance = transactionViewModel.balance
                     LaunchedEffect(key1 = Unit) {
+
                         delay(1250) //Idő amíg betölti az adatbázist
-                        sViewModel.dateChecker(balance.first())
+                        savingViewModel.dateChecker(balance.first())
+
                     }
 
                     lifecycleScope.launchWhenCreated {
-                        sViewModel.messages.collect { msg ->
+                        savingViewModel.messages.collect { msg ->
                             Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
                             delay(2500)
                         }

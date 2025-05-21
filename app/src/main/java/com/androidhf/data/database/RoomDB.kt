@@ -3,8 +3,8 @@ package com.androidhf.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.androidhf.data.CompanyEntity
-import com.androidhf.data.StockEntity
+import com.androidhf.data.datatypes.CompanyEntity
+import com.androidhf.data.datatypes.StockEntity
 import com.androidhf.data.datatypes.RepetitiveTransactionEntity
 import com.androidhf.data.datatypes.SavingsEntity
 import com.androidhf.data.datatypes.TransactionEntity

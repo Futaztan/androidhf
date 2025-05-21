@@ -2,11 +2,6 @@ package com.androidhf.ui.screens.stock
 
 import android.util.Log
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.items
@@ -47,7 +41,6 @@ import androidx.compose.ui.Alignment
 
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -60,8 +53,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 import com.androidhf.R
-import com.androidhf.data.Company
-import com.androidhf.data.Stock
+import com.androidhf.data.datatypes.Company
+import com.androidhf.data.datatypes.Stock
 
 import com.androidhf.ui.reuseable.HeaderText
 import com.androidhf.ui.reuseable.NumberTextField
@@ -88,9 +81,9 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun StockScreen(navController: NavController) {
+fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
 
-    val stockViewModel: StockViewModel = hiltViewModel()
+
 
     UIVar.topBarTitle = "Stock"
     var showChart by remember { mutableStateOf(false) }
@@ -445,7 +438,8 @@ fun StockScreen(navController: NavController) {
         stockData = stockData,
         companyName = currentCompanyName,
         isLoading = isLoading,
-        currentCompanyCode = currentCompanyCode
+        currentCompanyCode = currentCompanyCode,
+        stockViewModel
     )
 
 
@@ -473,10 +467,11 @@ fun bottomwindow(
     stockData: List<AggregateDTO>,
     companyName: String,
     isLoading: Boolean,
-    currentCompanyCode: String
+    currentCompanyCode: String,
+    stockViewModel: StockViewModel
 ) {
     var stockInput by remember { mutableStateOf("") }
-    val stockViewModel: StockViewModel = hiltViewModel()
+
     Box(modifier = Modifier.fillMaxSize().pointerInput(Unit) { detectTapGestures {} }
     ) {
         Panel(modifier = Modifier
@@ -542,8 +537,10 @@ fun bottomwindow(
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                         Button(onClick = {
                             if(stockInput.toFloatOrNull() != null){
-                                stockViewModel.addStock(Stock(companyName = companyName, companyCode = currentCompanyCode, stockAmount = stockInput.toFloat(), price = stockData.last().close?.toFloat()
-                                    ?: -1f))
+                                stockViewModel.addStock(
+                                    Stock(companyName = companyName, companyCode = currentCompanyCode, stockAmount = stockInput.toFloat(), price = stockData.last().close?.toFloat()
+                                    ?: -1f)
+                                )
                             }
 
                         }, modifier = Modifier

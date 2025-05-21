@@ -6,14 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.androidhf.data.StockEntity
+import com.androidhf.data.datatypes.StockEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StockDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStock(stock: StockEntity)
+    suspend fun insertStock(stock: StockEntity) : Long
 
     @Update
     suspend fun updateStock(stock: StockEntity)
@@ -29,4 +29,7 @@ interface StockDao {
 
     @Query("SELECT * FROM Stocks WHERE companyCode = :companyCode ORDER BY id ASC")
     fun getStocksByCompanyCode(companyCode: String): Flow<List<StockEntity>>
+
+    @Query("DELETE FROM Stocks")
+    suspend fun clearTable()
 }

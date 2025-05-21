@@ -1,7 +1,9 @@
 package com.androidhf.ui.screens.finance.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.androidhf.data.datatypes.Transaction
 import com.androidhf.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+
 
 //viewmodel létrehozása, ott ahol kell: val viewModel: TransactionViewModel = hiltViewModel()
 //biztosítja az adathozzáférést
@@ -49,6 +52,8 @@ class TransactionViewModel @Inject constructor(
 
     init {
         loadTransactions()
+
+        Log.e("tag-init","transaction")
     }
 
     fun get30DaysIncome(): Int {
@@ -151,7 +156,7 @@ class TransactionViewModel @Inject constructor(
         return _expenseTransactions.value.sortedBy { it.category.displayName }
     }
 
-    private fun loadTransactions() {
+    fun loadTransactions() {
 
         viewModelScope.launch {
             transactionRepository.getAllTransactions().collect { transactionList ->
@@ -167,6 +172,12 @@ class TransactionViewModel @Inject constructor(
             transactionRepository.getExpenseTransactions().collect { expenseList ->
                 _expenseTransactions.value = expenseList
             }
+        }
+    }
+    fun deleteAll()
+    {
+        viewModelScope.launch {
+            transactionRepository.deleteAll()
         }
     }
 

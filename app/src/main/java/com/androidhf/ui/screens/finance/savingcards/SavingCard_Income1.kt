@@ -54,7 +54,6 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -62,7 +61,8 @@ import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 fun SavingCard_Income1(
     saving: Savings, //melyik savinget jelenítse meg
     onDismiss: () -> Unit, //visible = false -ot kell meghívni ha törölni akarjuk, enélkül nem tűnik el
-    deleteAble: Boolean = true //Swipeal törölni szeretnénk akkor true, amúgy meg false
+    deleteAble: Boolean = true, //Swipeal törölni szeretnénk akkor true, amúgy meg false
+    transactionViewModel : TransactionViewModel
 ) {
     var showPopup by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -142,22 +142,22 @@ fun SavingCard_Income1(
             },
             directions = setOf(DismissDirection.StartToEnd),
             dismissContent = {
-                Content(saving)
+                Content(saving,transactionViewModel)
             }
         )
     }
     else
     {
-        Content(saving)
+        Content(saving,transactionViewModel)
     }
 
 }
 
 @Composable
-private fun Content(saving: Savings)
+private fun Content(saving: Savings, transactionViewModel: TransactionViewModel)
 {
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val osszeg = tViewModel.balance.collectAsState().value
+
+    val osszeg = transactionViewModel.balance.collectAsState().value
     //if(!saving.Closed && LocalDate.now() < saving.EndDate)
     if(!saving.Closed)
     {

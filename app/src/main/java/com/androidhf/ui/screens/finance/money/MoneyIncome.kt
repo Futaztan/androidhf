@@ -44,12 +44,14 @@ import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewModel*/) {
+fun MoneyIncomeScreen(
+    navController: NavController,
+    transactionViewModel: TransactionViewModel,
+    reptransViewModel: RepetitiveTransactionViewModel,
+    savingViewModel: SavingViewModel
+) {
     UIVar.topBarTitle = "Bevétel felvétel"
 
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val reptransViewModel : RepetitiveTransactionViewModel = hiltViewModel()
-    val sViewModel: SavingViewModel = hiltViewModel()
 
     var input by remember { mutableStateOf("") }
     var input_invalid by remember { mutableStateOf(false) }
@@ -104,7 +106,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
 
     val calendar = Calendar.getInstance().apply {
         set(Calendar.YEAR, LocalDate.now().year)
-        set(Calendar.MONTH, LocalDate.now().monthValue-1)
+        set(Calendar.MONTH, LocalDate.now().monthValue - 1)
         set(Calendar.DAY_OF_MONTH, LocalDate.now().dayOfMonth)
     }
 
@@ -145,7 +147,9 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
 
     fun onSubmit() {
         val amount = input.toIntOrNull()
+
         if (amount != null && amount > 0 && desc != "" && untilDate > fromDate && untilDate > LocalDate.now()) {
+
             val transaction = Transaction(
                 amount,
                 desc,
@@ -155,11 +159,11 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
                 frequency
             )
             if (frequency == Frequency.EGYSZERI) {
-                tViewModel.addTransaction(transaction)
-                sViewModel.transactionAdded(amount)
+                transactionViewModel.addTransaction(transaction)
+                savingViewModel.transactionAdded(amount)
             } else {
                 val repetitiveTransaction =
-                    RepetitiveTransaction(transaction,fromDate, untilDate)
+                    RepetitiveTransaction(transaction, fromDate, untilDate)
                 reptransViewModel.addRepTransaction(repetitiveTransaction)
 
             }
@@ -195,6 +199,7 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
     ) {
 
 
+
         Panel(centerItems = false) {
             Column {
                 Text("Válassza ki a gyakoriságot:")
@@ -212,11 +217,14 @@ fun MoneyIncomeScreen(navController: NavController/*, viewModel: SavingsViewMode
                     selected = category,
                     onSelectedChange = { category = it }
                 )
+
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
 
+
         Panel(centerItems = false, backgroundColor = date_background_color)
+
         {
             if(frequency== Frequency.EGYSZERI)
             {

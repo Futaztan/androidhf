@@ -1,13 +1,17 @@
 package com.androidhf.ui.screens.finance.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidhf.data.datatypes.RepetitiveTransaction
+import com.androidhf.data.datatypes.Transaction
 import com.androidhf.data.repository.RepetitiveTransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,17 +21,32 @@ class RepetitiveTransactionViewModel @Inject constructor(
     private val repTransactionRepository: RepetitiveTransactionRepository
 ): ViewModel() {
 
-    private var _repetitiveTransactionList = mutableListOf<List<RepetitiveTransaction>>(emptyList())
-    var repetitiveTransactionList = _repetitiveTransactionList
+
+
+    private val _repetitiveTransactions = MutableStateFlow<List<RepetitiveTransaction>>(emptyList())
+    val repetitiveTransactions: StateFlow<List<RepetitiveTransaction>> = _repetitiveTransactions.asStateFlow()
+
 
     init {
         loadRepTransactions()
+        Log.e("tag-init","rep")
     }
 
-    private fun loadRepTransactions() {
+
+     fun loadRepTransactions() {
        viewModelScope.launch(Dispatchers.IO) {
-           _repetitiveTransactionList = mutableListOf(repTransactionRepository.getAllRepetitiveTransactions())
+           repTransactionRepository.getAllRepetitiveTransactions().collect {reptransactionList ->
+               _repetitiveTransactions.value = reptransactionList
+           }
+
        }
+
+    }
+    fun deleteAll()
+    {
+        viewModelScope.launch {
+            repTransactionRepository.deleteAll()
+        }
     }
 
     fun addRepTransaction(reptransaction: RepetitiveTransaction) {
@@ -36,10 +55,6 @@ class RepetitiveTransactionViewModel @Inject constructor(
         }
     }
 
-    //ez most komoly
-     suspend fun fasz(): List<RepetitiveTransaction> {
-        return repTransactionRepository.getAllRepetitiveTransactions()
-    }
 
 
 }

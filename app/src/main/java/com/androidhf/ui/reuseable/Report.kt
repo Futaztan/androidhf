@@ -23,26 +23,24 @@ import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 @Composable
-fun Report()
+fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingViewModel)
 {
-    val sViewModel: SavingViewModel = hiltViewModel()
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val rViewModel: RepetitiveTransactionViewModel = hiltViewModel()
+
 
     BorderBox() {
         Column {
             //1. sor
             Row {
                 HeaderText("Egyenleg: ")
-                if(tViewModel.balance.collectAsState().value < 0) Text("${tViewModel.balance.collectAsState().value} Ft",
+                if(transactionViewModel.balance.collectAsState().value < 0) Text("${transactionViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold,
                     color = UIVar.colorRed())
-                else if (tViewModel.balance.collectAsState().value > 0) Text("${tViewModel.balance.collectAsState().value} Ft",
+                else if (transactionViewModel.balance.collectAsState().value > 0) Text("${transactionViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold,
                     color = UIVar.colorGreen())
-                else Text("${tViewModel.balance.collectAsState().value} Ft",
+                else Text("${transactionViewModel.balance.collectAsState().value} Ft",
                     fontSize = UIVar.HeaderText,
                     fontWeight = FontWeight.Bold)
             }
@@ -55,41 +53,41 @@ fun Report()
                     BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                         Column {
                             Text("Income:")
-                            Text("${tViewModel.get30DaysIncome()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorGreen())
+                            Text("${transactionViewModel.get30DaysIncome()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorGreen())
                         }
                     }
                     Spacer(modifier = Modifier.width(UIVar.Padding))
                     BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                         Column {
                             Text("Expense:")
-                            Text("${tViewModel.get30DaysExpense()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorRed())
+                            Text("${transactionViewModel.get30DaysExpense()} Ft", fontWeight = FontWeight.Bold, color = UIVar.colorRed())
                         }
                     }
                 }
-                if(tViewModel.get30DaysIncomeByType() != "" || tViewModel.get30DaysExpenseByType() != "")
+                if(transactionViewModel.get30DaysIncomeByType() != "" || transactionViewModel.get30DaysExpenseByType() != "")
                 {
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
                 Row {
-                    if (tViewModel.get30DaysIncomeByType() != "")
+                    if (transactionViewModel.get30DaysIncomeByType() != "")
                     {
                         BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                             Column {
                                 Text("Most income from:")
-                                Text(tViewModel.get30DaysIncomeByType(), color = UIVar.colorGreen())
+                                Text(transactionViewModel.get30DaysIncomeByType(), color = UIVar.colorGreen())
                             }
                         }
                     }
-                    if (tViewModel.get30DaysIncomeByType() != "" && tViewModel.get30DaysExpenseByType() != "")
+                    if (transactionViewModel.get30DaysIncomeByType() != "" && transactionViewModel.get30DaysExpenseByType() != "")
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (tViewModel.get30DaysExpenseByType() != "")
+                    if (transactionViewModel.get30DaysExpenseByType() != "")
                     {
                         BorderBox(modifier = Modifier.weight(1f), backgroundColor = UIVar.secondColor(), borderSize = 2.dp) {
                             Column {
                                 Text("Most expense from:")
-                                Text(tViewModel.get30DaysExpenseByType(), color = UIVar.colorRed())
+                                Text(transactionViewModel.get30DaysExpenseByType(), color = UIVar.colorRed())
                             }
                         }
                     }
@@ -103,74 +101,74 @@ fun Report()
                 Panel(backgroundColor = UIVar.secondColor()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Number of Savings:")
-                        Text(sViewModel.savingsCount().toString())
+                        Text(savingViewModel.savingsCount().toString())
                     }
                 }
-                if(sViewModel.savingsCountByHold() != 0 || sViewModel.savingsCountByLimit() != 0 || sViewModel.savingsCountByCollect() != 0)
+                if(savingViewModel.savingsCountByHold() != 0 || savingViewModel.savingsCountByLimit() != 0 || savingViewModel.savingsCountByCollect() != 0)
                 {
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
                 Row{
-                    if (sViewModel.savingsCountByCollect() != 0)
+                    if (savingViewModel.savingsCountByCollect() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("Collect:")
-                                Text(sViewModel.savingsCountByCollect().toString())
+                                Text(savingViewModel.savingsCountByCollect().toString())
                             }
                         }
                     }
-                    if (sViewModel.savingsCountByCollect() != 0 && (sViewModel.savingsCountByLimit() != 0 || sViewModel.savingsCountByHold() != 0))
+                    if (savingViewModel.savingsCountByCollect() != 0 && (savingViewModel.savingsCountByLimit() != 0 || savingViewModel.savingsCountByHold() != 0))
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (sViewModel.savingsCountByLimit() != 0)
+                    if (savingViewModel.savingsCountByLimit() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("Limit:")
-                                Text(sViewModel.savingsCountByLimit().toString())
+                                Text(savingViewModel.savingsCountByLimit().toString())
                             }
                         }
                     }
-                    if(sViewModel.savingsCountByHold() != 0 && sViewModel.savingsCountByLimit() != 0)
+                    if(savingViewModel.savingsCountByHold() != 0 && savingViewModel.savingsCountByLimit() != 0)
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (sViewModel.savingsCountByHold() != 0)
+                    if (savingViewModel.savingsCountByHold() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("Hold:")
-                                Text(sViewModel.savingsCountByHold().toString())
+                                Text(savingViewModel.savingsCountByHold().toString())
                             }
                         }
                     }
                 }
-                if (sViewModel.savingsCountCompleted() != 0 || sViewModel.savingsCountFailed() != 0)
+                if (savingViewModel.savingsCountCompleted() != 0 || savingViewModel.savingsCountFailed() != 0)
                 {
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
                 Row {
-                    if (sViewModel.savingsCountCompleted() != 0)
+                    if (savingViewModel.savingsCountCompleted() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("Completed:")
-                                Text(sViewModel.savingsCountCompleted().toString())
+                                Text(savingViewModel.savingsCountCompleted().toString())
                             }
                         }
                     }
-                    if (sViewModel.savingsCountCompleted() != 0 && sViewModel.savingsCountFailed() != 0)
+                    if (savingViewModel.savingsCountCompleted() != 0 && savingViewModel.savingsCountFailed() != 0)
                     {
                         Spacer(modifier = Modifier.width(UIVar.Padding))
                     }
-                    if (sViewModel.savingsCountFailed() != 0)
+                    if (savingViewModel.savingsCountFailed() != 0)
                     {
                         Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("Failed:")
-                                Text(sViewModel.savingsCountFailed().toString())
+                                Text(savingViewModel.savingsCountFailed().toString())
                             }
                         }
                     }

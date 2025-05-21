@@ -49,11 +49,14 @@ import java.time.LocalTime
 import java.util.Calendar
 
 @Composable
-fun MoneyExpenseScreen(navController: NavController) {
+fun MoneyExpenseScreen(
+    navController: NavController,
+    transactionViewModel: TransactionViewModel,
+    reptransViewModel: RepetitiveTransactionViewModel,
+    savingViewModel: SavingViewModel) {
     UIVar.topBarTitle = "Kiadás felvétel"
 
-    val tViewModel: TransactionViewModel = hiltViewModel()
-    val sViewModel: SavingViewModel = hiltViewModel()
+
 
     var input by remember { mutableStateOf("") }
     var input_invalid by remember { mutableStateOf(false) }
@@ -160,8 +163,8 @@ fun MoneyExpenseScreen(navController: NavController) {
                 frequency
             )
             if (frequency == Frequency.EGYSZERI) {
-                tViewModel.addTransaction(transaction)
-                sViewModel.transactionAdded(-amount)
+                transactionViewModel.addTransaction(transaction)
+                savingViewModel.transactionAdded(-amount)
             } else {
                 val repetitiveTransaction =
                     RepetitiveTransaction(transaction,fromDate, untilDate)
@@ -271,6 +274,7 @@ fun MoneyExpenseScreen(navController: NavController) {
                 Text(text = untilDate.toString())
             }
         }
+
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false) {
             Column {
@@ -281,6 +285,7 @@ fun MoneyExpenseScreen(navController: NavController) {
                     placeholder = "10000",
                     modifier = Modifier.fillMaxWidth()
                 )
+
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))

@@ -22,7 +22,13 @@ class SavingsRepository @Inject constructor(
 
         if(AuthService.isLoggedIn())
         {
-            return flowOf(firebaseDB.getSavingsFromFirebase())
+
+            val firestorelist = firebaseDB.getSavingsFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                savingDao.insertSaving(firestorelist.get(i).toEntity())
+            }
+
         }
         return savingDao.getAllSavings().map { entities ->
             entities.map { it.toDomain() }
@@ -40,6 +46,10 @@ class SavingsRepository @Inject constructor(
 
     suspend fun deleteSaving(save: Savings) {
         savingDao.deleteSavingById(save.Id)
+    }
+    suspend fun deleteAll()
+    {
+        savingDao.clearTable()
     }
 
     suspend fun updateSaving(save: Savings) {

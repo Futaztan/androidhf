@@ -5,6 +5,7 @@ import com.androidhf.data.datatypes.Savings
 import com.androidhf.data.enums.SavingsType
 import com.androidhf.data.dao.RepetitiveTransactionDao
 import com.androidhf.data.database.FirebaseDB
+import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.screens.login.auth.AuthService
 import com.google.rpc.context.AttributeContext.Auth
 import kotlinx.coroutines.flow.Flow
@@ -20,12 +21,18 @@ class RepetitiveTransactionRepository @Inject constructor(
     private val firebaseDB: FirebaseDB
 ) {
 
-    suspend fun getAllRepetitiveTransactions(): List<RepetitiveTransaction> {
+    suspend fun getAllRepetitiveTransactions(): Flow<List<RepetitiveTransaction>>  {
         if(AuthService.isLoggedIn())
         {
-            return firebaseDB.getRepTransactionsFromFirebase()
+
+            val firestorelist = firebaseDB.getRepTransactionsFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                repTransactionDao.insertRepTransaction(firestorelist.get(i).toEntity())
+            }
+
         }
-        return repTransactionDao.getAllRepTransactions().map { it.toDomain() }
+        return repTransactionDao.getAllRepTransactions().map { entites -> entites.map { it.toDomain() } }
     }
 
     suspend fun deleteRepetitiveTransaction(repTransaction: RepetitiveTransaction)
@@ -38,6 +45,11 @@ class RepetitiveTransactionRepository @Inject constructor(
         return repTransactionDao.getRepTransactionsByType(type).map { entities ->
             entities.map { it.toDomain() }
         }
+    }
+
+    suspend fun deleteAll()
+    {
+        repTransactionDao.clearTable()
     }
 
     suspend fun addRepetitiveTransaction(repTransaction: RepetitiveTransaction) {
