@@ -36,7 +36,7 @@ import com.androidhf.ui.screens.login.auth.AuthService
 
 
 @Composable
-fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: SavingViewModel) {
+fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: SavingViewModel,reptransactionViewModel: RepetitiveTransactionViewModel) {
     UIVar.topBarTitle = "Home"
 
 
@@ -65,12 +65,12 @@ fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: Savin
             ListXItemsTransactions(transactionViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
         }
 
-        if(sViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty())
+        if(savingViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty())
         {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Text("3 legújabb takarék")
         }
-        sViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
+        savingViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
 
             Spacer(modifier = Modifier.padding(UIVar.Padding))
             if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
@@ -87,7 +87,7 @@ fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: Savin
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        Report(transactionViewModel,savingViewModel)
+        Report(transactionViewModel,savingViewModel, reptransactionViewModel )
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Spacer(modifier = Modifier.height(UIVar.Padding))
 

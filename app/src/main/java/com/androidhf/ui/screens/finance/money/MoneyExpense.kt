@@ -1,4 +1,4 @@
-package com.androidhf.ui.screens.finance
+package com.androidhf.ui.screens.finance.money
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.androidhf.data.enums.Category
 import com.androidhf.data.enums.Frequency
@@ -42,6 +41,7 @@ import com.androidhf.data.datatypes.Transaction
 import com.androidhf.ui.reuseable.NumberTextField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import java.time.LocalDate
@@ -302,7 +302,7 @@ fun MoneyExpenseScreen(
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
 
-        val savings = sViewModel.savings.collectAsState()
+        val savings = savingViewModel.savings.collectAsState()
         Panel {
             Row {
                 Button(onClick = {

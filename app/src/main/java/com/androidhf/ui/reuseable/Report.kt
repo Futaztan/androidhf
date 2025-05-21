@@ -21,9 +21,10 @@ import com.androidhf.data.enums.Frequency
 import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
 import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
+import kotlinx.coroutines.flow.first
 
 @Composable
-fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingViewModel)
+fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingViewModel, reptransViewModel: RepetitiveTransactionViewModel)
 {
 
 
@@ -175,24 +176,27 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                 }
             }
             //4. sor REPETITIVE TRANSACTIONS
+            val repetitivetransactions = reptransViewModel.repetitiveTransactions.collectAsState().value
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Text("Repetitive Transactions", fontSize = UIVar.HeaderText, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Panel(backgroundColor = UIVar.secondColor()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Active Transactions:")
-                    Text(rViewModel.repetitiveTransactionList.size.toString())
+                    Text(repetitivetransactions.size.toString())
                 }
             }
+            reptransViewModel.repetitiveTransactions
+            
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Row {
                 Panel(backgroundColor = UIVar.secondColor(), modifier = Modifier.weight(1f)) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Completed:")
-                        Text(rViewModel.repetitiveTransactionList.size.toString())
+                        Text(repetitivetransactions.size.toString())
                     }
                 }
-                if (rViewModel.repetitiveTransactionList.size > 0)
+                if (repetitivetransactions.size > 0)
                 {
 
                     Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -204,7 +208,7 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var napiIncome: Int = 0
                                     Text("Income:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    repetitivetransactions.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.INCOME && item.transaction.frequency == Frequency.NAPI)
                                         {
                                             napiIncome += item.transaction.amount
@@ -218,7 +222,7 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var napiExpense: Int = 0
                                     Text("Expense:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    repetitivetransactions.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.EXPENSE && item.transaction.frequency == Frequency.NAPI)
                                         {
                                             napiExpense += item.transaction.amount
@@ -235,7 +239,7 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var hetiIncome: Int = 0
                                     Text("Income:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    repetitivetransactions.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.INCOME && item.transaction.frequency == Frequency.HETI)
                                         {
                                             hetiIncome += item.transaction.amount
@@ -249,7 +253,7 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var hetiExpense: Int = 0
                                     Text("Expense:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    repetitivetransactions.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.EXPENSE && item.transaction.frequency == Frequency.HETI)
                                         {
                                             hetiExpense += item.transaction.amount
@@ -266,7 +270,7 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var haviIncome: Int = 0
                                     Text("Income:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    repetitivetransactions.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.INCOME && item.transaction.frequency == Frequency.HAVI)
                                         {
                                             haviIncome += item.transaction.amount
@@ -280,7 +284,7 @@ fun Report(transactionViewModel: TransactionViewModel, savingViewModel: SavingVi
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     var haviExpense: Int = 0
                                     Text("Expense:")
-                                    rViewModel.repetitiveTransactionList.first().forEach{ item ->
+                                    repetitivetransactions.forEach{ item ->
                                         if (item.transaction.category.type == Category.Type.EXPENSE && item.transaction.frequency == Frequency.HAVI)
                                         {
                                             haviExpense += item.transaction.amount

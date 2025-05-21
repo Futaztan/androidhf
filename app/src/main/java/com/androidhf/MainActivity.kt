@@ -49,7 +49,7 @@ import com.androidhf.ui.screens.ai.AIViewModel
 import com.androidhf.ui.screens.finance.detail.FinanceExpense
 import com.androidhf.ui.screens.finance.detail.FinanceIncome
 import com.androidhf.ui.screens.finance.FinanceScreen
-import com.androidhf.ui.screens.finance.MoneyExpenseScreen
+import com.androidhf.ui.screens.finance.money.MoneyExpenseScreen
 import com.androidhf.ui.screens.finance.MoneyIncomeScreen
 import com.androidhf.ui.screens.finance.money.MoneySavingsScreen
 import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
@@ -122,7 +122,7 @@ class MainActivity : ComponentActivity() {
                         composable("login") { LoginScreen(navController,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel) }
                         composable("register") { RegisterScreen(navController) }
                         composable("user") { UserScreen(navController)}
-                        composable("home") { HomeScreen(transactionViewModel,savingViewModel) }
+                        composable("home") { HomeScreen(transactionViewModel,savingViewModel,reptransViewModel) }
                         composable("penzugy") { FinanceScreen(navController,transactionViewModel,savingViewModel) }
                         composable("stock") { StockScreen(navController,stockViewModel) }
                         composable("stock_detail") { StockChartScreen(stockViewModel) }
