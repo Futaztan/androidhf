@@ -41,7 +41,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import co.yml.charts.axis.AxisData
@@ -65,8 +67,6 @@ import com.androidhf.ui.screens.finance.savingcards.SavingCard_Expense2
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income1
 import com.androidhf.ui.screens.finance.savingcards.SavingCard_Income2
 import kotlinx.coroutines.delay
-import kotlin.math.max
-import kotlin.math.min
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -229,13 +229,14 @@ fun Finance_ui_egyenleg(navHostController: NavHostController)
     {
         Row ( modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         )
         {
             HeaderText("Egyenleg: ")
-            if(money < 0) Text("$money Ft", color = Color.Red)
-            else if(money > 0) Text("$money Ft", color = Color.Green)
-            else Text("$money Ft", color = Color.Black)
+            if(money < 0) Text("$money Ft", color = Color.Red, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
+            else if(money > 0) Text("$money Ft", color = Color.Green, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
+            else Text("0 Ft", color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
 
         }
     }

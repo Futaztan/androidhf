@@ -3,6 +3,7 @@ package com.androidhf.ui.screens.finance
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -111,7 +112,7 @@ fun MoneySavingsScreen(navController: NavController)
     var title_text_color: Color
     var date_background_color: Color
     var date_text_color: Color
-    Column(modifier = Modifier.padding(UIVar.Padding)) {
+    Column(modifier = Modifier.padding(UIVar.Padding).fillMaxSize(), verticalArrangement = Arrangement.Center) {
         if (input_invalid)
         {
             input_background_color = MaterialTheme.colorScheme.error

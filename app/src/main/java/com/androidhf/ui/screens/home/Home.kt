@@ -65,8 +65,6 @@ fun HomeScreen() {
             if(!AuthService.isLoggedIn()) HeaderText("Szia Vendég?")
             else HeaderText("Szia ${AuthService.getUserDisplayName()}")
         }
-
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) { Text("${money}") }
         Row (modifier = Modifier.fillMaxWidth()){
             ListXItemsTransactions(tViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
             Spacer(modifier = Modifier.width(UIVar.Padding))
