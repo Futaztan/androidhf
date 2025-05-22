@@ -36,9 +36,12 @@ import com.androidhf.ui.screens.login.auth.AuthService
 
 
 @Composable
-fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: SavingViewModel, repetitiveViewModel: RepetitiveTransactionViewModel) {
+fun HomeScreen(
+    transactionViewModel: TransactionViewModel,
+    savingViewModel: SavingViewModel,
+    repetitiveViewModel: RepetitiveTransactionViewModel
+) {
     UIVar.topBarTitle = "Home"
-
 
 
     val money = transactionViewModel.balance.collectAsState().value
@@ -46,46 +49,58 @@ fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: Savin
     val scrollState = rememberScrollState()
     val haptic = LocalView.current
     val context = LocalContext.current
-    if(scrollState.value == scrollState.maxValue)     haptic.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+    if (scrollState.value == scrollState.maxValue) haptic.performHapticFeedback(
+        HapticFeedbackConstants.VIRTUAL_KEY
+    )
 
     Column(
-        modifier = Modifier.fillMaxWidth()
-                            .verticalScroll(scrollState)
-                            .padding(UIVar.Padding),
-        horizontalAlignment = Alignment.CenterHorizontally)
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState)
+            .padding(UIVar.Padding),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
     {
-        Panel{
-            if(!AuthService.isLoggedIn()) HeaderText(stringResource(id = R.string.home_hello))
-            else HeaderText(stringResource(id = R.string.home_hi) + AuthService.getUserDisplayName())
+        Panel {
+            if (!AuthService.isLoggedIn()) HeaderText(stringResource(id = R.string.home_hello))
+            else HeaderText(stringResource(id = R.string.home_hi) + " " + AuthService.getUserDisplayName())
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        Row (modifier = Modifier.fillMaxWidth()){
-            ListXItemsTransactions(transactionViewModel.incomeTransactions.collectAsState(), null,10,Color.Green,Modifier.weight(1f))
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ListXItemsTransactions(
+                transactionViewModel.incomeTransactions.collectAsState(),
+                null,
+                10,
+                Color.Green,
+                Modifier.weight(1f),
+                detailed = false
+            )
             Spacer(modifier = Modifier.width(UIVar.Padding))
-            ListXItemsTransactions(transactionViewModel.expenseTransactions.collectAsState(), null,10,Color.Red,Modifier.weight(1f))
+            ListXItemsTransactions(
+                transactionViewModel.expenseTransactions.collectAsState(),
+                null,
+                10,
+                Color.Red,
+                Modifier.weight(1f),
+                detailed = false
+            )
         }
-        if(savingViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty())
-        {
+        if (savingViewModel.savings.collectAsState().value.takeLast(3).isNotEmpty()) {
             Spacer(modifier = Modifier.height(UIVar.Padding))
             Text(stringResource(id = R.string.home_3newestsavings))
         }
         savingViewModel.savings.collectAsState().value.takeLast(3).forEach { item ->
             Spacer(modifier = Modifier.padding(UIVar.Padding))
-            if(item.Type == SavingsType.INCOMEGOAL_BYAMOUNT)
-            {
+            if (item.Type == SavingsType.INCOMEGOAL_BYAMOUNT) {
                 SavingCard_Income2(item, { }, false)
-            }
-            else if(item.Type == SavingsType.INCOMEGOAL_BYTIME)
-            {
+            } else if (item.Type == SavingsType.INCOMEGOAL_BYTIME) {
                 SavingCard_Income1(item, { }, false, transactionViewModel)
-            }
-            else
-            {
+            } else {
                 SavingCard_Expense2(item, { }, false)
             }
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
-        Report(transactionViewModel,savingViewModel,repetitiveViewModel)
+        Report(transactionViewModel, savingViewModel, repetitiveViewModel)
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Spacer(modifier = Modifier.height(UIVar.Padding))
 
