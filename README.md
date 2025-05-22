@@ -136,14 +136,22 @@ Az AI menüben egy beépített mesterséges intelligenciával lehet beszélgetni
 
 <img src="./assets/ai.jpg" width="160">
 
+## Apróságok
+Raktunk bele néhány apróságot is, hogy kicsit feldobjuk a felhasználói élményt. Ezeke a következők:
+- Dinamikus UI színek: A Material Theme lehetővé teszi, hogy a hátterünk alapján válasszon színeket és ezeket a színeket használjuk az alkalmazásunkban, így dinamokusan változik a felhasználó háttere és témája alapján (Light és Dark mode)
+- Egyes UI elemek haptic visszajelzést adnak megnyumásukkor és listák végére görgetésekor is
+- Angol és magyar nyelven is elérhető, a rendzser beállítástól függően
+- Kezdetleges animcáió van Saving törlésekor
+
 ## Felhasznált technológiák:
 
-- Firebase
+- Firebase, a bejelentkezéshez és az adattárolásra
 - Hálózat (részvények lekérése [innen](https://polygon.io), illetve Gemini google szolgáltatás)
 - Automatikus Android Material theme alkalmazása (Dinamikusan változnak a színek a háttér alapján)
 - 3 különböző gráf ábrázolás - [YCharts](https://github.com/yml-org/YCharts)
 - Dailyworker - a repetitív tranzakciókra
-- Hilt és Room - az adatok eltárolására
+- Hilt - Dependency Injection
+- Room - lokális adattároláshoz
 - Nagyon basic animáció
 - Service
 
@@ -153,3 +161,4 @@ Itt kell felsorolni minden technológiát, technikát, külső könyvtárat, kom
 
 - A polygon.io -től való adatok lekérésekor nem mindig jött azonnal adat, az API limitációk miatt. Így az a megoldás született, hogy kiraktuk egy Coroutine-ba, így egy loading animáció van, amíg nincs adat.
 - A szűrés és a keresés, a listáknál, úgy lett megoldva, hogy a keresés belefűzi az adatokat a listázásba, és így a keresésen belül is lehet szűrni, azaz lehet kombinálni a szűrést és a keresést.
+- Firebase és Room összehangolása, hogy ha bejelentkezünk, akkor a Firebase-ből betölti a Room-ba az adatokat és utána innen olvassa ki az alkalmazás az adatokat.
