@@ -72,7 +72,6 @@ fun InvestmentBox(
 ) {
 
 
-    // Állapot változók a chart adatokhoz
     var stockData by remember { mutableStateOf<List<AggregateDTO>>(emptyList()) }
     var currentPrice by remember { mutableStateOf(0.0) }
     var isLoading by remember { mutableStateOf(false) }
@@ -130,7 +129,6 @@ fun InvestmentBox(
         }
     }
 
-    // Adatok lekérése amikor a komponens létrejön
     LaunchedEffect(company.companyCode) {
         isLoading = true
         hasError = false
@@ -139,7 +137,6 @@ fun InvestmentBox(
             try {
                 val POLYGON_API_KEY = PolygonRestClient("kwQO2EZ6YFWcSA0Vkx4pCXyE6Guf2HJg")
 
-                // Kezdeti paraméterek
                 val now = LocalDate.now()
                 var endDate = now
                 var startDate = now.minusDays(8)
@@ -147,7 +144,6 @@ fun InvestmentBox(
                 var attempts = 0
                 var foundData = false
 
-                // Maximum 5 próbálkozás
                 while (!foundData && attempts < 40) {
                     Log.d("InvestmentBox", "Attempt ${attempts + 1} for ${company.companyCode}")
 
@@ -160,29 +156,25 @@ fun InvestmentBox(
                         )
 
                         withContext(Dispatchers.Main) {
-                            // Ellenőrizzük, hogy kaptunk-e értelmes adatot
                             if (data.results != null && data.results.isNotEmpty()) {
                                 Log.d("InvestmentBox", "Data found for ${company.companyCode}! ${data.results.size} data points.")
                                 stockData = data.results
 
-                                // Utolsó záróár kinyerése
                                 currentPrice = data.results.last().close ?: 0.0
                                 foundData = true
                             } else {
                                 Log.e("InvestmentBox", "No data: trying attempt " + attempts)
-                                // Ha nem találtunk adatot, újra próbálkozunk
                                 attempts++
-                                delay(5000) // 5 másodperc várakozás a következő próbálkozás előtt
+                                delay(5000)
                             }
                         }
                     } catch (e: Exception) {
                         Log.e("InvestmentBox", "Error fetching data: ${e.message}")
                         attempts++
-                        delay(3000) // 3 másodperc várakozás hiba esetén
+                        delay(3000)
                     }
                 }
 
-                // Ha minden próbálkozás után sem találtunk adatot
                 if (!foundData) {
                     withContext(Dispatchers.Main) {
                         hasError = true
@@ -201,21 +193,18 @@ fun InvestmentBox(
         }
     }
 
-    // Százalékos változás kiszámítása
     val percentChange = if (buyprice > 0 && currentPrice > 0) {
         ((currentPrice - buyprice) / buyprice) * 100
     } else {
         0.0
     }
 
-    // Meghatározzuk a százalék előjelének színét
     val percentColor = when {
-        (percentChange * 100).toInt() / 100f > 0 -> UIVar.colorGreen() // zöld pozitív változáshoz
-        (percentChange * 100).toInt() / 100f < 0 -> UIVar.colorRed() // piros negatív változáshoz
-        else -> Color.Gray // szürke, ha nincs változás
+        (percentChange * 100).toInt() / 100f > 0 -> UIVar.colorGreen()
+        (percentChange * 100).toInt() / 100f < 0 -> UIVar.colorRed()
+        else -> Color.Gray
     }
 
-    // Előjel a százalékhoz
     val percentSign = if ((percentChange * 100).toInt() / 100f > 0) "+" else ""
 
     BorderBox(
@@ -223,7 +212,7 @@ fun InvestmentBox(
             .clickable(onClick = onClick)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Törlés gomb a jobb felső sarokban
+
             IconButton(
                 onClick = {showPopup = true},
                 modifier = Modifier
@@ -231,28 +220,24 @@ fun InvestmentBox(
                     .size(32.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_24), // Használj egy X ikont
+                    painter = painterResource(id = R.drawable.ic_delete_24),
                     contentDescription = "Remove investment",
                     modifier = Modifier.size(24.dp),
                     tint = Color.Red
                 )
             }
 
-            // Tartalom elrendezése
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(UIVar.Padding/2f)
             ) {
-                // Ticker kód
                 Text(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)) {
                             append(stock.companyCode + " ")
                         }
-                        /*withStyle(style = SpanStyle(fontSize = 8.sp)) {
-                            append(stock.companyName)
-                        }*/
+
                     }
                 )
                 Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -262,7 +247,6 @@ fun InvestmentBox(
                 )
                 Spacer(modifier = Modifier.height(UIVar.Padding))
 
-                // Jelenlegi ár
                 if (isLoading) {
                     Text(
                         text = stringResource(id = R.string.stock_loading),
@@ -311,7 +295,6 @@ fun InvestmentBox(
                     Spacer(modifier = Modifier.height(UIVar.Padding))
                 }
 
-                // Százalékos változás
                 if (!isLoading && !hasError) {
                     Text(
                         buildAnnotatedString {
@@ -326,7 +309,6 @@ fun InvestmentBox(
                     )
                 }
 
-                // Chart terület (a kép alját foglalja el)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -353,7 +335,6 @@ fun InvestmentBox(
                             modifier = Modifier.align(Alignment.Center)
                         )
                     } else if (stockData.isNotEmpty()) {
-                        // Egyszerűen használjuk a meglévő MiniStockChart komponenst
                         MiniStockChart(stockData = stockData, 70.dp)
                     }
                 }
