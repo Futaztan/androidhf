@@ -153,28 +153,38 @@ fun MoneyExpenseScreen(
         )
     }
 
+    fun onConfirm()
+    {
+        val amount = input.toInt()
+        val transaction = Transaction(
+            -amount,
+            desc,
+            onDate,
+            LocalTime.now(),
+            category,
+            frequency
+        )
+        if (frequency == Frequency.EGYSZERI) {
+            transactionViewModel.addTransaction(transaction)
+            savingViewModel.transactionAdded(-amount)
+        } else {
+            val repetitiveTransaction =
+                RepetitiveTransaction(transaction,fromDate, untilDate)
+
+            //TODO addRepetitiveTransaction(repetitiveTransaction)
+        }
+        navController.popBackStack()
+    }
+
+    val savings = savingViewModel.savings.collectAsState()
     fun onSubmit() {
         val amount = input.toIntOrNull()
         if (amount != null && amount > 0 && desc != "" && untilDate > fromDate && untilDate > LocalDate.now()) {
-            val transaction = Transaction(
-                -amount,
-                desc,
-                onDate,
-                LocalTime.now(),
-                category,
-                frequency
-            )
-            if (frequency == Frequency.EGYSZERI) {
-                transactionViewModel.addTransaction(transaction)
-                savingViewModel.transactionAdded(-amount)
-            } else {
-                val repetitiveTransaction =
-                    RepetitiveTransaction(transaction,fromDate, untilDate)
-
-                //TODO addRepetitiveTransaction(repetitiveTransaction)
+            val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
+                !item.Closed && item.Start - amount <= item.Amount
             }
-
-            navController.popBackStack() // visszalép az előző képernyőre
+            if(found) showPopup = true
+            else onConfirm()
         }
         else{
             if(input.isBlank() || input.toInt() < 0)
@@ -214,7 +224,7 @@ fun MoneyExpenseScreen(
                             Button(
                                 onClick = {
                                     showPopup = false
-                                    onSubmit()
+                                    onConfirm()
                                 },
                                 modifier = Modifier.weight(3f)
                             ) {
@@ -248,7 +258,7 @@ fun MoneyExpenseScreen(
 
         Panel(centerItems = false) {
             Column {
-                Text("Válassza ki a gyakoriságot:")
+                Text(stringResource(id = R.string.moneyexpense_frequency))
                 FrequencyDropdownMenu(
                     selected = frequency,
                     onSelectedChange = { frequency = it }
@@ -258,7 +268,7 @@ fun MoneyExpenseScreen(
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false) {
             Column {
-                Text("Válassza ki a kategóriát:")
+                Text(stringResource(id = R.string.moneyexpense_category))
                 CategoryDropdownMenu(
                     selected = category,
                     onSelectedChange = { category = it }
@@ -272,7 +282,7 @@ fun MoneyExpenseScreen(
             if(frequency== Frequency.EGYSZERI)
             {
                 Column {
-                    Text("Melyik napon történt a tranzakció:", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text(stringResource(id = R.string.moneyincome_whichday), color = MaterialTheme.colorScheme.onPrimaryContainer)
                     Button(onClick = { onDatePickerDialog.show() }) {
                         Text(text = onDate.toString())
                     }
@@ -280,12 +290,12 @@ fun MoneyExpenseScreen(
             }
             else{
                 Column {
-                    Text("Melyik naptól kezdődjön", color = date_text_color)
+                    Text(stringResource(id = R.string.moneyincome_whichday), color = date_text_color)
                     Button(onClick = { fromDatePickerDialog.show() }) {
                         Text(text = fromDate.toString())
                     }
                     Spacer(modifier = Modifier.height(UIVar.Padding))
-                    Text("Meddig menjen:", color = date_text_color)
+                    Text(stringResource(id = R.string.moneyincome_howlong), color = date_text_color)
                     Button(onClick = { untilDatePickerDialog.show() }) {
                         Text(text = untilDate.toString())
                     }
@@ -319,19 +329,10 @@ fun MoneyExpenseScreen(
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
 
-        val savings = savingViewModel.savings.collectAsState()
         Panel {
             Row {
                 Button(onClick = {
-                    val amount = input.toIntOrNull()
-                    if (amount != null) {
-                        val found = savings.value.filter {it.Type == SavingsType.EXPENSEGOAL_BYAMOUNT}.any{ item ->
-                            !item.Closed && item.Start - amount <= item.Amount
-                        }
-                        if(found) showPopup = true
-                        else onSubmit()
-                    }
-
+                    onSubmit()
                 })
                 {
                     Text(stringResource(id = R.string.moneyincome_submit))

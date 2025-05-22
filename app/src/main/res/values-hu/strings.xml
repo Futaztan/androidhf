@@ -56,7 +56,8 @@
     <string name="moneyincome_submit">Mentés és bezárás</string>
     <string name="moneyincome_xyosztondij">XY Ösztöndíj</string>
 
-
+    <string name="moneyexpense_frequency">Válassza ki a gyakoriságot</string>
+    <string name="moneyexpense_category">Válassza ki a kategóriát</string>
     <string name="moneyexpense_title">Új kiadás</string>
     <string name="moneyexpense_weeklyshop">Heti bevásárlás</string>
     <string name="moneyexpense_overflow">Ha elmenti ezt a tranzakciót, akkor az egyik megtakarításban túl fog csordulni a limit! Biztos szeretné folytatni?</string>

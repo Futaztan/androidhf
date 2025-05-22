@@ -56,6 +56,8 @@
     <string name="moneyincome_submit">Submit and close</string>
     <string name="moneyincome_xyosztondij">XY scholarship</string>
 
+    <string name="moneyexpense_frequency">Choose the frequency</string>
+    <string name="moneyexpense_category">Choose the category</string>
     <string name="moneyexpense_title">New expense</string>
     <string name="moneyexpense_weeklyshop">Weekly shopping</string>
     <string name="moneyexpense_overflow">If you submit this transaction, one of your savings will overflow its limit! Are you sure you want to continue?</string>
