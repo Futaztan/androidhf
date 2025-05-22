@@ -210,13 +210,13 @@ fun InvestmentBox(
 
     // Meghatározzuk a százalék előjelének színét
     val percentColor = when {
-        percentChange > 0 -> Color(0xFF4CAF50) // zöld pozitív változáshoz
-        percentChange < 0 -> Color(0xFFFF5252) // piros negatív változáshoz
+        (percentChange * 100).toInt() / 100f > 0 -> UIVar.colorGreen() // zöld pozitív változáshoz
+        (percentChange * 100).toInt() / 100f < 0 -> UIVar.colorRed() // piros negatív változáshoz
         else -> Color.Gray // szürke, ha nincs változás
     }
 
     // Előjel a százalékhoz
-    val percentSign = if (percentChange > 0) "+" else ""
+    val percentSign = if ((percentChange * 100).toInt() / 100f > 0) "+" else ""
 
     BorderBox(
         modifier = modifier
