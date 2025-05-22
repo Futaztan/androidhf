@@ -31,35 +31,30 @@ import java.time.format.DateTimeFormatter
 fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
     if (stockData.isEmpty()) return
 
-    // Értékek kinyerése
     val values = stockData.mapNotNull { it.close }
     if (values.isEmpty()) return
 
     val minValue = values.minOrNull() ?: 0.0
     val maxValue = values.maxOrNull() ?: 1.0
 
-    // Mai és 7 nappal korábbi dátumok
     val today = LocalDate.now()
     val weekAgo = today.minusDays(7)
 
     val firstDate = weekAgo.format(DateTimeFormatter.ofPattern("MM.dd"))
     val lastDate = today.format(DateTimeFormatter.ofPattern("MM.dd"))
 
-    // Használjunk egy külső boxot, amely megfelelő méretű
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
             .padding(start = 4.dp, end = 8.dp)
     ) {
-        // A chart és a tengelyek
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(start = 24.dp, end = 4.dp, top = 16.dp, bottom = 24.dp) // helyet hagyunk a feliratoknak
         ) {
-            // Maga a grafikon
             Canvas(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -67,7 +62,6 @@ fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
                 val height = size.height
                 val valueRange = maxValue - minValue
 
-                // X tengely rajzolása (alul)
                 drawLine(
                     color = Color.LightGray,
                     start = Offset(0f, height),
@@ -75,7 +69,6 @@ fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
                     strokeWidth = 1.dp.toPx()
                 )
 
-                // Y tengely rajzolása (balra)
                 drawLine(
                     color = Color.LightGray,
                     start = Offset(0f, 0f),
@@ -83,7 +76,6 @@ fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
                     strokeWidth = 1.dp.toPx()
                 )
 
-                // Grafikon útvonal rajzolása
                 if (values.isNotEmpty()) {
                     val path = Path()
                     values.forEachIndexed { index, value ->
@@ -97,12 +89,10 @@ fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
                         }
                     }
 
-                    // Színezés a változás alapján
                     val firstValue = values.first()
                     val lastValue = values.last()
                     val lineColor = if (lastValue >= firstValue) Color(0xFF4CAF50) else Color(0xFFFF5252)
 
-                    // Grafikon vonalának rajzolása
                     drawPath(
                         path = path,
                         color = lineColor,
@@ -115,22 +105,19 @@ fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
             }
         }
 
-        // Árak a bal oldalon (Y tengely) - teljesen külön pozícionálva
         Column(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(top = 12.dp, bottom = 12.dp) // Kevesebb padding mint a grafikonon
-                .height(height - 40.dp), // levonunk a paddingokra
+                .padding(top = 12.dp, bottom = 12.dp)
+                .height(height - 40.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Felső érték
             Text(
                 text = "%.0f".format(maxValue),
                 style = TextStyle(fontSize = 8.sp),
                 color = Color.Gray
             )
 
-            // Alsó érték
             Text(
                 text = "%.0f".format(minValue),
                 style = TextStyle(fontSize = 8.sp),
@@ -138,22 +125,19 @@ fun MiniStockChart(stockData: List<AggregateDTO>, height: Dp = 0.dp) {
             )
         }
 
-        // Dátumok alul (X tengely) - teljesen külön pozícionálva
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(start = 24.dp, end = 4.dp, bottom = 2.dp), // Több padding a bal oldalon, hogy illeszkedjen a grafikonhoz
+                .padding(start = 24.dp, end = 4.dp, bottom = 2.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Kezdő dátum (egy héttel ezelőtt)
             Text(
                 text = firstDate,
                 style = TextStyle(fontSize = 8.sp),
                 color = Color.Gray
             )
 
-            // Záró dátum (ma)
             Text(
                 text = lastDate,
                 style = TextStyle(fontSize = 8.sp),

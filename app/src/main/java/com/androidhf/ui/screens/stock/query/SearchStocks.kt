@@ -14,31 +14,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.Collections
 
-fun searchStocks(polygonClient: PolygonRestClient, searchQuery: String): List<TickerDTO>? {
-    Log.d("StockSearch", "Searching for stocks matching: $searchQuery")
-
-    try {
-        // A SupportedTickersParameters segítségével kereshetünk részvényeket
-        val params = SupportedTickersParameters(
-            ticker = ComparisonQueryFilterParameters(searchQuery).toString(), // Keresés a ticker kódban
-            market = "stocks", // Csak részvények
-            activeSymbolsOnly = true,     // Csak aktív részvények
-            limit = 15         // Korlátozzuk az eredmények számát
-        )
-
-        // Részvények lekérése
-        val result = polygonClient.referenceClient.getSupportedTickersBlocking(params)
-
-        //Log.d("StockSearch", "Found ${result.results.size} results for query: $searchQuery")
-
-        // Visszaadjuk a találatokat
-        return result.results
-    } catch (e: Exception) {
-        Log.e("StockSearch", "Error searching for stocks: ${e.message}")
-        return emptyList()
-    }
-}
-
 fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<String, String>>) -> Unit) {
     if (searchQuery.length < 2) {
         callback(emptyList())
@@ -49,23 +24,19 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
     val queryText = searchQuery.trim()
     val uppercaseQuery = queryText.uppercase()
 
-    // Két keresés: egy a ticker kód alapján, egy a név alapján
     val urlTicker = "https://api.polygon.io/v3/reference/tickers?ticker.startsWith=$uppercaseQuery&active=true&sort=ticker&order=asc&limit=10&apiKey=$apiKey"
     val urlSearch = "https://api.polygon.io/v3/reference/tickers?search=$queryText&active=true&sort=ticker&order=asc&limit=10&apiKey=$apiKey"
 
-    // Használjunk thread-biztos listát
     val allResults = Collections.synchronizedList(mutableListOf<Pair<String, String>>())
-    val lock = Object() // Szinkronizációs objektum
+    val lock = Object()
     var completedRequests = 0
 
-    // Első kérés: Ticker keresés
     client.newCall(Request.Builder().url(urlTicker).build()).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
             Log.e("StockSearch", "Ticker search failed: ${e.message}")
             synchronized(lock) {
                 completedRequests++
                 if (completedRequests == 2) {
-                    // Mindkét kérés befejeződött, elküldjük az eredményeket
                     val uniqueResults = allResults.distinctBy { it.second }
                     callback(uniqueResults)
                 }
@@ -85,7 +56,6 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
                             val symbol = ticker.getString("ticker")
                             val name = ticker.optString("name", symbol)
 
-                            // Szűrjük az eredményeket, hogy csak a relevánsak maradjanak
                             if (symbol.contains(uppercaseQuery) ||
                                 name.uppercase().contains(uppercaseQuery)) {
                                 allResults.add(Pair(name, symbol))
@@ -102,7 +72,6 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
             synchronized(lock) {
                 completedRequests++
                 if (completedRequests == 2) {
-                    // Mindkét kérés befejeződött, elküldjük az eredményeket
                     val uniqueResults = allResults.distinctBy { it.second }
                     callback(uniqueResults)
                 }
@@ -110,14 +79,12 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
         }
     })
 
-    // Második kérés: Általános keresés
     client.newCall(Request.Builder().url(urlSearch).build()).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
             Log.e("StockSearch", "General search failed: ${e.message}")
             synchronized(lock) {
                 completedRequests++
                 if (completedRequests == 2) {
-                    // Mindkét kérés befejeződött, elküldjük az eredményeket
                     val uniqueResults = allResults.distinctBy { it.second }
                     callback(uniqueResults)
                 }
@@ -137,7 +104,6 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
                             val symbol = ticker.getString("ticker")
                             val name = ticker.optString("name", symbol)
 
-                            // Szűrjük az eredményeket, hogy csak a relevánsak maradjanak
                             if (symbol.contains(uppercaseQuery) ||
                                 name.uppercase().contains(uppercaseQuery)) {
                                 allResults.add(Pair(name, symbol))
@@ -154,7 +120,6 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
             synchronized(lock) {
                 completedRequests++
                 if (completedRequests == 2) {
-                    // Mindkét kérés befejeződött, elküldjük az eredményeket
                     val uniqueResults = allResults.distinctBy { it.second }
                     callback(uniqueResults)
                 }
@@ -162,9 +127,3 @@ fun searchStocksREST(apiKey: String, searchQuery: String, callback: (List<Pair<S
         }
     })
 }
-
-/*
-fun getCompanyCodesFromSearch(results: List<TickerDTO>?): List<String>
-{
-
-}*/

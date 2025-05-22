@@ -214,7 +214,6 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
                 .fillMaxSize()
                 .padding(bottom = 104.dp)
         ) {
-            // Fejléc
             item {
                 HeaderText(stringResource(id = R.string.stock_currentinvestments),modifier = Modifier.padding(start = UIVar.Padding))
                 Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -344,7 +343,6 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
                                 .padding(horizontal = UIVar.Padding / 2)
                         )
                     } else {
-                        // Ha nincs második elem, akkor üres helyet hagyunk
                         Spacer(modifier = Modifier.weight(1f))
                     }
                 }
@@ -362,13 +360,10 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
                         }
 
                         Button(onClick = {
-                            // First clear previous data
                             stockData.clear()
 
-                            // Query the stock data for the selected company
                             stockQuery(displayedCodes[index])
 
-                            // Show the bottom window
                             showBottomWindow.value = true
                         }, enabled = /*!isLoading*/ true) {
                             Text(item)
@@ -436,7 +431,6 @@ fun StockScreen(navController: NavController, stockViewModel: StockViewModel) {
 
     if (showChart && stockData != null) {
         stockViewModel.setData(stockData)
-        //navController.navigate("stock_detail")
     }
 }
 
@@ -486,7 +480,6 @@ fun bottomwindow(
             Column {
                 HeaderText(if(companyName == "null") stringResource(id = R.string.stock_nodata) else companyName)
 
-                // Show loading or chart
                 if (isLoading) {
                     Box(
                         modifier = Modifier
