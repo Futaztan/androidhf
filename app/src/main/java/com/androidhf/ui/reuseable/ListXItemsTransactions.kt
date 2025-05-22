@@ -37,7 +37,8 @@ fun ListXItemsTransactions(
     _modifier: Modifier = Modifier, //modifierek
     _fitMaxWidth: Boolean = false, //kitöltse a rendelkezésre álló helyet, ha két panel kell egymás mellé akkor false és kívül kell megadni weightet
     reversed: Boolean = false, //milyen sorrendben írja ki
-    deleteable: Boolean = false,
+    deleteable: Boolean = false, //torolheto e az elemek (detaileknél)
+    detailed : Boolean = true, //szukseges e reszletes leiras a tranzaikciorol (Detailed screeneknel)
 
     transactionViewModel: TransactionViewModel? = null
 )
@@ -77,7 +78,9 @@ fun ListXItemsTransactions(
                             {
                                 append("${item.amount} Ft ")
                             }
-                            append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                            if(detailed)
+                                append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                            else append("${item.category.getDisplayName(LocalContext.current)} - ${item.description}")
                         },
                         modifier = Modifier.padding(8.dp)
                             .weight(9f),
@@ -130,7 +133,9 @@ fun ListXItemsTransactions(
                                 {
                                     append("${item.amount} Ft ")
                                 }
-                                append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                                if (detailed)
+                                    append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if (item.time.hour > 10) item.time.hour else "0" + item.time.hour}:${if (item.time.minute > 10) item.time.minute else "0" + item.time.minute}:${if (item.time.second > 10) item.time.second else "0" + item.time.second}")
+                                else append("${item.category.getDisplayName(LocalContext.current)} - ${item.description}")
                             },
                             modifier = Modifier.padding(8.dp)
                                 .weight(9f),
