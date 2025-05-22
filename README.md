@@ -28,7 +28,6 @@ A célközönség leginkább a pénztudatosságra törekedő fiatalok, és kezd�
 ## Választott technológiák:
 
 - Firebase
-- Értesítések küldése
 - Hálózat (részvények lekérése [innen](https://polygon.io), illetve Gemini google szolgáltatás)
 - Témák (Light, Dark, stb..)
 
@@ -47,14 +46,10 @@ Ez egy diákok számára pénzügyi segítő alkalmazás, amelyben rendszerezni 
 Miután jelentkeztünk, ötleteltünk, végül erre esett a választásunk. Úgy terveztük, hogy ez az alkalmazás, megfelel a versenyre is, és NHF-nek is egyaránt.
 A célközönség leginkább a pénztudatosságra törekedő fiatalok, és kezdő befektetők.
 
-## Főbb funkciók
-
-Az alkalmazás minden funkciójára kiterjedő leírás. Legyen egyértelműen eldönthető, hogy az adott funkció implementálva van-e!
-P.l.: Az alkalmazással lehetőség van térképen megjeleníteni az állomáspontokat és azok A,B,C,D tulajdonságai meg is jelennek (ha elérhetőek).
-
 ## Fejlesztés folyamata (fejlesztői dokumentáció)
 
 Az első dolog amit megcsináltunk, az pár alapfunkció, hogy legyen egy stabil alap, amire lehet építeni. Ez például a 4 képernyő ami között NavigationBar-ban lévő gombokkal lehet váltani. Utána részekre osztva kezdtünk el dolgozni a 4 menün, ezek rendre a Kezdőlap, Pénzügyek, Részvények és AI.
+Nagyjából felosztottuk a munkát, mindenki dolgozott valamin.
 
 Rövid leírás az oldalakról:
 - A Kezdőlap fő célja a legfontosabb információk kiírása a felhasználónak, mint például az egyenleg, 30 napos statisztika, kiadások, bevételek stb.
@@ -74,9 +69,12 @@ Nem kötelező fiókot használni az alkalmazáshoz, de ebben az esetben nem les
 A 4 fő menüpont részletes leírása:
 ### Kezdőlap
 A kezdőlap célja, hogy a felhasználó egy pillantás alatt meg tudja nézni a legfontosabb adatait. Ezen az oldalon látjuk az egyenlegünket, kiadásainkat, bevételeinket és megtakarításainkat.
-- Kiadásaink és bevételeink két oszlopba vannak rendezve, bal oldalon láthatjuk a bevételeinket, jobb oldalon pedig a kiadásaink vannak. Ez a két oszlop, az elmúlt 30 nap adatait mutatják nekünk. (részletes nézethez ld. Pénzügyek)
+- Kiadásaink és bevételeink két oszlopba vannak rendezve, bal oldalon láthatjuk a bevételeinket, jobb oldalon pedig a kiadásaink vannak. Ez a két oszlop a legújabb 10 adatot mutatja be. (részletes nézethez ld. Pénzügyek)
 - Felvett megtakarításainkank a pénzügyi előzmények alatt láthatjuk, dobozokba rendezve. Innen leolvashatjuk a megtakarítások legfontosabb adatait. (megtakarításokhoz ld. Pénzügyek)
 - Az egyenlegünk alatt láthatjuk a jelenleg aktív megtakarítások számát, kategóriákra bontva.
+
+<img src="./assets/home.jpg" width="160">
+<img src="./assets/home2.jpg" width="160">
 
 ### Pénzügyek:
 A pénzügyek menüpont alatt tudjuk kezelni a bevételeket, kiadásokat és itt tudunk megtakarításokat is beállítani.
@@ -114,26 +112,44 @@ Ha letelik az idő, akkor az alkalmazás tájékoztat minket, hogy a célunk el�
   - <b>Címke</b>: Megadhatunk egy címkét, jobb átláthatóság érdekében.
   - <b>Rövid leírás</b>: A rövid leírásban megindokolhatjuk, hogy miért vettük fel ezt a megtakarítást.
 
+2 két féle tranzakció fajta közül lehet választani, van az <kbd>Egyszeri</kbd>, és a <kbd>Repetitív</kbd> tranzakció.
+A repetitíven belül lehet még választani 3 frekvencia közül, ez Napi, Heti és Havi.
+Ezek természetesen automatikusan végrehajtódnak megfelelő időnként.
+
+<img src="./assets/finance_saving.jpg" width="160">
+<img src="./assets/delete.jpg" width="160">
+
+
 ### Részvények
-A részvények
+A részvények menüpont alatt láthatjuk a megjelölt részvényeinket, illetve a kedvenc részvénycégjeinket.
+Kereséssel kereshetünk konkrét részvényekre, ezekre nyomáskor megnyílik egy alsó menü, ahol láthatjuk a részvény elmúlt 7 nap adatait, van lehetőségünk megadni egy darabszámot, és bejelölni a részvényt a jelenlegi áron. A csillag ikonra kattintva, bejelölhetjük kedvencnek, így a kedvencek menüpont alatt gyorsan elérhetjük.
+A Jelenlegi részvények menüpont alatt láthatjuk ahogy a részvény ára változik, százalékosan kiírja nekünk a profitot vagy veszteséget, illetve egy grafikon is mutatja az előzményeket.
+
+<img src="./assets/stock.jpg" width="160">
+<img src="./assets/stock_load.jpg" width="160">
+<img src="./assets/stock_grap.jpg" width="160">
+
+
+### AI
+Az AI menüben egy beépített mesterséges intelligenciával lehet beszélgetni a pénzügyeinkről. Megjegyzi a kontextust, így lehet vele folyamatos beszélgetést folytatni. Van egy 30 napos report gomb, amivel elküldhetjük az AI-nak, az elmúlt 30 nap pénzügyi adatait, ezáltal személyre szabottabb tanácsokat adhat nekünk. A kuka ikonnal törölhető a jelenlegi beszélgetés, és a kontextus is.
+
+
+<img src="./assets/ai.jpg" width="160">
 
 ## Felhasznált technológiák:
 
+- Firebase
+- Hálózat (részvények lekérése [innen](https://polygon.io), illetve Gemini google szolgáltatás)
+- Automatikus Android Material theme alkalmazása (Dinamikusan változnak a színek a háttér alapján)
+- 3 különböző gráf ábrázolás - [YCharts](https://github.com/yml-org/YCharts)
+- Dailyworker - a repetitív tranzakciókra
+- Hilt és Room - az adatok eltárolására
+- Nagyon basic animáció
+- Service
+
 Itt kell felsorolni minden technológiát, technikát, külső könyvtárat, komplexebb algoritmust, ami növeli az alkalmazás értékét. Osztályzáskor ezt a fejezetet nézzük meg először.
-
-Külső osztálykönyvtár használata esetén a könyvtár neve legyen link, ami annak elérhetőségére mutat.
-
-A kulcsszavak legyenek **félkövér** betűtípussal szedve.
-Például:
-
-- •	Az X és Y képernyők optimalizáltak **álló és fekvő nézetre** is
-- [YCharts](https://github.com/yml-org/YCharts) osztálykönyvtár használata a grafikonok rajzolására
-- **Fused Location API** használata helymeghatározásra
-- **SQLite** alapú adattárolás
-- Implicit intent használata **QR kód beolvasáshoz** (telepített Barcode Scanner alkalmazás szükséges a futtatásához)
-- A játék fizikáját a [Box2D](https://box2d.org/) motor biztosítja
-- **Service** használata zenelejátszáshoz
 
 ## Fontosabb technológiai megoldások
 
-**A számodra legnehezebb/legérdekesebb funkciót fejtsd ki kb.  10 mondatban, hogy mi volt a probléma és hogyan oldottad meg.**
+- A polygon.io -től való adatok lekérésekor nem mindig jött azonnal adat, az API limitációk miatt. Így az a megoldás született, hogy kiraktuk egy Coroutine-ba, így egy loading animáció van, amíg nincs adat.
+- A szűrés és a keresés, a listáknál, úgy lett megoldva, hogy a keresés belefűzi az adatokat a listázásba, és így a keresésen belül is lehet szűrni, azaz lehet kombinálni a szűrést és a keresést.
