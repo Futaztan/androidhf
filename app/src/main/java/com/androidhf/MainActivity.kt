@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("login") { LoginScreen(navController,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel) }
-                        composable("register") { RegisterScreen(navController) }
+                        composable("register") { RegisterScreen(navController,transactionViewModel,reptransViewModel,savingViewModel,stockViewModel) }
                         composable("user") { UserScreen(navController)}
                         composable("home") { HomeScreen(transactionViewModel,savingViewModel, reptransViewModel) }
                         composable("penzugy") { FinanceScreen(navController,transactionViewModel,savingViewModel) }

@@ -19,9 +19,6 @@ fun HeaderText(bemenet: String, modifier: Modifier = Modifier)
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.tertiary,
         //ezt majd el kell dönteni hogy kell-e
-        style = TextStyle(
-            shadow = Shadow(color = UIVar.AccentColor.copy(0.35f, UIVar.AccentColor.red*0.7f,UIVar.AccentColor.green*0.7f,UIVar.AccentColor.blue*0.7f), offset = Offset(3f, 3f), blurRadius = 2f)
-        ),
         modifier = modifier
     )
 }

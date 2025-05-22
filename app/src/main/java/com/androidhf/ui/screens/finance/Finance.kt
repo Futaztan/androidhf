@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -144,19 +145,7 @@ fun FinanceScreen(navHostController: NavHostController, transactionViewModel: Tr
             }
             item {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
-
-
-                if (balance.isEmpty()) {
-                    Panel {
-                        Column {
-                            CircularProgressIndicator()
-                            Text(stringResource(id = R.string.stock_holdon))
-                        }
-
-                    }
-                } else {
-                    Grafikon_init(transactionViewModel)
-                }
+                Grafikon_init(balance)
             }
             item {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
@@ -239,18 +228,19 @@ fun FinanceScreen(navHostController: NavHostController, transactionViewModel: Tr
                 .fillMaxWidth(),
             exit = shrinkVertically(animationSpec = tween(durationMillis = 300)) + fadeOut(animationSpec = tween(durationMillis = 300))
         ) {
-            Box {
-                Button(onClick = {navHostController.navigate("money_income")},
-                    modifier = Modifier.align(Alignment.BottomStart)
-                ) { Text(stringResource(id = R.string.finance_newincome)) }
-
-                Button(onClick = {navHostController.navigate("money_saving")},
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) { Text(stringResource(id = R.string.finance_newsaving)) }
-
-                Button(onClick = {navHostController.navigate("money_expense")},
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                ) { Text(stringResource(id = R.string.finance_newexpense)) }
+            Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()) {
+                LazyRow {
+                    item {
+                        Button(onClick = {navHostController.navigate("money_income")}
+                        ) { Text(stringResource(id = R.string.finance_newincome)) }
+                        Spacer(modifier = Modifier.width(UIVar.Padding))
+                        Button(onClick = {navHostController.navigate("money_saving")}
+                        ) { Text(stringResource(id = R.string.finance_newsaving)) }
+                        Spacer(modifier = Modifier.width(UIVar.Padding))
+                        Button(onClick = {navHostController.navigate("money_expense")}
+                        ) { Text(stringResource(id = R.string.finance_newexpense)) }
+                    }
+                }
             }
         }
     }
@@ -272,8 +262,8 @@ fun Finance_ui_egyenleg(navHostController: NavHostController, transactionViewMod
         )
         {
             HeaderText(stringResource(id = R.string.finance_balance))
-            if(money < 0) Text("$money Ft", color = Color.Red, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
-            else if(money > 0) Text("$money Ft", color = Color.Green, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
+            if(money < 0) Text("$money Ft", color = UIVar.colorRed(), fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
+            else if(money > 0) Text("$money Ft", color = UIVar.colorGreen(), fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
             else Text("0 Ft", color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
 
         }
@@ -281,10 +271,8 @@ fun Finance_ui_egyenleg(navHostController: NavHostController, transactionViewMod
 }
 
 @Composable
-fun Grafikon_init(transactionViewModel : TransactionViewModel)
+fun Grafikon_init(balance: List<Int>)
 {
-
-    val balance = transactionViewModel.getSortedMoney()
     val list = mutableListOf<Float>()
     var osszeg: Float = 0f
     list.add(0f)
@@ -292,7 +280,7 @@ fun Grafikon_init(transactionViewModel : TransactionViewModel)
         osszeg += item
         list.add(osszeg)
     }
-    val pointsData = balance.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
+    val pointsData = list.mapIndexed { index, value -> Point(index.toFloat(), value.toFloat()) }
     val xAxisData = AxisData.Builder()
         .axisStepSize(20.dp)
         .steps((list.size - 1).coerceAtLeast(1))

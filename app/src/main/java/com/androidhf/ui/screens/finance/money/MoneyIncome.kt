@@ -202,7 +202,7 @@ fun MoneyIncomeScreen(
 
         Panel(centerItems = false) {
             Column {
-                Text("Válassza ki a gyakoriságot:")
+                Text(stringResource(id = R.string.moneyexpense_frequency))
                 FrequencyDropdownMenu(
                     selected = frequency,
                     onSelectedChange = { frequency = it }
@@ -212,7 +212,7 @@ fun MoneyIncomeScreen(
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Panel(centerItems = false) {
             Column {
-                Text("Válassza ki a kategóriát:")
+                Text(stringResource(id = R.string.moneyexpense_category))
                 CategoryDropdownMenu(
                     selected = category,
                     onSelectedChange = { category = it }
@@ -265,7 +265,7 @@ fun MoneyIncomeScreen(
                 TextField(
                     value = desc,
                     onValueChange = { desc = it },
-                    placeholder = { Text("XY Ösztöndíj") },
+                    placeholder = { Text(stringResource(id = R.string.moneyincome_xyosztondij)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

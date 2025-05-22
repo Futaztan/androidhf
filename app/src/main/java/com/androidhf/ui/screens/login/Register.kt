@@ -27,7 +27,11 @@ import com.androidhf.ui.reuseable.NameField
 import com.androidhf.ui.reuseable.Panel
 import com.androidhf.ui.reuseable.PasswordField
 import com.androidhf.ui.reuseable.UIVar
+import com.androidhf.ui.screens.finance.viewmodel.RepetitiveTransactionViewModel
+import com.androidhf.ui.screens.finance.viewmodel.SavingViewModel
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 import com.androidhf.ui.screens.login.auth.AuthService
+import com.androidhf.ui.screens.stock.StockViewModel
 
 
 private fun onRegister(
@@ -35,7 +39,11 @@ private fun onRegister(
     password1: String,
     password2: String,
     navController: NavController,
-    context: Context
+    context: Context,
+    transactionViewModel: TransactionViewModel,
+    reptransViewModel : RepetitiveTransactionViewModel,
+    savingViewModel: SavingViewModel,
+    stockViewModel : StockViewModel
 ) {
 
     if (email.isBlank() || password1.isBlank() || password2.isBlank()) {
@@ -47,7 +55,20 @@ private fun onRegister(
     }
     AuthService.registerWithEmailAndPassword(email, password1, context) { success ->
         if (success)
+        {
+            transactionViewModel.deleteAll()
+            reptransViewModel.deleteAll()
+            savingViewModel.deleteAll()
+            stockViewModel.deleteAllStock()
+            stockViewModel.deleteAllCompany()
+            transactionViewModel.loadTransactions()
+            reptransViewModel.loadRepTransactions()
+            savingViewModel.loadSavings()
+            stockViewModel.loadStock()
+            stockViewModel.loadCompany()
             navController.navigate("login")
+        }
+
 
     }
 
@@ -55,7 +76,11 @@ private fun onRegister(
 }
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController,
+                   transactionViewModel: TransactionViewModel,
+                   reptransViewModel : RepetitiveTransactionViewModel,
+                   savingViewModel: SavingViewModel,
+                   stockViewModel : StockViewModel) {
     UIVar.topBarTitle = stringResource(id = R.string.login_registration)
 
     var name by remember { mutableStateOf("") }
@@ -86,7 +111,7 @@ fun RegisterScreen(navController: NavController) {
             PasswordField(
                 value = password2,
                 onChange = { password2 = it },
-                submit = { onRegister(name, password1, password2, navController, context) },
+                submit = { onRegister(name, password1, password2, navController, context, transactionViewModel,reptransViewModel,savingViewModel,stockViewModel) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.padding(UIVar.Padding))
@@ -96,7 +121,8 @@ fun RegisterScreen(navController: NavController) {
                     password1,
                     password2,
                     navController,
-                    context
+                    context,
+                    transactionViewModel,reptransViewModel,savingViewModel,stockViewModel
                 )
             },
                 modifier = Modifier.fillMaxWidth()

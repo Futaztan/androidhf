@@ -40,9 +40,16 @@ class TransactionRepository @Inject constructor(
     }
 
     suspend fun getIncomeTransactions(): Flow<List<Transaction>> {
+
         if(AuthService.isLoggedIn())
         {
-            return flowOf(firebaseDB.getIncomeTransactionFromFirebase())
+
+            val firestorelist = firebaseDB.getIncomeTransactionFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                transactionDao.insertTransaction(firestorelist.get(i).toEntity())
+            }
+
         }
         return transactionDao.getTransactionsByType("INCOME").map { entities ->
             entities.map { it.toDomain() }
@@ -52,7 +59,13 @@ class TransactionRepository @Inject constructor(
     suspend fun getExpenseTransactions(): Flow<List<Transaction>> {
         if(AuthService.isLoggedIn())
         {
-            return flowOf(firebaseDB.getExpenseTransactionFromFirebase())
+
+            val firestorelist = firebaseDB.getExpenseTransactionFromFirebase()
+            for(i in firestorelist.indices)
+            {
+                transactionDao.insertTransaction(firestorelist.get(i).toEntity())
+            }
+
         }
         return transactionDao.getTransactionsByType("EXPENSE").map { entities ->
             entities.map { it.toDomain() }

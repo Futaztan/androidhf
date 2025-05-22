@@ -24,7 +24,7 @@
     <string name="stock_unmarked">Részvény jelölés törölve</string>
 
 
-    <string name="login_user">Felhasználónév</string>
+    <string name="login_user">Bejelentkezés</string>
     <string name="login_pass">Jelszó</string>
     <string name="login_register">Regisztrálás</string>
     <string name="login_passmismatch">Jelszavak nem egyeznek</string>
@@ -85,8 +85,8 @@
     <string name="savingcard_areyousuredelete">Biztos szeretné törölni?</string>
     <string name="savingcard_deadlineinbound"> Határidő közeleg! </string>
     <string name="savingcard_typecollect">Típus: Megtakarítás</string>
-    <string name="savingcard_typehold">Type: Tartás</string>
-    <string name="savingcard_typelimit">Type: Limit</string>
+    <string name="savingcard_typehold">Típus: Tartás</string>
+    <string name="savingcard_typelimit">Típus: Limit</string>
     <string name="savingcard_date">Dátum:</string>
     <string name="savingcard_balance">Egyenleg: </string>
     <string name="savingcard_successful">Sikeresen teljesítve!</string>
