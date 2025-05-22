@@ -136,6 +136,13 @@ Az AI menüben egy beépített mesterséges intelligenciával lehet beszélgetni
 
 <img src="./assets/ai.jpg" width="160">
 
+## Apróságok
+Raktunk bele néhány apróságot is, hogy kicsit feldobjuk a felhasználói élményt. Ezeke a következők:
+- Dinamikus UI színek: A Material Theme lehetővé teszi, hogy a hátterünk alapján válasszon színeket és ezeket a színeket használjuk az alkalmazásunkban, így dinamokusan változik a felhasználó háttere és témája alapján (Light és Dark mode)
+- Egyes UI elemek haptic visszajelzést adnak megnyumásukkor és listák végére görgetésekor is
+- Angol és magyar nyelven is elérhető, a rendzser beállítástól függően
+- Kezdetleges animcáió van Saving törlésekor
+
 ## Felhasznált technológiák:
 
 - Firebase, a bejelentkezéshez és az adattárolásra
@@ -146,6 +153,7 @@ Az AI menüben egy beépített mesterséges intelligenciával lehet beszélgetni
 - Hilt - Dependency Injection
 - Room - lokális adattároláshoz
 - Nagyon basic animáció
+- Service
 
 Itt kell felsorolni minden technológiát, technikát, külső könyvtárat, komplexebb algoritmust, ami növeli az alkalmazás értékét. Osztályzáskor ezt a fejezetet nézzük meg először.
 
