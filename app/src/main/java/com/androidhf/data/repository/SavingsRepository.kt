@@ -45,6 +45,10 @@ class SavingsRepository @Inject constructor(
     }
 
     suspend fun deleteSaving(save: Savings) {
+        if(AuthService.isLoggedIn())
+        {
+            firebaseDB.deleteSavingFromFirebase(save)
+        }
         savingDao.deleteSavingById(save.Id)
     }
     suspend fun deleteAll()

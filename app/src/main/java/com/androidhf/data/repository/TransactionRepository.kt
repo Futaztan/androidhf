@@ -121,6 +121,14 @@ class TransactionRepository @Inject constructor(
     {
         transactionDao.clearTable()
     }
+    suspend fun deleteTransaction(transaction: Transaction)
+    {
+        if(AuthService.isLoggedIn())
+        {
+            firebaseDB.deleteTransactionFromFirebase(transaction)
+        }
+        transactionDao.deleteTransactionById(transaction.id)
+    }
 
     /*
     fun calculateBalanceChangesSimple(): List<Int> {

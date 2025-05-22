@@ -369,6 +369,38 @@ class FirebaseDB @Inject constructor() {
                 continuation.resume(companylist)
             }
     }
+    fun deleteSavingFromFirebase(saving : Savings)
+    {
+        val user = AuthService.getUserEmail()
+        firestore.collection("users")
+            .document(user)
+            .collection("savings")
+            .whereEqualTo("id",saving.Id)
+            .get()
+            .addOnSuccessListener { result->
+                result.documents.forEach{it.reference.delete()}
+
+            }
+            .addOnFailureListener { e ->
+                Log.e("firebase", "Hiba történt törléskor", e)
+            }
+    }
+    fun deleteTransactionFromFirebase(transaction: Transaction )
+    {
+        val user = AuthService.getUserEmail()
+        firestore.collection("users")
+            .document(user)
+            .collection("transactions")
+            .whereEqualTo("id",transaction.id)
+            .get()
+            .addOnSuccessListener { result->
+                result.documents.forEach{it.reference.delete()}
+
+            }
+            .addOnFailureListener { e ->
+                Log.e("firebase", "Hiba történt törléskor", e)
+            }
+    }
     fun deleteStockFromFirebase(stock : Stock)
     {
         val user = AuthService.getUserEmail()

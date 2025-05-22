@@ -54,9 +54,11 @@ import java.time.temporal.ChronoUnit
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+
 fun SavingCard_Income2(
     saving: Savings, //melyik savinget jelenítse meg
     onDismiss: () -> Unit, //visible = false -ot kell meghívni ha törölni akarjuk, enélkül nem tűnik el

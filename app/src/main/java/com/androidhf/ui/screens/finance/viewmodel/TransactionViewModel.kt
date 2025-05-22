@@ -176,6 +176,14 @@ class TransactionViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteTransaction(transaction: Transaction)
+    {
+        viewModelScope.launch {
+            transactionRepository.deleteTransaction(transaction)
+        }
+    }
+
     fun deleteAll()
     {
         viewModelScope.launch {
