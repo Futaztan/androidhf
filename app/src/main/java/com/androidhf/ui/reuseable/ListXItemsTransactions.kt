@@ -68,7 +68,7 @@ fun ListXItemsTransactions(
                 color = UIVar.colorRed()
             }
         }
-        Panel(fitMaxWidth = false, modifier = _modifier) {
+        Panel(fitMaxWidth = _fitMaxWidth, modifier = _modifier, centerItems = false) {
             Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
                 firstItems.forEach { item ->
                     Row {
@@ -123,7 +123,7 @@ fun ListXItemsTransactions(
                 color = UIVar.colorRed()
             }
         }
-        Panel(fitMaxWidth = false, modifier = _modifier) {
+        Panel(fitMaxWidth = _fitMaxWidth, modifier = _modifier, centerItems = false) {
             Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
                 firstItems.forEach { item ->
                     Row{

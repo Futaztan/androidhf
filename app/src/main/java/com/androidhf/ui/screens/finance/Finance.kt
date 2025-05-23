@@ -231,12 +231,10 @@ fun FinanceScreen(navHostController: NavHostController, transactionViewModel: Tr
             Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()) {
                 LazyRow {
                     item {
-                        Button(onClick = {navHostController.navigate("money_income")}
+                        Button(onClick = {navHostController.navigate("money_income")}, modifier = Modifier.padding(end = UIVar.Padding)
                         ) { Text(stringResource(id = R.string.finance_newincome)) }
-                        Spacer(modifier = Modifier.width(UIVar.Padding))
-                        Button(onClick = {navHostController.navigate("money_saving")}
+                        Button(onClick = {navHostController.navigate("money_saving")}, modifier = Modifier.padding(end = UIVar.Padding)
                         ) { Text(stringResource(id = R.string.finance_newsaving)) }
-                        Spacer(modifier = Modifier.width(UIVar.Padding))
                         Button(onClick = {navHostController.navigate("money_expense")}
                         ) { Text(stringResource(id = R.string.finance_newexpense)) }
                     }
@@ -256,12 +254,11 @@ fun Finance_ui_egyenleg(navHostController: NavHostController, transactionViewMod
     )
     {
         Row ( modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
+            .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         )
         {
-            HeaderText(stringResource(id = R.string.finance_balance))
+            HeaderText(stringResource(id = R.string.finance_balance) + " ")
             if(money < 0) Text("$money Ft", color = UIVar.colorRed(), fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
             else if(money > 0) Text("$money Ft", color = UIVar.colorGreen(), fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
             else Text("0 Ft", color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)

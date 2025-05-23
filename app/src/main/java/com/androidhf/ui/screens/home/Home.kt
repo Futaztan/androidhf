@@ -61,8 +61,8 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
-        Panel {
-            if (!AuthService.isLoggedIn()) HeaderText(stringResource(id = R.string.home_hello))
+        Panel{
+            if(!AuthService.isLoggedIn()) HeaderText(stringResource(id = R.string.home_hello))
             else HeaderText(stringResource(id = R.string.home_hi) + " " + AuthService.getUserDisplayName())
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))

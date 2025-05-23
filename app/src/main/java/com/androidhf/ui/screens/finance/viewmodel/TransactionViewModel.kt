@@ -193,20 +193,26 @@ class TransactionViewModel @Inject constructor(
 
     fun expenseContainsList(value: String, context: Context): List<Transaction>
     {
-        return _incomeTransactions.value.filter {
-            it.amount.toString().contains(value) ||
-                    it.category.getDisplayName(context).contains(value) ||
-                    it.date.toString().contains(value) ||
-                    it.time.toString().contains(value)}
+        val string = value.lowercase()
+        return _expenseTransactions.value.filter {
+            it.amount.toString().lowercase().contains(string) ||
+            it.category.getDisplayName(context).lowercase().contains(string) ||
+            it.date.toString().lowercase().contains(string) ||
+            it.time.toString().lowercase().contains(string) ||
+            it.description.lowercase().contains(string)
+        }
     }
 
     fun incomeContainsList(value: String, context: Context): List<Transaction>
     {
+        val string = value.lowercase()
         return _incomeTransactions.value.filter {
-            it.amount.toString().contains(value) ||
-            it.category.getDisplayName(context).contains(value) ||
-            it.date.toString().contains(value) ||
-            it.time.toString().contains(value)}
+            it.amount.toString().lowercase().contains(string) ||
+            it.category.getDisplayName(context).lowercase().contains(string) ||
+            it.date.toString().lowercase().contains(string) ||
+            it.time.toString().lowercase().contains(string) ||
+            it.description.lowercase().contains(string)
+        }
     }
 
     fun addTransaction(transaction: Transaction) {

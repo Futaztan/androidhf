@@ -36,6 +36,7 @@ ________
 # Dokumentáció
 
 ### pénzügyi alkalmazás 1
+[Link a repohoz](https://github.com/Futaztan/androidhf)
 
 <img src="./assets/icon3.png" width="160">
 
@@ -145,15 +146,14 @@ Raktunk bele néhány apróságot is, hogy kicsit feldobjuk a felhasználói él
 
 ## Felhasznált technológiák:
 
-- Firebase, a bejelentkezéshez és az adattárolásra
-- Hálózat (részvények lekérése [innen](https://polygon.io), illetve Gemini google szolgáltatás)
-- Automatikus Android Material theme alkalmazása (Dinamikusan változnak a színek a háttér alapján)
-- 3 különböző gráf ábrázolás - [YCharts](https://github.com/yml-org/YCharts)
-- Dailyworker - a repetitív tranzakciókra
-- Hilt - Dependency Injection
-- Room - lokális adattároláshoz
-- Nagyon basic animáció
-- Service
+- **Firebase**, a bejelentkezéshez és az adattárolásra
+- **Hálózat** (részvények lekérése [innen](https://polygon.io), illetve Gemini google szolgáltatás)
+- Automatikus Android Material theme alkalmazása (**Dinamikusan változnak a színek a háttér alapján**)
+- 3 különböző **gráf** ábrázolás - [YCharts](https://github.com/yml-org/YCharts)
+- **Dailyworker** - a repetitív tranzakciókra
+- Hilt - **Dependency Injection**
+- **Room** - lokális adattároláshoz
+- Nagyon basic **animáció**
 
 Itt kell felsorolni minden technológiát, technikát, külső könyvtárat, komplexebb algoritmust, ami növeli az alkalmazás értékét. Osztályzáskor ezt a fejezetet nézzük meg először.
 
