@@ -28,8 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.androidhf.R
 import com.androidhf.data.datatypes.Transaction
@@ -135,7 +133,7 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
             Spacer(modifier = Modifier.height(UIVar.Padding))
             if (!date && !category && !amount && list.isNotEmpty())
             {
-                ListXItemsTransactions(null, list, -1, UIVar.colorRed(), _fitMaxWidth = true)
+                ListXItemsTransactions(null, list, -1, UIVar.colorRed(), deleteable = true, transactionViewModel = transactionViewModel, _fitMaxWidth = true)
             }
         }
         if (list.isNotEmpty())
@@ -149,13 +147,16 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 if (asc)
                 {
-                    ListXItemsTransactions(null, transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), _fitMaxWidth = true)
+                    ListXItemsTransactions(null, transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), _fitMaxWidth = true,
+                    deleteable = true, transactionViewModel = transactionViewModel)
                 }
-                else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), reversed = true, _fitMaxWidth = true)
+                else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), reversed = true, _fitMaxWidth = true,
+                    deleteable = true, transactionViewModel = transactionViewModel)
             }
             else if (category) {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
-                ListXItemsTransactions(null, transactionViewModel.sortByCategory(list = list, context), -1, UIVar.colorRed(), _fitMaxWidth = true)
+                ListXItemsTransactions(null, transactionViewModel.sortByCategory(list = list, context), -1, UIVar.colorRed(), _fitMaxWidth = true,
+                    deleteable = true, transactionViewModel = transactionViewModel)
             }
             else if (date) {
                 Button(onClick = {
@@ -166,15 +167,18 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 if (asc)
                 {
-                    ListXItemsTransactions(null, transactionViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorRed(), _fitMaxWidth = true)
+                    ListXItemsTransactions(null, transactionViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorRed(), _fitMaxWidth = true,
+                    deleteable = true, transactionViewModel = transactionViewModel)
                 }
-                else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorRed(), _fitMaxWidth = true)
+                else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorRed(), _fitMaxWidth = true,
+                    deleteable = true, transactionViewModel = transactionViewModel)
             }
             else if (!search)
             {
                 Spacer(modifier = Modifier.height(UIVar.Padding))
                 Log.d("bug1", "List size: ${list.size}")
-                ListXItemsTransactions(null, list, -1, UIVar.colorRed(), reversed = true, _fitMaxWidth = true)
+                ListXItemsTransactions(null, list, -1, UIVar.colorRed(), reversed = true, _fitMaxWidth = true,
+                    deleteable = true, transactionViewModel = transactionViewModel)
             }
             Spacer(modifier = Modifier.height(UIVar.Padding))
         }

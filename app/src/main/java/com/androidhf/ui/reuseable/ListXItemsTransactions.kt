@@ -2,7 +2,10 @@ package com.androidhf.ui.reuseable
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -10,12 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.androidhf.R
 import com.androidhf.data.datatypes.Transaction
+import com.androidhf.ui.screens.finance.viewmodel.TransactionViewModel
 
 //Dávid csinálta, de kiszedtem reuseablebe és kiegészítettem, egy panellel
 //Az összeget bold-al írja a többi adatot pedig simán
@@ -27,10 +33,14 @@ fun ListXItemsTransactions(
     listItems: List<Transaction>? = null, //ha null akkor ez fog listázni
 
     count: Int, //Mennyit adjon vissza, ha -1, akkor mindent visszaad
-    _color : Color, //listázás színe
-    _modifier : Modifier = Modifier, //modifierek
+    _color: Color, //listázás színe
+    _modifier: Modifier = Modifier, //modifierek
     _fitMaxWidth: Boolean = false, //kitöltse a rendelkezésre álló helyet, ha két panel kell egymás mellé akkor false és kívül kell megadni weightet
-    reversed: Boolean = false //milyen sorrendben írja ki
+    reversed: Boolean = false, //milyen sorrendben írja ki
+    deleteable: Boolean = false, //torolheto e az elemek (detaileknél)
+    detailed : Boolean = true, //szukseges e reszletes leiras a tranzaikciorol (Detailed screeneknel)
+
+    transactionViewModel: TransactionViewModel? = null
 )
 {
     if(items != null)
@@ -61,17 +71,29 @@ fun ListXItemsTransactions(
         Panel(fitMaxWidth = _fitMaxWidth, modifier = _modifier, centerItems = false) {
             Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
                 firstItems.forEach { item ->
+                    Row {
                     Text(
                         buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold))
                             {
                                 append("${item.amount} Ft ")
                             }
-                            append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                            if(detailed)
+                                append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
+                            else append("${item.category.getDisplayName(LocalContext.current)} - ${item.description}")
                         },
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(8.dp)
+                            .weight(9f),
                         color = color
                     )
+                    if(deleteable)
+                    {
+                        IconButton(onClick = {transactionViewModel!!.deleteTransaction(item)}, modifier = Modifier.weight(1f)) { Icon(
+                            painter = painterResource(id = R.drawable.ic_delete_24),
+                            contentDescription = "-"
+                        ) }
+                    } }
+
                 }
             }
         }
@@ -104,17 +126,31 @@ fun ListXItemsTransactions(
         Panel(fitMaxWidth = _fitMaxWidth, modifier = _modifier, centerItems = false) {
             Column(modifier = _modifier, horizontalAlignment = Alignment.CenterHorizontally) {
                 firstItems.forEach { item ->
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold))
-                            {
-                                append("${item.amount} Ft ")
-                            }
-                            append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
-                        },
-                        modifier = Modifier.padding(8.dp),
-                        color = color
-                    )
+                    Row{
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold))
+                                {
+                                    append("${item.amount} Ft ")
+                                }
+                                if (detailed)
+                                    append("${item.category.getDisplayName(LocalContext.current)} ${item.frequency} ${item.description} ${item.date} ${if (item.time.hour > 10) item.time.hour else "0" + item.time.hour}:${if (item.time.minute > 10) item.time.minute else "0" + item.time.minute}:${if (item.time.second > 10) item.time.second else "0" + item.time.second}")
+                                else append("${item.category.getDisplayName(LocalContext.current)} - ${item.description}")
+                            },
+                            modifier = Modifier.padding(8.dp)
+                                .weight(9f),
+                            color = color
+                        )
+                        if(deleteable)
+                        {
+                            IconButton(onClick =  { transactionViewModel!!.deleteTransaction(item) }, modifier = Modifier.weight(1f)) { Icon(
+                                painter = painterResource(id = R.drawable.ic_delete_24),
+                                contentDescription = "-"
+                            ) }
+                        }
+
+                    }
+
                 }
             }
         }

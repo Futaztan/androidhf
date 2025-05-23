@@ -56,17 +56,13 @@ fun FavoriteCompanyBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // StockViewModel hozzáadása, hogy hozzáférjünk az adatokhoz
-    //val stockViewModel: StockViewModel = hiltViewModel()
 
-    // Állapot változók a chart adatokhoz
     var stockData by remember { mutableStateOf<List<AggregateDTO>>(emptyList()) }
     var price by remember { mutableStateOf("0.00") }
     var isLoading by remember { mutableStateOf(false) }
     var hasError by remember { mutableStateOf(false) }
 
 
-    // Adatok lekérése amikor a komponens létrejön
     LaunchedEffect(company.companyCode) {
         isLoading = true
         hasError = false
@@ -75,7 +71,6 @@ fun FavoriteCompanyBox(
             try {
                 val POLYGON_API_KEY = PolygonRestClient("kwQO2EZ6YFWcSA0Vkx4pCXyE6Guf2HJg")
 
-                // Kezdeti paraméterek
                 val now = LocalDate.now()
                 var endDate = now
                 var startDate = now.minusDays(8)
@@ -83,7 +78,6 @@ fun FavoriteCompanyBox(
                 var attempts = 0
                 var foundData = false
 
-                // Maximum 5 próbálkozás
                 while (!foundData && attempts < 40) {
                     Log.d("FavoriteCompanyBox", "Attempt ${attempts + 1} for ${company.companyCode}")
 
@@ -96,29 +90,25 @@ fun FavoriteCompanyBox(
                         )
 
                         withContext(Dispatchers.Main) {
-                            // Ellenőrizzük, hogy kaptunk-e értelmes adatot
                             if (data.results != null && data.results.isNotEmpty()) {
                                 Log.d("FavoriteCompanyBox", "Data found for ${company.companyCode}! ${data.results.size} data points.")
                                 stockData = data.results
 
-                                // Utolsó záróár kinyerése és formázása
                                 price = "%.2f$".format(data.results.last().close ?: 0.0)
                                 foundData = true
                             } else {
                                 Log.e("FavoriteCompanyBox", "No data: trying attempt " + attempts)
-                                // Ha nem találtunk adatot, újra próbálkozunk
                                 attempts++
-                                delay(5000) // 5 másodperc várakozás a következő próbálkozás előtt
+                                delay(5000)
                             }
                         }
                     } catch (e: Exception) {
                         Log.e("FavoriteCompanyBox", "Error fetching data: ${e.message}")
                         attempts++
-                        delay(3000) // 3 másodperc várakozás hiba esetén
+                        delay(3000)
                     }
                 }
 
-                // Ha minden próbálkozás után sem találtunk adatot
                 if (!foundData) {
                     withContext(Dispatchers.Main) {
                         hasError = true
@@ -143,7 +133,6 @@ fun FavoriteCompanyBox(
             .clickable(onClick = onClick)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Sárga csillag a jobb felső sarokban
             IconButton(
                 onClick = onDelete,
                 modifier = Modifier
@@ -154,17 +143,17 @@ fun FavoriteCompanyBox(
                     painter = painterResource(id = R.drawable.ic_fav_48),
                     contentDescription = "Remove from favorites",
                     modifier = Modifier.size(24.dp),
-                    tint = Color(0xFFFFD700) // Arany sárga szín
+                    tint = Color(0xFFFFD700)
                 )
             }
 
-            // Tartalom elrendezése
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(UIVar.Padding/2f)
             ) {
-                // Felső rész: Ticker kód és ár
+
                 Text(
                     text = company.companyCode,
                     style = TextStyle(
@@ -173,7 +162,7 @@ fun FavoriteCompanyBox(
                     )
                 )
 
-                // Ár megjelenítése (az árat a bottomwindow-ból vesszük)
+
                 if (isLoading) {
                     Text(
                         text = stringResource(id = R.string.stock_loading),
@@ -186,7 +175,6 @@ fun FavoriteCompanyBox(
                     )
                 }
 
-                // Mini chart rész (a kép közepét és alját foglalja el)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -215,7 +203,6 @@ fun FavoriteCompanyBox(
                             modifier = Modifier.align(Alignment.Center)
                         )
                     } else {
-                        // A már meglévő MiniStockChart használata
                         MiniStockChart(stockData = stockData, 130.dp)
                     }
                 }

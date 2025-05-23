@@ -1,6 +1,8 @@
 package com.androidhf.ui.reuseable
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,31 +67,15 @@ fun ListXItemsTransactionsMonthly(
                         prevMonth = item.date.month
                         prevYear = item.date.year
                         Text("${prevYear}-${prevMonth}")
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold))
-                                {
-                                    append("${item.amount} Ft ")
-                                }
-                                append("${item.category.getDisplayName(LocalContext.current)} ${item.description} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
-                            },
-                            modifier = Modifier.padding(8.dp),
-                            color = color
-                        )
+                        Text(item.amount.toString() + "Ft", modifier = Modifier.padding(start = UIVar.Padding), color = color, fontWeight = FontWeight.ExtraBold)
+                        Text("${item.category.getDisplayName(LocalContext.current)} - ${item.description}", modifier = Modifier.padding(start = UIVar.Padding), color = color)
+                        Spacer(modifier = Modifier.height(UIVar.Padding))
                     }
                     else
                     {
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold))
-                                {
-                                    append("${item.amount} Ft ")
-                                }
-                                append("${item.category.getDisplayName(LocalContext.current)} ${item.description} ${if(item.time.hour > 10) item.time.hour else "0"+item.time.hour}:${if(item.time.minute > 10) item.time.minute else "0"+item.time.minute}:${if(item.time.second > 10) item.time.second else "0"+item.time.second}")
-                            },
-                            modifier = Modifier.padding(8.dp),
-                            color = color
-                        )
+                        Text(item.amount.toString() + "Ft", modifier = Modifier.padding(start = UIVar.Padding), color = color, fontWeight = FontWeight.ExtraBold)
+                        Text("${item.category.getDisplayName(LocalContext.current)} - ${item.description}", modifier = Modifier.padding(start = UIVar.Padding), color = color)
+                        Spacer(modifier = Modifier.height(UIVar.Padding))
                     }
                 }
             }
