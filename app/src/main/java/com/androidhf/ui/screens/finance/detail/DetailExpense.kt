@@ -1,6 +1,7 @@
 package com.androidhf.ui.screens.finance.detail
 
 import android.util.Log
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -74,15 +75,15 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
         if (input.isEmpty()) {
             currentTransactions
         } else {
-            val filteredList = transactionViewModel.incomeContainsList(input, context)
+            val filteredList = transactionViewModel.expenseContainsList(input, context)
             filteredList
         }
     }
 
-    Column (modifier = Modifier.padding(UIVar.Padding).verticalScroll(rememberScrollState())) {
+    Column (modifier = Modifier.padding(UIVar.Padding).verticalScroll(rememberScrollState()).fillMaxWidth()) {
 
         Text(text = stringResource(id = R.string.financeincome_sortby), modifier = Modifier.padding(bottom = UIVar.Padding), fontSize = UIVar.HeaderText)
-        Row(horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
             Button(onClick = {
                 amount = !amount
                 category = false
@@ -90,6 +91,7 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
             }, colors = buttonAmountColor) {
                 Text(text = stringResource(id = R.string.financeincome_amount))
             }
+            Spacer(modifier = Modifier.width(UIVar.Padding))
             Button(onClick = {
                 category = !category
                 amount = false
@@ -97,6 +99,7 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
             }, colors = buttonCatColor) {
                 Text(text = stringResource(id = R.string.financeincome_category))
             }
+            Spacer(modifier = Modifier.width(UIVar.Padding))
             Button(onClick = {
                 date = !date
                 amount = false
@@ -104,6 +107,7 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
             }, colors = buttonDateColor) {
                 Text(text = stringResource(id = R.string.financeincome_date))
             }
+            Spacer(modifier = Modifier.width(UIVar.Padding))
             Button(onClick = {
                 search = !search
                 if(!search)
@@ -129,48 +133,51 @@ fun FinanceExpense(navController: NavHostController, transactionViewModel: Trans
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(UIVar.Padding))
-            if (!date && !category && !amount)
+            if (!date && !category && !amount && list.isNotEmpty())
             {
-                ListXItemsTransactions(null, list, -1, UIVar.colorRed())
+                ListXItemsTransactions(null, list, -1, UIVar.colorRed(), _fitMaxWidth = true)
             }
         }
-        if (amount) {
-            Button(onClick = {
-                asc = !asc
-            }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = stringResource(id = R.string.financeincome_ascdesc))
-            }
-            Spacer(modifier = Modifier.height(UIVar.Padding))
-            if (asc)
-            {
-                ListXItemsTransactions(null, transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed())
-            }
-            else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), reversed = true)
-        }
-        else if (category) {
-            Spacer(modifier = Modifier.height(UIVar.Padding))
-            ListXItemsTransactions(null, transactionViewModel.sortByCategory(list = list, context), -1, UIVar.colorRed())
-        }
-        else if (date) {
-            Button(onClick = {
-                asc = !asc
-            }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = stringResource(id = R.string.financeincome_ascdesc))
-            }
-            Spacer(modifier = Modifier.height(UIVar.Padding))
-            if (asc)
-            {
-                ListXItemsTransactions(null, transactionViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorRed())
-            }
-            else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorRed())
-        }
-        else if (!search)
+        if (list.isNotEmpty())
         {
+            if (amount) {
+                Button(onClick = {
+                    asc = !asc
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = stringResource(id = R.string.financeincome_ascdesc))
+                }
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                if (asc)
+                {
+                    ListXItemsTransactions(null, transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), _fitMaxWidth = true)
+                }
+                else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByAmount(list = list), -1, UIVar.colorRed(), reversed = true, _fitMaxWidth = true)
+            }
+            else if (category) {
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                ListXItemsTransactions(null, transactionViewModel.sortByCategory(list = list, context), -1, UIVar.colorRed(), _fitMaxWidth = true)
+            }
+            else if (date) {
+                Button(onClick = {
+                    asc = !asc
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = stringResource(id = R.string.financeincome_ascdesc))
+                }
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                if (asc)
+                {
+                    ListXItemsTransactions(null, transactionViewModel.sortTransactionsByDate(asc = true, list = list), -1, UIVar.colorRed(), _fitMaxWidth = true)
+                }
+                else ListXItemsTransactions(null,transactionViewModel.sortTransactionsByDate(list = list), -1, UIVar.colorRed(), _fitMaxWidth = true)
+            }
+            else if (!search)
+            {
+                Spacer(modifier = Modifier.height(UIVar.Padding))
+                Log.d("bug1", "List size: ${list.size}")
+                ListXItemsTransactions(null, list, -1, UIVar.colorRed(), reversed = true, _fitMaxWidth = true)
+            }
             Spacer(modifier = Modifier.height(UIVar.Padding))
-            Log.d("bug1", "List size: ${list.size}")
-            ListXItemsTransactions(null, list, -1, UIVar.colorRed(), reversed = true)
         }
-        Spacer(modifier = Modifier.height(UIVar.Padding))
     }
 
     Box(modifier = Modifier.fillMaxSize())

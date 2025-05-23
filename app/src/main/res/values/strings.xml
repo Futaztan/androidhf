@@ -67,7 +67,7 @@
     <string name="financeincome_amount">Amount</string>
     <string name="financeincome_category">Category</string>
     <string name="financeincome_date">Date</string>
-    <string name="financeincome_ascdesc">Ascend/Descend</string>
+    <string name="financeincome_ascdesc">Ascending/Descending</string>
     <string name="financeincome_toexpenses">Expenses ➤</string>
 
     <string name="financeexpenses_title">Expense List</string>

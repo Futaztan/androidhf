@@ -58,7 +58,7 @@ fun HomeScreen(transactionViewModel: TransactionViewModel,savingViewModel: Savin
     {
         Panel{
             if(!AuthService.isLoggedIn()) HeaderText(stringResource(id = R.string.home_hello))
-            else HeaderText(stringResource(id = R.string.home_hi) + AuthService.getUserDisplayName())
+            else HeaderText(stringResource(id = R.string.home_hi) + " " + AuthService.getUserDisplayName())
         }
         Spacer(modifier = Modifier.height(UIVar.Padding))
         Row (modifier = Modifier.fillMaxWidth()){
