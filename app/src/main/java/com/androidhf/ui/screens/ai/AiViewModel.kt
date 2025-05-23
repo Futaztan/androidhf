@@ -46,8 +46,7 @@ class AIViewModel  @Inject constructor(
 
     suspend fun dataToAIPrompt(): String {
         var output: String =
-            "Amit küldök adatokat azokat nem kell megismételni, azaz az általam leírt pénzeket. Azonnal küldd vissza az elemzést és a tanácsaid. A pénzek forintba vannak. Próbálj úgy" +
-                    "fogalmazni, hogy beleférj a token limitbe. Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
+            "Amit küldök adatokat azokat nem kell megismételni, azaz az általam leírt pénzeket. Azonnal küldd vissza az elemzést és a tanácsaid. A pénzek forintba vannak. Próbáld meg limitálni a válaszod kb 150-250 szóra. Ezek a bevételeim az elmúlt 30 napban (formátum: összeg;típus;időpont): "
         transactionsRepository.getIncomeTransactions().first().forEach { item ->
             if (item.date.isAfter(LocalDate.now().minusDays(30))) {
                 output += item.amount.toString() + ";" + item.category.toString() + ";" + item.date.toString() + " "

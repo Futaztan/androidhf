@@ -78,6 +78,7 @@ fun AIScreen(aiViewModel: AIViewModel) {
                 TextButton(
                     onClick = {
                         messages.clear()
+                        aiViewModel.isInitialized = false
                         aiViewModel.defaultPrompt()
                         showDeleteConfirmation = false
                     }

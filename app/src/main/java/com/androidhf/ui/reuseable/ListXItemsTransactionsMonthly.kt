@@ -67,13 +67,13 @@ fun ListXItemsTransactionsMonthly(
                         prevMonth = item.date.month
                         prevYear = item.date.year
                         Text("${prevYear}-${prevMonth}")
-                        Text(item.amount.toString() + "Ft", modifier = Modifier.padding(start = UIVar.Padding), color = color, fontWeight = FontWeight.ExtraBold)
+                        Text(item.amount.toString() + " Ft", modifier = Modifier.padding(start = UIVar.Padding), color = color, fontWeight = FontWeight.ExtraBold)
                         Text("${item.category.getDisplayName(LocalContext.current)} - ${item.description}", modifier = Modifier.padding(start = UIVar.Padding), color = color)
                         Spacer(modifier = Modifier.height(UIVar.Padding))
                     }
                     else
                     {
-                        Text(item.amount.toString() + "Ft", modifier = Modifier.padding(start = UIVar.Padding), color = color, fontWeight = FontWeight.ExtraBold)
+                        Text(item.amount.toString() + " Ft", modifier = Modifier.padding(start = UIVar.Padding), color = color, fontWeight = FontWeight.ExtraBold)
                         Text("${item.category.getDisplayName(LocalContext.current)} - ${item.description}", modifier = Modifier.padding(start = UIVar.Padding), color = color)
                         Spacer(modifier = Modifier.height(UIVar.Padding))
                     }
